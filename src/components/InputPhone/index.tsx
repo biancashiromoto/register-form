@@ -1,12 +1,16 @@
 import { Box, TextField } from '@mui/material';
 
 type InputPhoneType = {
-  shouldShow: boolean;
+  shouldShow?: boolean;
   errors: any;
   register: any;
 };
 
-const InputPhone = ({ shouldShow, errors, register }: InputPhoneType) => {
+const InputPhone = ({
+  shouldShow = true,
+  errors,
+  register,
+}: InputPhoneType) => {
   return (
     shouldShow && (
       <Box mb={2}>
