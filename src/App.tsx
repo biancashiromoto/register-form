@@ -3,6 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { firstStepSchema } from './schemas/firstStepSchema';
 import InputPhone from './components/InputPhone';
+import InputText from './components/InputText';
+import DatePicker from './components/DatePicker';
 
 function App() {
   const {
@@ -29,59 +31,37 @@ function App() {
     <Box width="100%" maxWidth="400px" mx="auto" mt={4}>
       <h1>Payment Form</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box mb={2}>
-          <TextField
-            id="first-name"
-            label="First Name"
-            fullWidth
-            {...register('firstName')}
-            error={!!errors.firstName}
-            helperText={errors.firstName?.message?.toString()}
-          />
-        </Box>
-        {firstName && !errors.firstName && (
-          <Box mb={2}>
-            <TextField
-              id="last-name"
-              label="Last Name"
-              fullWidth
-              {...register('lastName')}
-              error={!!errors.lastName}
-              helperText={errors.lastName?.message?.toString()}
-            />
-          </Box>
-        )}
-        {firstName && !errors.firstName && lastName && !errors.lastName && (
-          <Box mb={2}>
-            <TextField
-              id="birth-date"
-              label="Birth Date"
-              fullWidth
-              type="date"
-              slotProps={{ inputLabel: { shrink: true } }}
-              {...register('birthDate')}
-              error={!!errors.birthDate}
-              helperText={errors.birthDate?.message?.toString()}
-            />
-          </Box>
-        )}
-        {firstName &&
-          !errors.firstName &&
-          lastName &&
-          !errors.lastName &&
-          birthDate &&
-          !errors.birthDate && (
-            <Box mb={2}>
-              <TextField
-                id="email"
-                label="Email"
-                fullWidth
-                {...register('email')}
-                error={!!errors.email}
-                helperText={errors.email?.message?.toString()}
-              />
-            </Box>
-          )}
+        <InputText errors={errors} name="firstName" register={register} />
+
+        <InputText
+          shouldShow={firstName && !errors.firstName}
+          errors={errors}
+          name="lastName"
+          register={register}
+        />
+
+        <DatePicker
+          shouldShow={
+            firstName && !errors.firstName && lastName && !errors.lastName
+          }
+          errors={errors}
+          register={register}
+        />
+
+        <InputText
+          shouldShow={
+            firstName &&
+            !errors.firstName &&
+            lastName &&
+            !errors.lastName &&
+            birthDate &&
+            !errors.birthDate
+          }
+          errors={errors}
+          name="email"
+          register={register}
+        />
+
         <InputPhone
           shouldShow={
             firstName &&
