@@ -61,7 +61,8 @@ export default function CountrySelect({
       }}
       renderInput={(params) => (
         <TextField
-          error={!!errors.countryCode}
+          error={!!errors}
+          helperText={errors?.message}
           {...params}
           aria-label="Choose a country"
           slotProps={{
