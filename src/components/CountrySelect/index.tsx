@@ -13,7 +13,11 @@ const filterCountries = ({ options, state }: any) => {
   );
 };
 
-export default function CountrySelect() {
+type CountrySelectProps = {
+  setValue: (field: string, value: any) => void;
+};
+
+export default function CountrySelect({ setValue }: CountrySelectProps) {
   const { countries = [] } = useFetchCountries();
 
   const sortedCountries = [...countries].sort((a, b) =>
@@ -22,6 +26,12 @@ export default function CountrySelect() {
 
   return (
     <Autocomplete
+      onChange={(event, newValue) => {
+        // Aqui é onde você realmente captura o "país" selecionado
+        // e notifica o React Hook Form. Supondo que seu schema
+        // tenha "countryCode" como campo:
+        setValue('countryCode', newValue?.code || '');
+      }}
       id="country-select"
       options={sortedCountries}
       autoHighlight
