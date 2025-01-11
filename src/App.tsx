@@ -113,7 +113,13 @@ function App() {
           !errors.email &&
           !!phone &&
           !errors.phone && (
-            <Button variant="contained" color="primary" type="submit" fullWidth>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              fullWidth
+              style={{ marginTop: '24px' }}
+            >
               Next
             </Button>
           )}
