@@ -1,17 +1,17 @@
-import { Box, Button, TextField } from '@mui/material';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Box, Button } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { firstStepSchema } from './schemas/firstStepSchema';
+import DatePicker from './components/DatePicker';
 import InputPhone from './components/InputPhone';
 import InputText from './components/InputText';
-import DatePicker from './components/DatePicker';
+import { firstStepSchema } from './schemas/firstStepSchema';
 
 function App() {
   const {
     register,
     handleSubmit,
     watch,
-    control,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(firstStepSchema),
@@ -22,6 +22,7 @@ function App() {
       birthDate: '',
       email: '',
       phone: '',
+      countryCode: '',
     },
   });
 
@@ -76,6 +77,7 @@ function App() {
         />
 
         <InputPhone
+          setValue={setValue}
           shouldShow={
             !!firstName &&
             !errors.firstName &&
