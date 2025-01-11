@@ -5,6 +5,7 @@ import DatePicker from './components/DatePicker';
 import InputPhone from './components/InputPhone';
 import InputText from './components/InputText';
 import { firstStepSchema } from './schemas/firstStepSchema';
+import { useResetForm } from './hooks/useResetForm';
 
 function App() {
   const {
@@ -12,6 +13,7 @@ function App() {
     handleSubmit,
     watch,
     setValue,
+    resetField,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(firstStepSchema),
@@ -31,6 +33,12 @@ function App() {
   const birthDate = watch('birthDate');
   const email = watch('email');
   const phone = watch('phone');
+
+  useResetForm(firstName, resetField, 'lastName');
+  useResetForm(lastName, resetField, 'birthDate');
+  useResetForm(birthDate, resetField, 'email');
+  useResetForm(email, resetField, 'phone');
+  useResetForm(email, resetField, 'countryCode');
 
   const onSubmit = async (data: any) => {
     console.log('Form submitted:', data);
