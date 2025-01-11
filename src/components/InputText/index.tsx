@@ -1,7 +1,7 @@
 import { Box, TextField } from '@mui/material';
 
 type InputTextType = {
-  shouldShow?: boolean;
+  shouldShow: boolean;
   errors: any;
   register: any;
   name: string;
