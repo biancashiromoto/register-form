@@ -1,6 +1,6 @@
 import { Box, TextField } from '@mui/material';
 
-type InputTextType = {
+export type InputTextProps = {
   shouldShow: boolean;
   errors: any;
   register: any;
@@ -12,7 +12,7 @@ const InputText = ({
   errors,
   register,
   name,
-}: InputTextType) => {
+}: InputTextProps) => {
   return (
     shouldShow && (
       <Box mb={2}>
