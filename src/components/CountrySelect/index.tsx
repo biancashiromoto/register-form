@@ -13,7 +13,7 @@ const filterCountries = ({ options, state }: any) => {
   );
 };
 
-type CountrySelectProps = {
+export type CountrySelectProps = {
   setValue: (field: string, value: any) => void;
 };
 
@@ -26,10 +26,7 @@ export default function CountrySelect({ setValue }: CountrySelectProps) {
 
   return (
     <Autocomplete
-      onChange={(event, newValue) => {
-        // Aqui é onde você realmente captura o "país" selecionado
-        // e notifica o React Hook Form. Supondo que seu schema
-        // tenha "countryCode" como campo:
+      onChange={(_event, newValue) => {
         setValue('countryCode', newValue?.code || '');
       }}
       id="country-select"
@@ -54,6 +51,7 @@ export default function CountrySelect({ setValue }: CountrySelectProps) {
             {...optionProps}
           >
             <img
+              role="img"
               loading="lazy"
               width="20"
               srcSet={option.flag?.src}
