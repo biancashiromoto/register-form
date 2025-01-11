@@ -1,7 +1,7 @@
 import { Box, TextField } from '@mui/material';
 import CountrySelect from '../CountrySelect';
 
-type InputPhoneType = {
+export type InputPhoneProps = {
   shouldShow?: boolean;
   errors: any;
   register: any;
@@ -13,7 +13,7 @@ const InputPhone = ({
   errors,
   register,
   setValue,
-}: InputPhoneType) => {
+}: InputPhoneProps) => {
   return (
     shouldShow && (
       <Box display="flex" gap={2} justifyContent="center">
