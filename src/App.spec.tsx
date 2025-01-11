@@ -4,5 +4,5 @@ import App from './App';
 
 it('renders App', () => {
   render(<App />);
-  expect(screen.getByText(/payment form/i)).toBeInTheDocument();
+  expect(screen.getByText(/register form/i)).toBeInTheDocument();
 });
