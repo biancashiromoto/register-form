@@ -7,10 +7,14 @@ import { filterCountries } from '@/helpers';
 
 export type CountrySelectProps = {
   setValue: (field: string, value: any) => void;
+  errors: any;
 };
 
-export default function CountrySelect({ setValue }: CountrySelectProps) {
-  const { countries = [], isLoading, isFetching, error } = useFetchCountries();
+export default function CountrySelect({
+  setValue,
+  errors,
+}: CountrySelectProps) {
+  const { countries = [], isLoading, isFetching } = useFetchCountries();
 
   const sortedCountries = [...countries].sort((a, b) =>
     a.nameEng.localeCompare(b.nameEng, 'en', { sensitivity: 'base' }),
@@ -57,6 +61,7 @@ export default function CountrySelect({ setValue }: CountrySelectProps) {
       }}
       renderInput={(params) => (
         <TextField
+          error={!!errors.countryCode}
           {...params}
           aria-label="Choose a country"
           slotProps={{
