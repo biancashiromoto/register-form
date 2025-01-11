@@ -47,7 +47,7 @@ function App() {
         />
 
         <InputText
-          shouldShow={firstName.length !== 0 && !errors.firstName}
+          shouldShow={!!firstName && !errors.firstName}
           errors={errors}
           name="lastName"
           register={register}
