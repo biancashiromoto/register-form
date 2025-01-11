@@ -1,10 +1,13 @@
+import { labels } from '@/helpers/labels';
 import { Box, TextField } from '@mui/material';
+
+type LabelKeys = keyof typeof labels;
 
 export type InputTextProps = {
   shouldShow: boolean;
-  errors: any;
+  name: LabelKeys;
   register: any;
-  name: string;
+  errors: any;
 };
 
 const InputText = ({
@@ -18,7 +21,7 @@ const InputText = ({
       <Box mb={2}>
         <TextField
           id={name}
-          label={name}
+          label={labels[name]}
           fullWidth
           {...register(name)}
           error={!!errors[name]}
