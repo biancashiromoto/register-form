@@ -11,10 +11,18 @@ function App() {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(firstStepSchema),
     mode: 'all',
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      birthDate: '',
+      email: '',
+      phone: '',
+    },
   });
 
   const firstName = watch('firstName');
@@ -23,7 +31,7 @@ function App() {
   const email = watch('email');
   const phone = watch('phone');
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     console.log('Form submitted:', data);
   };
 
@@ -31,10 +39,15 @@ function App() {
     <Box width="100%" maxWidth="400px" mx="auto" mt={4}>
       <h1>Payment Form</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <InputText errors={errors} name="firstName" register={register} />
+        <InputText
+          shouldShow
+          errors={errors}
+          name="firstName"
+          register={register}
+        />
 
         <InputText
-          shouldShow={firstName && !errors.firstName}
+          shouldShow={firstName.length !== 0 && !errors.firstName}
           errors={errors}
           name="lastName"
           register={register}
@@ -42,7 +55,7 @@ function App() {
 
         <DatePicker
           shouldShow={
-            firstName && !errors.firstName && lastName && !errors.lastName
+            !!firstName && !errors.firstName && !!lastName && !errors.lastName
           }
           errors={errors}
           register={register}
@@ -50,11 +63,11 @@ function App() {
 
         <InputText
           shouldShow={
-            firstName &&
+            !!firstName &&
             !errors.firstName &&
-            lastName &&
+            !!lastName &&
             !errors.lastName &&
-            birthDate &&
+            !!birthDate &&
             !errors.birthDate
           }
           errors={errors}
@@ -64,24 +77,24 @@ function App() {
 
         <InputPhone
           shouldShow={
-            firstName &&
+            !!firstName &&
             !errors.firstName &&
-            lastName &&
+            !!lastName &&
             !errors.lastName &&
-            email &&
+            !!email &&
             !errors.email
           }
-          register={register}
           errors={errors}
+          register={register}
         />
 
-        {firstName &&
+        {!!firstName &&
           !errors.firstName &&
-          lastName &&
+          !!lastName &&
           !errors.lastName &&
-          email &&
+          !!email &&
           !errors.email &&
-          phone &&
+          !!phone &&
           !errors.phone && (
             <Button variant="contained" color="primary" type="submit" fullWidth>
               Next
