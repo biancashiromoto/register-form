@@ -17,7 +17,7 @@ function App() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(firstStepSchema),
-    mode: 'all',
+    mode: 'onBlur',
     defaultValues: {
       firstName: '',
       lastName: '',
