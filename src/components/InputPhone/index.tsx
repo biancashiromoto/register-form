@@ -18,7 +18,7 @@ const InputPhone = ({
     shouldShow && (
       <Box display="flex" gap={2} justifyContent="center">
         <Box flex="2">
-          <CountrySelect setValue={setValue} />
+          <CountrySelect setValue={setValue} errors={errors.countryCode} />
         </Box>
         <Box flex="3" mb={2}>
           <TextField
