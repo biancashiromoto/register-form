@@ -46,7 +46,7 @@ function App() {
 
   return (
     <Box width="100%" maxWidth="400px" mx="auto" mt={4}>
-      <h1>Payment Form</h1>
+      <h1>Register Form</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <InputText
           shouldShow
