@@ -1,6 +1,6 @@
 import { Box, TextField } from '@mui/material';
 
-type DatePickerType = {
+export type DatePickerProps = {
   shouldShow?: boolean;
   errors: any;
   register: any;
@@ -10,7 +10,7 @@ const DatePicker = ({
   shouldShow = true,
   errors,
   register,
-}: DatePickerType) => {
+}: DatePickerProps) => {
   return (
     shouldShow && (
       <Box mb={2}>
