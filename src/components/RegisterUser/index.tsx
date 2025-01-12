@@ -1,17 +1,22 @@
 import { Context } from '@/context';
+import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button } from '@mui/material';
-import { useContext } from 'react';
+import { ICountry, IState } from 'country-state-city';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import DatePicker from '../DatePicker';
 import InputPhone from '../InputPhone';
 import InputText from '../InputText';
+import SelectCity from '../SelectCity';
 import SelectCountry from '../SelectCountry';
-import { useResetForm } from '@/hooks/useResetForm';
+import SelectState from '../SelectState';
 
 const RegisterUser = () => {
   const { formStepsDispatch } = useContext(Context);
+  const [selectedCountry, setSelectedCountry] = useState({} as ICountry);
+  const [selectedState, setSelectedState] = useState({} as IState);
   const {
     register,
     handleSubmit,
@@ -32,6 +37,8 @@ const RegisterUser = () => {
       phone: '',
       countryCode: '',
       country: '',
+      state: '',
+      city: '',
     },
   });
 
@@ -41,6 +48,7 @@ const RegisterUser = () => {
   const email = watch('email');
   const phone = watch('phone');
   const country = watch('country');
+  const state = watch('state');
 
   useResetForm(firstName, resetField, 'lastName');
   useResetForm(lastName, resetField, 'birthDate');
@@ -48,6 +56,8 @@ const RegisterUser = () => {
   useResetForm(email, resetField, 'phone');
   useResetForm(email, resetField, 'countryCode');
   useResetForm(phone, resetField, 'country');
+  useResetForm(country, resetField, 'state');
+  useResetForm(state, resetField, 'city');
 
   const clearForm = () => {
     reset({
@@ -66,6 +76,18 @@ const RegisterUser = () => {
     console.log('Form submitted:', data);
     clearForm();
   };
+
+  useEffect(() => {
+    if (country && typeof country === 'object') {
+      setSelectedCountry(country);
+    }
+  }, [country]);
+
+  useEffect(() => {
+    if (state && typeof state === 'object') {
+      setSelectedState(state);
+    }
+  }, [state]);
 
   return (
     <Box
@@ -140,6 +162,45 @@ const RegisterUser = () => {
         }
         errors={errors}
         register={register}
+      />
+
+      <SelectState
+        setValue={setValue}
+        shouldShow={
+          !!firstName &&
+          !errors.firstName &&
+          !!lastName &&
+          !errors.lastName &&
+          !!email &&
+          !errors.email &&
+          !!phone &&
+          !errors.phone &&
+          !!country &&
+          !errors.country
+        }
+        errors={errors}
+        register={register}
+        selectedCountry={selectedCountry}
+      />
+
+      <SelectCity
+        setValue={setValue}
+        shouldShow={
+          !!firstName &&
+          !errors.firstName &&
+          !!lastName &&
+          !errors.lastName &&
+          !!email &&
+          !errors.email &&
+          !!phone &&
+          !errors.phone &&
+          !!country &&
+          !errors.country
+        }
+        errors={errors}
+        register={register}
+        selectedCountry={selectedCountry}
+        selectedState={selectedState}
       />
 
       {!!firstName &&
