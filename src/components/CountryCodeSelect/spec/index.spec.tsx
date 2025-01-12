@@ -1,4 +1,4 @@
-import CountrySelect from '@/components/CountrySelect';
+import CountryCodeSelect from '@/components/CountryCodeSelect';
 import useFetchCountries from '@/hooks/useFetchCountries';
 import { mockCountries } from '@/tests/mocks';
 import { CountryType } from '@/types';
@@ -14,7 +14,7 @@ describe('CountrySelect', () => {
     (useFetchCountries as any).mockReturnValue({
       countries: countries,
     });
-    render(<CountrySelect errors={{}} setValue={mockSetValue} />);
+    render(<CountryCodeSelect errors={{}} setValue={mockSetValue} />);
   };
 
   it('displays options when countries are fetched', () => {

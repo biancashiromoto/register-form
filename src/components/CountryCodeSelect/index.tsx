@@ -5,15 +5,15 @@ import useFetchCountries from '@/hooks/useFetchCountries';
 import { CountryType } from '@/types';
 import { filterCountries } from '@/helpers';
 
-export type CountrySelectProps = {
+export type CountryCodeSelectProps = {
   setValue: (field: string, value: any) => void;
   errors: any;
 };
 
-export default function CountrySelect({
+export default function CountryCodeSelect({
   setValue,
   errors,
-}: CountrySelectProps) {
+}: CountryCodeSelectProps) {
   const { countries = [], isLoading, isFetching } = useFetchCountries();
 
   const sortedCountries = [...countries].sort((a, b) =>
@@ -64,7 +64,7 @@ export default function CountrySelect({
           error={!!errors}
           helperText={errors?.message}
           {...params}
-          aria-label="Choose a country"
+          aria-label="Choose a country code"
           slotProps={{
             htmlInput: {
               ...params.inputProps,
