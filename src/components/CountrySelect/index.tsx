@@ -1,26 +1,24 @@
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import { filterCountries } from '@/helpers';
 import useFetchCountries from '@/hooks/useFetchCountries';
 import { CountryType } from '@/types';
-import { filterCountries } from '@/helpers';
-import { useState } from 'react';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
 export type CountrySelectProps = {
   setValue: any;
   errors: any;
   shouldShow: boolean;
+  register: any;
 };
 
 export default function CountrySelect({
   setValue,
   errors,
   shouldShow,
+  register,
 }: CountrySelectProps) {
   const { countries = [], isLoading, isFetching } = useFetchCountries();
-  const [selectedCountry, setSelectedCountry] = useState<CountryType | null>(
-    null,
-  );
 
   const sortedCountries = [...countries].sort((a, b) =>
     a.nameEng.localeCompare(b.nameEng, 'en', { sensitivity: 'base' }),
@@ -31,7 +29,6 @@ export default function CountrySelect({
       <Autocomplete
         loading={isLoading || isFetching}
         onChange={(_event, newValue) => {
-          setSelectedCountry(newValue);
           setValue('country', newValue?.nameEng || '');
         }}
         id="country-select"
@@ -69,10 +66,11 @@ export default function CountrySelect({
         }}
         renderInput={(params) => (
           <TextField
-            error={!!errors}
+            {...register('country')}
+            error={!!errors.country}
             helperText={errors?.message}
             {...params}
-            aria-label="Choose a country"
+            label="Choose a country"
             slotProps={{
               htmlInput: {
                 ...params.inputProps,
