@@ -29,6 +29,8 @@ export default defineConfig({
         'src/context/index.types.ts',
         'src/context/*',
         'src/tests/setup.ts',
+        '.eslint.cjs ',
+        'src/*.spec.tsx',
       ],
     },
   },
