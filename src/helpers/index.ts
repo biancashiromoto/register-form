@@ -1,4 +1,4 @@
-import { Country, ICountry } from 'country-state-city';
+import { Country, ICity, ICountry, IState } from 'country-state-city';
 
 export const countries = Country.getAllCountries();
 
@@ -19,5 +19,19 @@ export const filterCountries = ({ options, state }: any) => {
     (option: ICountry) =>
       option.name.toLowerCase().includes(inputValue) ||
       option.phonecode.toLowerCase().includes(inputValue),
+  );
+};
+
+export const filterOptions = (
+  options: any[],
+  state: { inputValue: string },
+) => {
+  return options.filter(
+    (option: ICountry | IState | ICity) =>
+      option.name.toLowerCase().includes(state.inputValue.toLowerCase()) ||
+      ((option as ICountry).phonecode &&
+        (option as ICountry).phonecode
+          .toLowerCase()
+          .includes(state.inputValue.toLowerCase())),
   );
 };
