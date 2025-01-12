@@ -6,6 +6,8 @@ export interface UserType {
   phone: string;
   countryCode: string;
   country: string;
+  state: string;
+  city: string;
 }
 
 export type FormStepsType = {

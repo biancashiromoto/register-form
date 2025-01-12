@@ -1,7 +1,7 @@
 import { countries } from '@/helpers';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import CountrySelect from '..';
+import SelectCountry from '..';
 
 describe('CountrySelect', () => {
   const mockSetValue = vi.fn();
@@ -9,7 +9,7 @@ describe('CountrySelect', () => {
 
   beforeEach(() => {
     render(
-      <CountrySelect
+      <SelectCountry
         register={mockRegister}
         shouldShow={true}
         errors={{}}
@@ -41,6 +41,6 @@ describe('CountrySelect', () => {
     });
     expect(screen.queryByText(countries[1].name)).not.toBeInTheDocument();
     fireEvent.click(screen.getByText(countries[0].name));
-    expect(mockSetValue).toHaveBeenCalledWith('country', countries[0].name);
+    expect(mockSetValue).toHaveBeenCalledWith('country', countries[0]);
   });
 });
