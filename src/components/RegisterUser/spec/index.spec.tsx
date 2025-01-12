@@ -68,8 +68,12 @@ describe('RegisterUser component', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /open/i }));
-    await screen.findByText(countries[0].phonecode);
-    fireEvent.click(screen.getByText(countries[0].phonecode));
+    await screen.findByText(
+      `${countries[0].phonecode} (${countries[0].isoCode})`,
+    );
+    fireEvent.click(
+      screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
+    );
 
     fireEvent.change(screen.getByRole('textbox', { name: /phone/i }), {
       target: { value: mockUser.phone },
