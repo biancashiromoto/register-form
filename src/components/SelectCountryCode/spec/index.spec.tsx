@@ -60,7 +60,9 @@ describe('SelectCountryCode', () => {
       screen.queryByText(`${countries[1].phonecode} (${countries[1].isoCode})`),
     ).not.toBeInTheDocument();
     expect(
-      screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
+      screen.getByRole('option', {
+        name: `${countries[0].phonecode} (${countries[0].isoCode})`,
+      }),
     ).toBeInTheDocument();
   });
 
