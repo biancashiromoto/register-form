@@ -1,5 +1,5 @@
 import CountryCodeSelect from '@/components/CountryCodeSelect';
-import { countries } from '@/helpers';
+import { countries, sortedCountries } from '@/helpers';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -9,10 +9,14 @@ describe('CountryCodeSelect', () => {
   beforeEach(() => {
     render(
       <CountryCodeSelect
-        shouldShow
         register={vi.fn()}
-        errors={{}}
+        shouldShow
         setValue={mockSetValue}
+        errors={{}}
+        name="countryCode"
+        options={sortedCountries}
+        displayedValue="phonecode"
+        showIso
       />,
     );
   });
@@ -25,7 +29,11 @@ describe('CountryCodeSelect', () => {
     );
 
     countries.forEach((country) =>
-      expect(screen.getAllByText(country.phonecode)[0]).toBeInTheDocument(),
+      expect(
+        screen.getAllByText(
+          `${countries[0].phonecode} (${countries[0].isoCode})`,
+        )[0],
+      ).toBeInTheDocument(),
     );
   });
 
@@ -35,7 +43,9 @@ describe('CountryCodeSelect', () => {
         name: /open/i,
       }),
     );
-    fireEvent.click(screen.getByText(countries[0].phonecode));
+    fireEvent.click(
+      screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
+    );
     expect(mockSetValue).toHaveBeenCalledWith(
       'countryCode',
       countries[0].phonecode,
@@ -54,7 +64,9 @@ describe('CountryCodeSelect', () => {
     expect(
       screen.queryByText(`${countries[1].phonecode} (${countries[1].isoCode})`),
     ).not.toBeInTheDocument();
-    expect(screen.getByText(countries[0].phonecode)).toBeInTheDocument();
+    expect(
+      screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
+    ).toBeInTheDocument();
   });
 
   it('filters options based on country name', () => {
@@ -66,6 +78,8 @@ describe('CountryCodeSelect', () => {
     fireEvent.change(screen.getByRole('combobox'), {
       target: { value: countries[0].isoCode[0] },
     });
-    expect(screen.getByText(countries[0].phonecode)).toBeInTheDocument();
+    expect(
+      screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
+    ).toBeInTheDocument();
   });
 });
