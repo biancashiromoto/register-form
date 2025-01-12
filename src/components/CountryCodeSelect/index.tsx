@@ -24,6 +24,7 @@ export default function CountryCodeSelect({
       name="countryCode"
       options={sortedCountries}
       displayedValue="phonecode"
+      showIso
     />
   );
 }
