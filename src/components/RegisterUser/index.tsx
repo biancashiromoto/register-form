@@ -12,11 +12,13 @@ import InputText from '../InputText';
 import SelectCity from '../SelectCity';
 import SelectCountry from '../SelectCountry';
 import SelectState from '../SelectState';
+import { CustomSnackbar } from '../Snackbar';
 
 const RegisterUser = () => {
   const { formStepsDispatch } = useContext(Context);
   const [selectedCountry, setSelectedCountry] = useState({} as ICountry);
   const [selectedState, setSelectedState] = useState({} as IState);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const {
     register,
     handleSubmit,
@@ -75,6 +77,7 @@ const RegisterUser = () => {
   const onSubmit = async (data: any) => {
     console.log('Form submitted:', data);
     clearForm();
+    setOpenSnackbar(true);
   };
 
   useEffect(() => {
@@ -234,6 +237,12 @@ const RegisterUser = () => {
       >
         Clear form
       </Button>
+
+      <CustomSnackbar
+        openSnackbar={openSnackbar}
+        setOpenSnackbar={setOpenSnackbar}
+        message="User successfully registered!"
+      />
     </Box>
   );
 };
