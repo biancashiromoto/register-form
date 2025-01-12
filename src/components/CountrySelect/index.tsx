@@ -3,22 +3,18 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import useFetchCountries from '@/hooks/useFetchCountries';
 import { CountryType } from '@/types';
-
-const filterCountries = ({ options, state }: any) => {
-  const inputValue = state.inputValue.toLowerCase();
-  return options.filter(
-    (option: CountryType) =>
-      option.nameEng?.toLowerCase().includes(inputValue) ||
-      option.code.toLowerCase().includes(inputValue),
-  );
-};
+import { filterCountries } from '@/helpers';
 
 export type CountrySelectProps = {
   setValue: (field: string, value: any) => void;
+  errors: any;
 };
 
-export default function CountrySelect({ setValue }: CountrySelectProps) {
-  const { countries = [] } = useFetchCountries();
+export default function CountrySelect({
+  setValue,
+  errors,
+}: CountrySelectProps) {
+  const { countries = [], isLoading, isFetching } = useFetchCountries();
 
   const sortedCountries = [...countries].sort((a, b) =>
     a.nameEng.localeCompare(b.nameEng, 'en', { sensitivity: 'base' }),
@@ -26,6 +22,7 @@ export default function CountrySelect({ setValue }: CountrySelectProps) {
 
   return (
     <Autocomplete
+      loading={isLoading || isFetching}
       onChange={(_event, newValue) => {
         setValue('countryCode', newValue?.code || '');
       }}
@@ -47,7 +44,7 @@ export default function CountrySelect({ setValue }: CountrySelectProps) {
           <Box
             key={`${key}-${Math.random()}`}
             component="li"
-            sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+            sx={{ '& > img': { mr: 2, flexShrink: 5 } }}
             {...optionProps}
           >
             <img
@@ -64,6 +61,8 @@ export default function CountrySelect({ setValue }: CountrySelectProps) {
       }}
       renderInput={(params) => (
         <TextField
+          error={!!errors}
+          helperText={errors?.message}
           {...params}
           aria-label="Choose a country"
           slotProps={{

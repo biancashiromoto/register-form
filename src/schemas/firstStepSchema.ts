@@ -35,9 +35,12 @@ export const firstStepSchema = z.object({
       required_error: 'Email is required',
     })
     .email('Invalid email'),
-  countryCode: z.string({
-    required_error: 'Country code is required',
-  }),
+  countryCode: z
+    .string({
+      required_error: 'Country code is required',
+    })
+    .min(1, 'Select a valid country code'),
+
   phone: z
     .string({
       required_error: 'Phone is required',

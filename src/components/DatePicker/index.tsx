@@ -16,7 +16,7 @@ const DatePicker = ({
       <Box mb={2}>
         <TextField
           id="birth-date"
-          label="Birth Date"
+          label="Birth date"
           fullWidth
           type="date"
           slotProps={{ inputLabel: { shrink: true } }}

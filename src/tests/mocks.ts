@@ -1,3 +1,5 @@
+import { UserType } from '@/types';
+
 export const mockCountries = [
   {
     code: '+55',
@@ -12,3 +14,12 @@ export const mockCountries = [
     iso: 'CAN',
   },
 ];
+
+export const mockUser: UserType = {
+  birthDate: '1990-11-11',
+  countryCode: mockCountries[0].code,
+  email: 'johndoe@email.com',
+  firstName: 'John',
+  lastName: 'Doe',
+  phone: '12345678',
+};

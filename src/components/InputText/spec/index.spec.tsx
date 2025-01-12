@@ -1,13 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import InputText, { InputTextProps } from '../index';
+import { labels } from '@/helpers/labels';
 
 describe('InputText', () => {
   const mockRegister = vi.fn();
   const mockProps: InputTextProps = {
     shouldShow: true,
     errors: {},
-    name: 'testName',
+    name: 'firstName',
     register: mockRegister,
   };
 
@@ -17,19 +18,21 @@ describe('InputText', () => {
         shouldShow={props.shouldShow}
         register={mockRegister}
         errors={props.errors}
-        name="testName"
+        name="firstName"
       />,
     );
   };
 
   it('does not render when shouldShow is false', () => {
     renderComponent({ ...mockProps, shouldShow: false });
-    expect(screen.queryByLabelText('testName')).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText(labels[mockProps.name]),
+    ).not.toBeInTheDocument();
   });
 
   it('displays error message when there is an error', () => {
     const errors = {
-      testName: {
+      firstName: {
         message: 'Invalid input',
       },
     };
@@ -39,6 +42,6 @@ describe('InputText', () => {
 
   it('calls register function with correct argument', () => {
     renderComponent();
-    expect(mockRegister).toHaveBeenCalledWith('testName');
+    expect(mockRegister).toHaveBeenCalledWith('firstName');
   });
 });
