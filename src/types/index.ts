@@ -2,7 +2,7 @@ export interface UserType {
   firstName: string;
   lastName: string;
   email: string;
-  birthDate: Date;
+  birthDate: string;
   phone: string;
   countryCode: string;
 }
