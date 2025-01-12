@@ -5,6 +5,7 @@ export interface UserType {
   birthDate: string;
   phone: string;
   countryCode: string;
+  country: string;
 }
 
 export interface CountryType {
