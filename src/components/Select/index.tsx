@@ -1,4 +1,4 @@
-import { filterCountries } from '@/helpers';
+import { filterCountries, filterOptions } from '@/helpers';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -13,6 +13,7 @@ export type SelectProps = {
   label?: string;
   displayedValue: string;
   showIso?: boolean;
+  filterOptions?: (options: any[], state: { inputValue: string }) => any[];
 };
 
 export default function Select({
@@ -29,6 +30,7 @@ export default function Select({
   return (
     shouldShow && (
       <Autocomplete
+        style={{ marginBottom: '24px' }}
         onChange={(_event, newValue) => {
           if (!newValue) return;
           setValue(name, newValue || null);
@@ -37,7 +39,7 @@ export default function Select({
         options={options}
         autoHighlight
         groupBy={(option) => option.name[0]}
-        filterOptions={(options, state) => filterCountries({ options, state })}
+        filterOptions={(options, state) => filterOptions(options, state)}
         getOptionLabel={(option: any) => option[displayedValue]}
         renderOption={(props, option) => {
           const { key, ...optionProps } = props;
