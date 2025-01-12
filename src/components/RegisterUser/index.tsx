@@ -1,5 +1,4 @@
 import { Context } from '@/context';
-import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button } from '@mui/material';
@@ -9,6 +8,7 @@ import DatePicker from '../DatePicker';
 import InputPhone from '../InputPhone';
 import InputText from '../InputText';
 import SelectCountry from '../SelectCountry';
+import { useResetForm } from '@/hooks/useResetForm';
 
 const RegisterUser = () => {
   const { formStepsDispatch } = useContext(Context);
@@ -18,6 +18,8 @@ const RegisterUser = () => {
     watch,
     setValue,
     resetField,
+    reset,
+    clearErrors,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(firstStepSchema),
@@ -47,8 +49,22 @@ const RegisterUser = () => {
   useResetForm(email, resetField, 'countryCode');
   useResetForm(phone, resetField, 'country');
 
+  const clearForm = () => {
+    reset({
+      firstName: '',
+      lastName: '',
+      birthDate: '',
+      email: '',
+      phone: '',
+      countryCode: '',
+      country: '',
+    });
+    clearErrors();
+  };
+
   const onSubmit = async (data: any) => {
     console.log('Form submitted:', data);
+    clearForm();
   };
 
   return (
@@ -147,6 +163,16 @@ const RegisterUser = () => {
             Next
           </Button>
         )}
+      <Button
+        variant="outlined"
+        color="primary"
+        type="button"
+        fullWidth
+        style={{ marginTop: '24px' }}
+        onClick={clearForm}
+      >
+        Clear form
+      </Button>
     </Box>
   );
 };
