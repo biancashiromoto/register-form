@@ -8,16 +8,6 @@ export interface UserType {
   country: string;
 }
 
-export interface CountryType {
-  code: string;
-  nameEng: string;
-  flag: {
-    src: string;
-    altText: string;
-  };
-  iso: string;
-}
-
 export type FormStepsType = {
   activeStep: number;
 };
