@@ -1,14 +1,14 @@
-import CountryCodeSelect from '@/components/CountryCodeSelect';
 import { countries, sortedCountries } from '@/helpers';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import SelectCountryCode from '..';
 
-describe('CountryCodeSelect', () => {
+describe('SelectCountryCode', () => {
   const mockSetValue = vi.fn();
 
   beforeEach(() => {
     render(
-      <CountryCodeSelect
+      <SelectCountryCode
         register={vi.fn()}
         shouldShow
         setValue={mockSetValue}
@@ -30,9 +30,7 @@ describe('CountryCodeSelect', () => {
 
     countries.forEach((country) =>
       expect(
-        screen.getAllByText(
-          `${countries[0].phonecode} (${countries[0].isoCode})`,
-        )[0],
+        screen.getAllByText(`${country.phonecode} (${country.isoCode})`)[0],
       ).toBeInTheDocument(),
     );
   });
@@ -46,10 +44,7 @@ describe('CountryCodeSelect', () => {
     fireEvent.click(
       screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
     );
-    expect(mockSetValue).toHaveBeenCalledWith(
-      'countryCode',
-      countries[0].phonecode,
-    );
+    expect(mockSetValue).toHaveBeenCalledWith('countryCode', countries[0]);
   });
 
   it('filters options based on country code', () => {

@@ -1,8 +1,9 @@
 import { Box, TextField } from '@mui/material';
-import CountryCodeSelect from '../CountryCodeSelect';
 import { UserType } from '@/types';
 import { FieldErrors } from 'react-hook-form';
 import { labels } from '@/helpers/labels';
+import SelectCountryCode from '../SelectCountryCode';
+import { sortedCountries } from '@/helpers';
 
 export type InputPhoneProps = {
   shouldShow?: boolean;
@@ -21,11 +22,15 @@ const InputPhone = ({
     shouldShow && (
       <Box display="flex" gap={2} justifyContent="center">
         <Box flex="3">
-          <CountryCodeSelect
+          <SelectCountryCode
             shouldShow={shouldShow}
             setValue={setValue}
             register={register}
             errors={!!errors.countryCode}
+            name="countryCode"
+            displayedValue="countryCode"
+            label="Select country code"
+            options={sortedCountries}
           />
         </Box>
         <Box flex="3" mb={2}>

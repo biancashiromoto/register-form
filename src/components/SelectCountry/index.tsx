@@ -1,19 +1,19 @@
 import { sortedCountries } from '@/helpers';
 import Select from '../Select';
 
-export type CountrySelectProps = {
+export type SelectCountry = {
   setValue: any;
   errors: any;
   shouldShow: boolean;
   register: any;
 };
 
-export default function CountrySelect({
+export default function SelectCountry({
   setValue,
   errors,
   shouldShow,
   register,
-}: CountrySelectProps) {
+}: SelectCountry) {
   return (
     <Select
       register={register}

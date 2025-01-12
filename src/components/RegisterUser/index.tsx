@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import DatePicker from '../DatePicker';
 import InputPhone from '../InputPhone';
 import InputText from '../InputText';
-import CountrySelect from '../CountrySelect';
+import SelectCountry from '../SelectCountry';
 
 const RegisterUser = () => {
   const { formStepsDispatch } = useContext(Context);
@@ -110,7 +110,7 @@ const RegisterUser = () => {
         register={register}
       />
 
-      <CountrySelect
+      <SelectCountry
         setValue={setValue}
         shouldShow={
           !!firstName &&

@@ -31,7 +31,7 @@ export default function Select({
       <Autocomplete
         onChange={(_event, newValue) => {
           if (!newValue) return;
-          setValue(name, newValue[displayedValue] || '');
+          setValue(name, newValue || null);
         }}
         id={name}
         options={options}
