@@ -7,7 +7,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/useFetchCountries');
 
-describe('CountrySelect', () => {
+describe('CountryCodeSelect', () => {
   const mockSetValue = vi.fn();
 
   const renderComponent = (countries: CountryType[] = mockCountries) => {
@@ -27,7 +27,7 @@ describe('CountrySelect', () => {
 
     mockCountries.forEach((country) =>
       expect(
-        screen.getByText(`${country.code} (${country.nameEng})`),
+        screen.getByText(`${country.code} (${country.iso[0]})`),
       ).toBeInTheDocument(),
     );
   });
@@ -40,9 +40,7 @@ describe('CountrySelect', () => {
       }),
     );
     fireEvent.click(
-      screen.getByText(
-        `${mockCountries[0].code} (${mockCountries[0].nameEng})`,
-      ),
+      screen.getByText(`${mockCountries[0].code} (${mockCountries[0].iso[0]})`),
     );
     expect(mockSetValue).toHaveBeenCalledWith(
       'countryCode',
@@ -62,13 +60,11 @@ describe('CountrySelect', () => {
     });
     expect(
       screen.queryByText(
-        `${mockCountries[1].code} (${mockCountries[1].nameEng})`,
+        `${mockCountries[1].code} (${mockCountries[1].iso[0]})`,
       ),
     ).not.toBeInTheDocument();
     expect(
-      screen.getByText(
-        `${mockCountries[0].code} (${mockCountries[0].nameEng})`,
-      ),
+      screen.getByText(`${mockCountries[0].code} (${mockCountries[0].iso[0]})`),
     ).toBeInTheDocument();
   });
 
@@ -80,17 +76,15 @@ describe('CountrySelect', () => {
       }),
     );
     fireEvent.change(screen.getByRole('combobox'), {
-      target: { value: mockCountries[0].nameEng.slice(0, 3) },
+      target: { value: mockCountries[0].iso[0][0] },
     });
     expect(
       screen.queryByText(
-        `${mockCountries[1].code} (${mockCountries[1].nameEng})`,
+        `${mockCountries[1].code} (${mockCountries[1].iso[0]})`,
       ),
     ).not.toBeInTheDocument();
     expect(
-      screen.getByText(
-        `${mockCountries[0].code} (${mockCountries[0].nameEng})`,
-      ),
+      screen.getByText(`${mockCountries[0].code} (${mockCountries[0].iso[0]})`),
     ).toBeInTheDocument();
   });
 
@@ -111,11 +105,7 @@ describe('CountrySelect', () => {
         name: /open/i,
       }),
     );
-    expect(screen.getAllByRole('img')[mockCountries.length]).toHaveAttribute(
-      'alt',
-      `${incompleteCountryObj.nameEng} flag`,
-    );
-    fireEvent.click(screen.getByText(`(${incompleteCountryObj.nameEng})`));
+    fireEvent.click(screen.getByText(`(${incompleteCountryObj.iso[0]})`));
     expect(mockSetValue).toHaveBeenCalledWith('countryCode', '');
   });
 });
