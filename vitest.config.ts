@@ -30,7 +30,6 @@ export default defineConfig({
         'src/context/*',
         'src/tests/setup.ts',
         '.eslint.cjs ',
-        'src/*.spec.tsx',
       ],
     },
   },
