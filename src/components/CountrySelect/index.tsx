@@ -32,7 +32,7 @@ export default function CountrySelect({
         loading={isLoading || isFetching}
         onChange={(_event, newValue) => {
           setSelectedCountry(newValue);
-          setValue('countryCode', newValue?.code || '');
+          setValue('country', newValue?.nameEng || '');
         }}
         id="country-select"
         options={sortedCountries}
