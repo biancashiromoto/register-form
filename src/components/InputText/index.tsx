@@ -1,5 +1,7 @@
 import { labels } from '@/helpers/labels';
+import { UserType } from '@/types';
 import { Box, TextField } from '@mui/material';
+import { FieldErrors } from 'react-hook-form';
 
 type LabelKeys = keyof typeof labels;
 
@@ -7,7 +9,7 @@ export type InputTextProps = {
   shouldShow: boolean;
   name: LabelKeys;
   register: any;
-  errors: any;
+  errors: FieldErrors<UserType>;
 };
 
 const InputText = ({
