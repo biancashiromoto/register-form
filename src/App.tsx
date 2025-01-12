@@ -17,7 +17,7 @@ function App() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(firstStepSchema),
-    mode: 'all',
+    mode: 'onBlur',
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -45,9 +45,16 @@ function App() {
   };
 
   return (
-    <Box width="100%" maxWidth="400px" mx="auto" mt={4}>
+    <>
       <h1>Register Form</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        width="100%"
+        maxWidth="400px"
+        mx="auto"
+        mt={4}
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <InputText
           shouldShow
           errors={errors}
@@ -106,12 +113,18 @@ function App() {
           !errors.email &&
           !!phone &&
           !errors.phone && (
-            <Button variant="contained" color="primary" type="submit" fullWidth>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              fullWidth
+              style={{ marginTop: '24px' }}
+            >
               Next
             </Button>
           )}
-      </form>
-    </Box>
+      </Box>
+    </>
   );
 }
 

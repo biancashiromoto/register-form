@@ -14,7 +14,7 @@ describe('CountrySelect', () => {
     (useFetchCountries as any).mockReturnValue({
       countries: countries,
     });
-    render(<CountrySelect setValue={mockSetValue} />);
+    render(<CountrySelect errors={{}} setValue={mockSetValue} />);
   };
 
   it('displays options when countries are fetched', () => {
@@ -111,7 +111,6 @@ describe('CountrySelect', () => {
         name: /open/i,
       }),
     );
-    screen.logTestingPlaygroundURL();
     expect(screen.getAllByRole('img')[mockCountries.length]).toHaveAttribute(
       'alt',
       `${incompleteCountryObj.nameEng} flag`,
