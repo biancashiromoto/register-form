@@ -1,7 +1,7 @@
 import { sortedCountries } from '@/helpers';
 import Select, { SelectProps } from '../Select';
 
-export default function CountryCodeSelect({
+export default function SelectCountryCode({
   setValue,
   errors,
   shouldShow,
