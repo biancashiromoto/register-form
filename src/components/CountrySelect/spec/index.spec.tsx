@@ -111,7 +111,6 @@ describe('CountrySelect', () => {
         name: /open/i,
       }),
     );
-    screen.logTestingPlaygroundURL();
     expect(screen.getAllByRole('img')[mockCountries.length]).toHaveAttribute(
       'alt',
       `${incompleteCountryObj.nameEng} flag`,
