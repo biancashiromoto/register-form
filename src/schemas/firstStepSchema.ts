@@ -46,4 +46,9 @@ export const firstStepSchema = z.object({
       required_error: 'Phone is required',
     })
     .min(8, 'Invalid phone number'),
+  country: z
+    .string({
+      required_error: 'Country is required',
+    })
+    .min(1, 'Select a valid country code'),
 });

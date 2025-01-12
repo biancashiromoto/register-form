@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import DatePicker from '../DatePicker';
 import InputPhone from '../InputPhone';
 import InputText from '../InputText';
+import CountrySelect from '../CountrySelect';
 
 const RegisterUser = () => {
   const { formStepsDispatch } = useContext(Context);
@@ -28,6 +29,7 @@ const RegisterUser = () => {
       email: '',
       phone: '',
       countryCode: '',
+      country: '',
     },
   });
 
@@ -36,12 +38,14 @@ const RegisterUser = () => {
   const birthDate = watch('birthDate');
   const email = watch('email');
   const phone = watch('phone');
+  const country = watch('country');
 
   useResetForm(firstName, resetField, 'lastName');
   useResetForm(lastName, resetField, 'birthDate');
   useResetForm(birthDate, resetField, 'email');
   useResetForm(email, resetField, 'phone');
   useResetForm(email, resetField, 'countryCode');
+  useResetForm(phone, resetField, 'country');
 
   const onSubmit = async (data: any) => {
     console.log('Form submitted:', data);
@@ -104,6 +108,21 @@ const RegisterUser = () => {
         }
         errors={errors}
         register={register}
+      />
+
+      <CountrySelect
+        setValue={setValue}
+        shouldShow={
+          !!firstName &&
+          !errors.firstName &&
+          !!lastName &&
+          !errors.lastName &&
+          !!email &&
+          !errors.email &&
+          !!phone &&
+          !errors.phone
+        }
+        errors={errors}
       />
 
       {!!firstName &&
