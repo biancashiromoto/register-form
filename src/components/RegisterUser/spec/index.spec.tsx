@@ -39,6 +39,9 @@ describe('RegisterUser component', () => {
     expect(
       screen.queryByRole('button', { name: /next/i }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /clear form/i }),
+    ).toBeInTheDocument();
   });
 
   it('handles correct form filling', async () => {
@@ -81,5 +84,35 @@ describe('RegisterUser component', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /next/i }));
     expect(mockFormStepsDispatch).toHaveBeenCalledWith({ type: 'NEXT_STEP' });
+  });
+
+  it('handles click on "Clear form" button', async () => {
+    fireEvent.change(
+      screen.getByRole('textbox', {
+        name: /first name/i,
+      }),
+      { target: { value: mockUser.firstName } },
+    );
+
+    fireEvent.change(
+      screen.getByRole('textbox', {
+        name: /last name/i,
+      }),
+      { target: { value: mockUser.lastName } },
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /clear form/i }));
+
+    expect(
+      screen.getByRole('textbox', {
+        name: /first name/i,
+      }),
+    ).toHaveValue('');
+
+    expect(
+      screen.queryByRole('textbox', {
+        name: /last name/i,
+      }),
+    ).not.toBeInTheDocument();
   });
 });
