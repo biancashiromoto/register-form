@@ -26,7 +26,7 @@ export default function CountryCodeSelect({
       onChange={(_event, newValue) => {
         setValue('countryCode', newValue?.code || '');
       }}
-      id="country-select"
+      id="country-code-select"
       options={sortedCountries}
       autoHighlight
       groupBy={(option) =>
