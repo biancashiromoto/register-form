@@ -1,9 +1,8 @@
-import { filterCountries } from '@/helpers';
-import useFetchCountries from '@/hooks/useFetchCountries';
-import { CountryType } from '@/types';
+import { countries, filterCountries } from '@/helpers';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import { ICountry } from 'country-state-city';
 
 export type CountrySelectProps = {
   setValue: any;
@@ -18,31 +17,18 @@ export default function CountrySelect({
   shouldShow,
   register,
 }: CountrySelectProps) {
-  const { countries = [], isLoading, isFetching } = useFetchCountries();
-
-  const sortedCountries = [...countries].sort((a, b) =>
-    a.nameEng.localeCompare(b.nameEng, 'en', { sensitivity: 'base' }),
-  );
-
   return (
     shouldShow && (
       <Autocomplete
-        loading={isLoading || isFetching}
         onChange={(_event, newValue) => {
-          setValue('country', newValue?.nameEng || '');
+          setValue('country', newValue?.name || '');
         }}
         id="country-select"
-        options={sortedCountries}
+        options={countries}
         autoHighlight
-        groupBy={(option) =>
-          option.nameEng
-            .charAt(0)
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toUpperCase()
-        }
+        groupBy={(option) => option.name[0]}
         filterOptions={(options, state) => filterCountries({ options, state })}
-        getOptionLabel={(option: CountryType) => option.nameEng}
+        getOptionLabel={(option: ICountry) => option.name}
         renderOption={(props, option) => {
           const { key, ...optionProps } = props;
           return (
@@ -50,17 +36,8 @@ export default function CountrySelect({
               key={`${key}-${Math.random()}`}
               component="li"
               {...optionProps}
-              sx={{ '& > img': { mr: 2, flexShrink: 5 } }}
             >
-              <img
-                role="img"
-                loading="lazy"
-                width="20"
-                srcSet={option.flag?.src}
-                alt={option.flag?.altText || `${option.nameEng} flag`}
-                src={option.flag?.src}
-              />
-              {option.nameEng}
+              {option.flag} {option.name}
             </Box>
           );
         }}
