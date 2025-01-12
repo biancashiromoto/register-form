@@ -123,6 +123,7 @@ const RegisterUser = () => {
           !errors.phone
         }
         errors={errors}
+        register={register}
       />
 
       {!!firstName &&

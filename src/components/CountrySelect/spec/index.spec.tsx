@@ -9,13 +9,19 @@ vi.mock('@/hooks/useFetchCountries');
 
 describe('CountrySelect', () => {
   const mockSetValue = vi.fn();
+  const mockRegister = vi.fn();
 
   const renderComponent = (countries: CountryType[] = mockCountries) => {
     (useFetchCountries as any).mockReturnValue({
       countries: countries,
     });
     render(
-      <CountrySelect shouldShow={true} errors={{}} setValue={mockSetValue} />,
+      <CountrySelect
+        register={mockRegister}
+        shouldShow={true}
+        errors={{}}
+        setValue={mockSetValue}
+      />,
     );
   };
 
@@ -32,6 +38,10 @@ describe('CountrySelect', () => {
       expect(screen.getAllByRole('img')[index]).toHaveAttribute(
         'src',
         country.flag.src,
+      );
+      expect(screen.getAllByRole('img')[index]).toHaveAttribute(
+        'alt',
+        country.flag.altText,
       );
     });
   });

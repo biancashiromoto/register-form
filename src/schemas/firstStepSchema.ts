@@ -50,5 +50,5 @@ export const firstStepSchema = z.object({
     .string({
       required_error: 'Country is required',
     })
-    .min(1, 'Select a valid country code'),
+    .min(1, 'Select a valid country'),
 });
