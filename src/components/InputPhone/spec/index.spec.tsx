@@ -1,14 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import InputPhone, { InputPhoneProps } from '..';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 vi.mock('../CountrySelect', () => ({
   __esModule: true,
   default: vi.fn(() => <div>CountrySelect</div>),
 }));
-
-const queryClient = new QueryClient();
 
 describe('InputPhone', () => {
   const mockRegister = vi.fn();
@@ -24,14 +21,12 @@ describe('InputPhone', () => {
     shouldShow: boolean = true,
   ) => {
     render(
-      <QueryClientProvider client={queryClient}>
-        <InputPhone
-          register={props.register}
-          setValue={props.setValue}
-          errors={props.errors}
-          shouldShow={shouldShow}
-        />
-      </QueryClientProvider>,
+      <InputPhone
+        register={props.register}
+        setValue={props.setValue}
+        errors={props.errors}
+        shouldShow={shouldShow}
+      />,
     );
   };
 

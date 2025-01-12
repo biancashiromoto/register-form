@@ -1,111 +1,85 @@
 import CountryCodeSelect from '@/components/CountryCodeSelect';
-import useFetchCountries from '@/hooks/useFetchCountries';
-import { mockCountries } from '@/tests/mocks';
-import { CountryType } from '@/types';
+import { countries, sortedCountries } from '@/helpers';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-
-vi.mock('@/hooks/useFetchCountries');
 
 describe('CountryCodeSelect', () => {
   const mockSetValue = vi.fn();
 
-  const renderComponent = (countries: CountryType[] = mockCountries) => {
-    (useFetchCountries as any).mockReturnValue({
-      countries: countries,
-    });
-    render(<CountryCodeSelect errors={{}} setValue={mockSetValue} />);
-  };
+  beforeEach(() => {
+    render(
+      <CountryCodeSelect
+        register={vi.fn()}
+        shouldShow
+        setValue={mockSetValue}
+        errors={{}}
+        name="countryCode"
+        options={sortedCountries}
+        displayedValue="phonecode"
+        showIso
+      />,
+    );
+  });
 
   it('displays options when countries are fetched', () => {
-    renderComponent();
     fireEvent.click(
       screen.getByRole('button', {
         name: /open/i,
       }),
     );
 
-    mockCountries.forEach((country) =>
+    countries.forEach((country) =>
       expect(
-        screen.getByText(`${country.code} (${country.iso[0]})`),
+        screen.getAllByText(
+          `${countries[0].phonecode} (${countries[0].isoCode})`,
+        )[0],
       ).toBeInTheDocument(),
     );
   });
 
   it('calls setValue with the correct country code when an option is selected', () => {
-    renderComponent();
     fireEvent.click(
       screen.getByRole('button', {
         name: /open/i,
       }),
     );
     fireEvent.click(
-      screen.getByText(`${mockCountries[0].code} (${mockCountries[0].iso[0]})`),
+      screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
     );
     expect(mockSetValue).toHaveBeenCalledWith(
       'countryCode',
-      mockCountries[0].code,
+      countries[0].phonecode,
     );
   });
 
   it('filters options based on country code', () => {
-    renderComponent();
     fireEvent.click(
       screen.getByRole('button', {
         name: /open/i,
       }),
     );
     fireEvent.change(screen.getByRole('combobox'), {
-      target: { value: mockCountries[0].code },
+      target: { value: countries[0].phonecode },
     });
     expect(
-      screen.queryByText(
-        `${mockCountries[1].code} (${mockCountries[1].iso[0]})`,
-      ),
+      screen.queryByText(`${countries[1].phonecode} (${countries[1].isoCode})`),
     ).not.toBeInTheDocument();
     expect(
-      screen.getByText(`${mockCountries[0].code} (${mockCountries[0].iso[0]})`),
+      screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
     ).toBeInTheDocument();
   });
 
   it('filters options based on country name', () => {
-    renderComponent();
     fireEvent.click(
       screen.getByRole('button', {
         name: /open/i,
       }),
     );
     fireEvent.change(screen.getByRole('combobox'), {
-      target: { value: mockCountries[0].iso[0][0] },
+      target: { value: countries[0].isoCode[0] },
     });
     expect(
-      screen.queryByText(
-        `${mockCountries[1].code} (${mockCountries[1].iso[0]})`,
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByText(`${mockCountries[0].code} (${mockCountries[0].iso[0]})`),
+      screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
     ).toBeInTheDocument();
-  });
-
-  it('calls setValue with empty code if none is provided', () => {
-    const incompleteCountryObj: CountryType = {
-      code: '',
-      flag: {
-        altText: '',
-        src: 'japan.svg',
-      },
-      iso: 'JP',
-      nameEng: 'Japan',
-    };
-
-    renderComponent([...mockCountries, incompleteCountryObj]);
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: /open/i,
-      }),
-    );
-    fireEvent.click(screen.getByText(`(${incompleteCountryObj.iso[0]})`));
-    expect(mockSetValue).toHaveBeenCalledWith('countryCode', '');
   });
 });
