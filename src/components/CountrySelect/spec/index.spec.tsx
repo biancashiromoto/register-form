@@ -26,22 +26,8 @@ describe('CountrySelect', () => {
     );
 
     countries.forEach((country) => {
-      expect(
-        screen.getByText(`${country.flag} ${country.name}`),
-      ).toBeInTheDocument();
+      expect(screen.getByText(country.name)).toBeInTheDocument();
     });
-  });
-
-  it('calls setValue with the correct country code when an option is selected', () => {
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: /open/i,
-      }),
-    );
-    fireEvent.click(
-      screen.getByText(`${countries[0].flag} ${countries[0].name}`),
-    );
-    expect(mockSetValue).toHaveBeenCalledWith('country', countries[0].name);
   });
 
   it('filters options based on country name', () => {
@@ -54,9 +40,7 @@ describe('CountrySelect', () => {
       target: { value: countries[0].name.slice(0, 5) },
     });
     expect(screen.queryByText(countries[1].name)).not.toBeInTheDocument();
-    fireEvent.click(
-      screen.getByText(`${countries[0].flag} ${countries[0].name}`),
-    );
+    fireEvent.click(screen.getByText(countries[0].name));
     expect(mockSetValue).toHaveBeenCalledWith('country', countries[0].name);
   });
 });
