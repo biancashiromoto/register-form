@@ -1,5 +1,5 @@
 import { Box, TextField } from '@mui/material';
-import CountrySelect from '../CountrySelect';
+import CountryCodeSelect from '../CountryCodeSelect';
 import { UserType } from '@/types';
 import { FieldErrors } from 'react-hook-form';
 import { labels } from '@/helpers/labels';
@@ -21,7 +21,7 @@ const InputPhone = ({
     shouldShow && (
       <Box display="flex" gap={2} justifyContent="center">
         <Box flex="3">
-          <CountrySelect setValue={setValue} errors={errors.countryCode} />
+          <CountryCodeSelect setValue={setValue} errors={errors.countryCode} />
         </Box>
         <Box flex="3" mb={2}>
           <TextField
