@@ -2,6 +2,10 @@ import { Country, ICountry } from 'country-state-city';
 
 export const countries = Country.getAllCountries();
 
+export const sortedCountries = [...countries].sort((a, b) =>
+  a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }),
+);
+
 export const isUserAdult = (birthDate: string) => {
   const today = new Date();
   const birth = new Date(birthDate);
