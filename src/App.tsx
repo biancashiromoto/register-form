@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import RegisterUser from './components/RegisterUser';
 import { Context } from './context';
 import { steps } from './helpers/steps';

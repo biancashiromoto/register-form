@@ -26,7 +26,7 @@ export default function CountryCodeSelect({
       onChange={(_event, newValue) => {
         setValue('countryCode', newValue?.code || '');
       }}
-      id="country-select"
+      id="country-code-select"
       options={sortedCountries}
       autoHighlight
       groupBy={(option) =>
@@ -41,21 +41,8 @@ export default function CountryCodeSelect({
       renderOption={(props, option) => {
         const { key, ...optionProps } = props;
         return (
-          <Box
-            key={`${key}-${Math.random()}`}
-            component="li"
-            sx={{ '& > img': { mr: 2, flexShrink: 5 } }}
-            {...optionProps}
-          >
-            <img
-              role="img"
-              loading="lazy"
-              width="20"
-              srcSet={option.flag?.src}
-              alt={option.flag?.altText || `${option.nameEng} flag`}
-              src={option.flag?.src}
-            />
-            {option.code} ({option.nameEng})
+          <Box key={`${key}-${Math.random()}`} component="li" {...optionProps}>
+            {option.code} ({option.iso[0]})
           </Box>
         );
       }}
