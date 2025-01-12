@@ -1,16 +1,9 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import useFetchCountries from '@/hooks/useFetchCountries';
-import { mockCountries, mockUser } from '@/tests/mocks';
-import RegisterUser from '..';
 import { Context, ContextProps } from '@/context';
-
-vi.mock('@/hooks/useFetchCountries', () => {
-  return {
-    default: vi.fn(),
-  };
-});
+import { countries } from '@/helpers';
+import { mockUser } from '@/tests/mocks';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import RegisterUser from '..';
 
 const mockFormStepsDispatch = vi.fn();
 
@@ -21,23 +14,12 @@ const mockContext = {
   },
 } as unknown as ContextProps;
 
-const queryClient = new QueryClient();
-
 describe('RegisterUser component', () => {
   beforeEach(() => {
-    (useFetchCountries as any).mockReturnValue({
-      countries: mockCountries,
-      isLoading: false,
-      isFetching: false,
-      error: null,
-      refetch: vi.fn(),
-    });
     render(
-      <QueryClientProvider client={queryClient}>
-        <Context.Provider value={mockContext}>
-          <RegisterUser />
-        </Context.Provider>
-      </QueryClientProvider>,
+      <Context.Provider value={mockContext}>
+        <RegisterUser />
+      </Context.Provider>,
     );
   });
 
@@ -87,10 +69,10 @@ describe('RegisterUser component', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /open/i }));
     await screen.findByText(
-      `${mockCountries[0].code} (${mockCountries[0].iso[0]})`,
+      `${countries[0].phonecode} (${countries[0].isoCode})`,
     );
     fireEvent.click(
-      screen.getByText(`${mockCountries[0].code} (${mockCountries[0].iso[0]})`),
+      screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
     );
 
     fireEvent.change(screen.getByRole('textbox', { name: /phone/i }), {
