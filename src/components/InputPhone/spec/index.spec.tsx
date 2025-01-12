@@ -47,6 +47,7 @@ describe('InputPhone', () => {
       errors: {
         phone: {
           message: 'Invalid phone number',
+          type: 'required',
         },
       },
     });
