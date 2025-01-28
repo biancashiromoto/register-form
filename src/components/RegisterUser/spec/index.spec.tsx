@@ -1,25 +1,11 @@
-import { Context, ContextProps } from '@/context';
 import { mockUser } from '@/tests/mocks';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import RegisterUser from '..';
-
-const mockFormStepsDispatch = vi.fn();
-
-const mockContext = {
-  formStepsDispatch: mockFormStepsDispatch,
-  formStepsState: {
-    activeStep: 0,
-  },
-} as unknown as ContextProps;
 
 describe('RegisterUser component', () => {
   beforeEach(() => {
-    render(
-      <Context.Provider value={mockContext}>
-        <RegisterUser />
-      </Context.Provider>,
-    );
+    render(<RegisterUser />);
   });
 
   it('renders the initial form', () => {
