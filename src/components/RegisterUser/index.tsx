@@ -1,29 +1,20 @@
-import { Context } from '@/context';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button } from '@mui/material';
-import { ICountry, IState } from 'country-state-city';
-import { useContext, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import DatePicker from '../DatePicker';
-import InputPhone from '../InputPhone';
+import InputPassword from '../InputPassword';
 import InputText from '../InputText';
-import SelectCity from '../SelectCity';
-import SelectCountry from '../SelectCountry';
-import SelectState from '../SelectState';
 import { CustomSnackbar } from '../Snackbar';
 
 const RegisterUser = () => {
-  const { formStepsDispatch } = useContext(Context);
-  const [selectedCountry, setSelectedCountry] = useState({} as ICountry);
-  const [selectedState, setSelectedState] = useState({} as IState);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const {
     register,
     handleSubmit,
     watch,
-    setValue,
     resetField,
     reset,
     clearErrors,
@@ -36,11 +27,8 @@ const RegisterUser = () => {
       lastName: '',
       birthDate: '',
       email: '',
-      phone: '',
-      countryCode: '',
-      country: '',
-      state: '',
-      city: '',
+      password: '',
+      confirmPassword: '',
     },
   });
 
@@ -48,18 +36,14 @@ const RegisterUser = () => {
   const lastName = watch('lastName');
   const birthDate = watch('birthDate');
   const email = watch('email');
-  const phone = watch('phone');
-  const country = watch('country');
-  const state = watch('state');
+  const password = watch('password');
+  const confirmPassword = watch('confirmPassword');
 
   useResetForm(firstName, resetField, 'lastName');
   useResetForm(lastName, resetField, 'birthDate');
   useResetForm(birthDate, resetField, 'email');
-  useResetForm(email, resetField, 'phone');
-  useResetForm(email, resetField, 'countryCode');
-  useResetForm(phone, resetField, 'country');
-  useResetForm(country, resetField, 'state');
-  useResetForm(state, resetField, 'city');
+  useResetForm(password, resetField, 'password');
+  useResetForm(confirmPassword, resetField, 'confirmPassword');
 
   const clearForm = () => {
     reset({
@@ -67,9 +51,7 @@ const RegisterUser = () => {
       lastName: '',
       birthDate: '',
       email: '',
-      phone: '',
-      countryCode: '',
-      country: '',
+      password: '',
     });
     clearErrors();
   };
@@ -79,18 +61,6 @@ const RegisterUser = () => {
     clearForm();
     setOpenSnackbar(true);
   };
-
-  useEffect(() => {
-    if (country && typeof country === 'object') {
-      setSelectedCountry(country);
-    }
-  }, [country]);
-
-  useEffect(() => {
-    if (state && typeof state === 'object') {
-      setSelectedState(state);
-    }
-  }, [state]);
 
   return (
     <Box
@@ -106,6 +76,7 @@ const RegisterUser = () => {
         errors={errors}
         name="firstName"
         register={register}
+        required
       />
 
       <InputText
@@ -113,6 +84,7 @@ const RegisterUser = () => {
         errors={errors}
         name="lastName"
         register={register}
+        required
       />
 
       <DatePicker
@@ -121,6 +93,7 @@ const RegisterUser = () => {
         }
         errors={errors}
         register={register}
+        required
       />
 
       <InputText
@@ -135,10 +108,11 @@ const RegisterUser = () => {
         errors={errors}
         name="email"
         register={register}
+        required
+        autoComplete="email"
       />
 
-      <InputPhone
-        setValue={setValue}
+      <InputPassword
         shouldShow={
           !!firstName &&
           !errors.firstName &&
@@ -151,8 +125,7 @@ const RegisterUser = () => {
         register={register}
       />
 
-      <SelectCountry
-        setValue={setValue}
+      <InputPassword
         shouldShow={
           !!firstName &&
           !errors.firstName &&
@@ -160,50 +133,12 @@ const RegisterUser = () => {
           !errors.lastName &&
           !!email &&
           !errors.email &&
-          !!phone &&
-          !errors.phone
+          !!password &&
+          !errors.password
         }
         errors={errors}
         register={register}
-      />
-
-      <SelectState
-        setValue={setValue}
-        shouldShow={
-          !!firstName &&
-          !errors.firstName &&
-          !!lastName &&
-          !errors.lastName &&
-          !!email &&
-          !errors.email &&
-          !!phone &&
-          !errors.phone &&
-          !!country &&
-          !errors.country
-        }
-        errors={errors}
-        register={register}
-        selectedCountry={selectedCountry}
-      />
-
-      <SelectCity
-        setValue={setValue}
-        shouldShow={
-          !!firstName &&
-          !errors.firstName &&
-          !!lastName &&
-          !errors.lastName &&
-          !!email &&
-          !errors.email &&
-          !!phone &&
-          !errors.phone &&
-          !!country &&
-          !errors.country
-        }
-        errors={errors}
-        register={register}
-        selectedCountry={selectedCountry}
-        selectedState={selectedState}
+        isConfirmPassword
       />
 
       {!!firstName &&
@@ -212,17 +147,16 @@ const RegisterUser = () => {
         !errors.lastName &&
         !!email &&
         !errors.email &&
-        !!phone &&
-        !errors.phone && (
+        !!password &&
+        !errors.password &&
+        !!confirmPassword &&
+        !errors.confirmPassword && (
           <Button
             variant="contained"
             color="primary"
             type="submit"
             fullWidth
             style={{ marginTop: '24px' }}
-            onClick={() => {
-              formStepsDispatch({ type: 'NEXT_STEP' });
-            }}
           >
             Next
           </Button>

@@ -3,6 +3,6 @@ export const labels = {
   lastName: 'Last name',
   birthDate: 'Birth date',
   email: 'E-mail',
-  countryCode: 'Country code',
-  phone: 'Phone number',
+  password: 'Password',
+  confirmPassword: 'Confirm password',
 };
