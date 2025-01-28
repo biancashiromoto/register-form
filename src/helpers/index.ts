@@ -35,3 +35,7 @@ export const filterOptions = (
           .includes(state.inputValue.toLowerCase())),
   );
 };
+
+export const passwordValidation = new RegExp(
+  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+);
