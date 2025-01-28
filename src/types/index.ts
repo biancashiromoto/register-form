@@ -3,11 +3,8 @@ export interface UserType {
   lastName: string;
   email: string;
   birthDate: string;
-  phone: string;
-  countryCode: string;
-  country: string;
-  state: string;
-  city: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export type FormStepsType = {
