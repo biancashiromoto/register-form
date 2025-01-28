@@ -4,12 +4,14 @@ export type DatePickerProps = {
   shouldShow?: boolean;
   errors: any;
   register: any;
+  required: boolean;
 };
 
 const DatePicker = ({
   shouldShow = true,
   errors,
   register,
+  required = false,
 }: DatePickerProps) => {
   return (
     shouldShow && (
@@ -23,6 +25,7 @@ const DatePicker = ({
           {...register('birthDate')}
           error={!!errors.birthDate}
           helperText={errors.birthDate?.message?.toString()}
+          required={required}
         />
       </Box>
     )
