@@ -10,6 +10,8 @@ export type InputTextProps = {
   name: LabelKeys;
   register: any;
   errors: FieldErrors<UserType>;
+  required?: boolean;
+  autoComplete?: string;
 };
 
 const InputText = ({
@@ -17,6 +19,9 @@ const InputText = ({
   errors,
   register,
   name,
+  required = false,
+  autoComplete = '',
+  ...rest
 }: InputTextProps) => {
   return (
     shouldShow && (
@@ -28,6 +33,9 @@ const InputText = ({
           {...register(name)}
           error={!!errors[name]}
           helperText={errors[name]?.message?.toString()}
+          required={required}
+          autoComplete={autoComplete}
+          {...rest}
         />
       </Box>
     )
