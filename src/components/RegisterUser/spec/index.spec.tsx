@@ -1,7 +1,6 @@
 import { Context, ContextProps } from '@/context';
-import { countries } from '@/helpers';
 import { mockUser } from '@/tests/mocks';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import RegisterUser from '..';
 
@@ -70,20 +69,21 @@ describe('RegisterUser component', () => {
       { target: { value: mockUser.email } },
     );
 
-    fireEvent.click(screen.getByRole('button', { name: /open/i }));
-    await screen.findByText(
-      `${countries[0].phonecode} (${countries[0].isoCode})`,
-    );
-    fireEvent.click(
-      screen.getByText(`${countries[0].phonecode} (${countries[0].isoCode})`),
-    );
-
-    fireEvent.change(screen.getByRole('textbox', { name: /phone/i }), {
-      target: { value: mockUser.phone },
+    fireEvent.change(screen.getByTestId('password').firstChild as Element, {
+      target: { value: mockUser.password },
     });
+    fireEvent.change(
+      screen.getByTestId('confirm-password').firstChild as Element,
+      { target: { value: mockUser.confirmPassword } },
+    );
 
     fireEvent.click(screen.getByRole('button', { name: /next/i }));
-    expect(mockFormStepsDispatch).toHaveBeenCalledWith({ type: 'NEXT_STEP' });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/User successfully registered!/i),
+      ).toBeInTheDocument();
+    });
   });
 
   it('handles click on "Clear form" button', async () => {
