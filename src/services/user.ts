@@ -2,7 +2,7 @@ import { supabase } from '@/services/supabase';
 import { UserType } from '@/types';
 
 export const registerUser = async (user: UserType) => {
-  const { data, error } = await supabase
+  const { error, status, data } = await supabase
     .from('users')
     .insert([
       {
@@ -16,11 +16,11 @@ export const registerUser = async (user: UserType) => {
     .select();
 
   if (error) {
-    console.error('Error creating user:', error.message);
-    return null;
+    console.error('Error registering user: ', error.message);
+    throw new Error(error.message);
   }
 
-  return data;
+  return { status, error, data };
 };
 
 export const fetchUsers = async () => {
