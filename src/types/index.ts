@@ -15,3 +15,9 @@ export type ActionType = {
   type: string;
   payload?: any;
 };
+
+export type SnackbarStateType = {
+  open: boolean;
+  message: string;
+  status: 'success' | 'error' | undefined;
+};
