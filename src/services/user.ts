@@ -16,7 +16,6 @@ export const registerUser = async (user: UserType) => {
     .select();
 
   if (error) {
-    console.error('Error registering user: ', error.message);
     throw new Error(error.message);
   }
 
@@ -27,7 +26,6 @@ export const fetchUsers = async () => {
   const { data, error } = await supabase.from('users').select('*');
 
   if (error) {
-    console.error('Error fetching users: ', error.message);
     throw new Error(error.message);
   }
 
