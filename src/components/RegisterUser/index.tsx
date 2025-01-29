@@ -1,5 +1,6 @@
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
+import { registerUser } from '@/services/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button } from '@mui/material';
 import { useState } from 'react';
@@ -57,7 +58,8 @@ const RegisterUser = () => {
   };
 
   const onSubmit = async (data: any) => {
-    console.log('Form submitted:', data);
+    const { confirmPassword, ...userData } = data;
+    registerUser(userData);
     clearForm();
     setOpenSnackbar(true);
   };
