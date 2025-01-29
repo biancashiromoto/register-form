@@ -1,9 +1,11 @@
+import { Context } from '@/context';
+import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
-import { registerUser } from '@/services/user';
+import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button } from '@mui/material';
-import { useState } from 'react';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import DatePicker from '../DatePicker';
 import InputPassword from '../InputPassword';
@@ -11,7 +13,7 @@ import InputText from '../InputText';
 import { CustomSnackbar } from '../Snackbar';
 
 const RegisterUser = () => {
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const { snackBarState } = useContext(Context);
   const {
     register,
     handleSubmit,
@@ -23,14 +25,7 @@ const RegisterUser = () => {
   } = useForm({
     resolver: zodResolver(firstStepSchema),
     mode: 'onBlur',
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      birthDate: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
+    defaultValues: INITIAL_USER_STATE,
   });
 
   const firstName = watch('firstName');
@@ -47,21 +42,15 @@ const RegisterUser = () => {
   useResetForm(confirmPassword, resetField, 'confirmPassword');
 
   const clearForm = () => {
-    reset({
-      firstName: '',
-      lastName: '',
-      birthDate: '',
-      email: '',
-      password: '',
-    });
+    reset(INITIAL_USER_STATE);
     clearErrors();
   };
 
+  const registerUserMutation = useRegisterUser(clearForm);
+
   const onSubmit = async (data: any) => {
     const { confirmPassword, ...userData } = data;
-    registerUser(userData);
-    clearForm();
-    setOpenSnackbar(true);
+    registerUserMutation.mutate(userData);
   };
 
   return (
@@ -174,11 +163,7 @@ const RegisterUser = () => {
         Clear form
       </Button>
 
-      <CustomSnackbar
-        openSnackbar={openSnackbar}
-        setOpenSnackbar={setOpenSnackbar}
-        message="User successfully registered!"
-      />
+      {snackBarState && <CustomSnackbar />}
     </Box>
   );
 };
