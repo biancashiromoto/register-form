@@ -1,3 +1,5 @@
+import { AlertColor } from '@mui/material';
+
 export interface UserType {
   firstName: string;
   lastName: string;
@@ -19,5 +21,5 @@ export type ActionType = {
 export type SnackbarStateType = {
   open: boolean;
   message: string;
-  status: 'success' | 'error' | undefined;
+  severity: AlertColor | undefined;
 };
