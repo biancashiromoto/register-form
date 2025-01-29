@@ -1,15 +1,16 @@
 import { SnackbarStateType } from '@/types';
 import { FC, ReactNode, useState } from 'react';
 import { Context } from '.';
+import { ContextProps } from './index.types';
 
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const [snackBarState, setSnackbarState] = useState<SnackbarStateType>({
     open: false,
     message: '',
-    status: undefined,
+    severity: undefined,
   });
 
-  const value = {
+  const value: ContextProps = {
     snackBarState,
     setSnackbarState,
   };
