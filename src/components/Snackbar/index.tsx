@@ -1,22 +1,22 @@
+import { Context } from '@/context';
 import { Snackbar as MuiSnackbar } from '@mui/material';
+import { useContext } from 'react';
 
-type CustomSnackbarProps = {
-  openSnackbar: boolean;
-  setOpenSnackbar: (open: boolean) => void;
-  message: string;
-};
-
-export const CustomSnackbar = ({
-  openSnackbar,
-  setOpenSnackbar,
-  message,
-}: CustomSnackbarProps) => {
+export const CustomSnackbar = () => {
+  const { setSnackbarState, snackBarState } = useContext(Context);
   return (
     <MuiSnackbar
-      open={openSnackbar}
+      open={snackBarState.open}
       autoHideDuration={5000}
-      onClose={() => setOpenSnackbar(false)}
-      message={message}
+      onClose={() =>
+        setSnackbarState((prevState) => {
+          return {
+            ...prevState,
+            open: false,
+          };
+        })
+      }
+      message={snackBarState.message}
       anchorOrigin={{
         vertical: 'top',
         horizontal: 'right',
