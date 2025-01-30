@@ -18,6 +18,7 @@ export const CustomSnackbar = () => {
 
   return (
     <MuiSnackbar
+      data-testid="snackbar"
       open={snackBarState.open || false}
       autoHideDuration={5000}
       onClose={handleClose}
