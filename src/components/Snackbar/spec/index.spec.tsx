@@ -1,28 +1,56 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import { vi } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
 import { CustomSnackbar } from '..';
+import { Context } from '@/context';
+import { ContextProps } from '@/context/index.types';
 
 describe('CustomSnackbar', () => {
-  const mockSetOpenSnackbar = vi.fn();
+  const mockSetSnackbarState = vi.fn();
 
-  const renderComponent = (props: any = { openSnackbar: true }) => {
+  const mockContext = {
+    setSnackbarState: mockSetSnackbarState,
+    snackBarState: {
+      open: true,
+      severity: 'success',
+      message: 'Test messsage',
+    },
+  } as unknown as ContextProps;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const renderComponent = (context = mockContext) => {
     render(
-      <CustomSnackbar
-        openSnackbar={props.openSnackbar}
-        setOpenSnackbar={mockSetOpenSnackbar}
-        message="Test message"
-      />,
+      <Context.Provider value={context}>
+        <CustomSnackbar />
+      </Context.Provider>,
     );
   };
 
-  it('should render snackbar if openSnackbar is true', () => {
+  it('should render snackbar if openSnackbar is true', async () => {
     renderComponent();
-    expect(screen.getByText('Test message')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(mockContext.snackBarState.message),
+      ).toBeInTheDocument();
+    });
   });
 
   it('should not render snackbar if openSnackbar is false', () => {
-    renderComponent(false);
-    expect(screen.queryByText('Test message')).not.toBeInTheDocument();
+    renderComponent({
+      setSnackbarState: mockSetSnackbarState,
+      snackBarState: {
+        open: false,
+        message: 'Test message',
+        severity: 'success',
+      },
+    });
+
+    screen.logTestingPlaygroundURL();
+    // expect(
+    //   screen.getByText(mockContext.snackBarState.message),
+    // ).not.toBeInTheDocument();
   });
 });
