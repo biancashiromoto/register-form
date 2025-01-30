@@ -2,13 +2,37 @@ import { mockUser } from '@/tests/mocks';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import RegisterUser from '..';
+import { Context } from '@/context';
+import { ContextProps } from '@/context/index.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 describe('RegisterUser component', () => {
+  const queryClient = new QueryClient();
+  const mockSetSnackbarState = vi.fn();
+  const mockContext = {
+    setSnackbarState: mockSetSnackbarState,
+    snackBarState: {
+      open: true,
+      severity: 'success',
+      message: 'User successfully registered',
+    },
+  } as unknown as ContextProps;
   beforeEach(() => {
-    render(<RegisterUser />);
+    vi.clearAllMocks();
   });
 
+  const renderComponent = (context = mockContext) => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Context.Provider value={context}>
+          <RegisterUser />
+        </Context.Provider>
+      </QueryClientProvider>,
+    );
+  };
+
   it('renders the initial form', () => {
+    renderComponent();
     expect(
       screen.getByRole('textbox', {
         name: /first name/i,
@@ -30,6 +54,7 @@ describe('RegisterUser component', () => {
   });
 
   it('handles correct form filling', async () => {
+    renderComponent();
     fireEvent.change(
       screen.getByRole('textbox', {
         name: /first name/i,
@@ -64,15 +89,15 @@ describe('RegisterUser component', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /next/i }));
-
     await waitFor(() => {
       expect(
-        screen.getByText(/User successfully registered!/i),
+        screen.getByText(/user successfully registered/i),
       ).toBeInTheDocument();
     });
   });
 
   it('handles click on "Clear form" button', async () => {
+    renderComponent();
     fireEvent.change(
       screen.getByRole('textbox', {
         name: /first name/i,
