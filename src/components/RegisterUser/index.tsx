@@ -13,7 +13,7 @@ import InputText from '../InputText';
 import { CustomSnackbar } from '../Snackbar';
 
 const RegisterUser = () => {
-  const { snackBarState } = useContext(Context);
+  const { snackbarState } = useContext(Context);
   const {
     register,
     handleSubmit,
@@ -163,7 +163,7 @@ const RegisterUser = () => {
         Clear form
       </Button>
 
-      {snackBarState && <CustomSnackbar />}
+      {snackbarState && <CustomSnackbar />}
     </Box>
   );
 };

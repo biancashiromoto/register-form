@@ -11,7 +11,7 @@ describe('RegisterUser component', () => {
   const mockSetSnackbarState = vi.fn();
   const mockContext = {
     setSnackbarState: mockSetSnackbarState,
-    snackBarState: {
+    snackbarState: {
       open: true,
       severity: 'success',
       message: 'User successfully registered',

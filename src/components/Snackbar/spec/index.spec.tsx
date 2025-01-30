@@ -3,13 +3,14 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { CustomSnackbar } from '..';
 import { Context } from '@/context';
 import { ContextProps } from '@/context/index.types';
+import { SnackbarStateType } from '@/types';
 
 describe('CustomSnackbar', () => {
   const mockSetSnackbarState = vi.fn();
 
   const mockContext = {
     setSnackbarState: mockSetSnackbarState,
-    snackBarState: {
+    snackbarState: {
       open: true,
       severity: 'success',
       message: 'Test messsage',
@@ -33,7 +34,7 @@ describe('CustomSnackbar', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(mockContext.snackBarState.message),
+        screen.getByText(mockContext.snackbarState.message),
       ).toBeInTheDocument();
     });
 
@@ -48,7 +49,7 @@ describe('CustomSnackbar', () => {
   it('should not render snackbar if openSnackbar is false', () => {
     renderComponent({
       setSnackbarState: mockSetSnackbarState,
-      snackBarState: {
+      snackbarState: {
         open: false,
         message: 'Test message',
         severity: 'success',
@@ -56,7 +57,7 @@ describe('CustomSnackbar', () => {
     });
 
     expect(
-      screen.queryByText(mockContext.snackBarState.message),
+      screen.queryByText(mockContext.snackbarState.message),
     ).not.toBeInTheDocument();
   });
 });

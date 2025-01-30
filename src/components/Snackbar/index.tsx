@@ -3,7 +3,7 @@ import { Alert, Snackbar as MuiSnackbar } from '@mui/material';
 import { useContext } from 'react';
 
 export const CustomSnackbar = () => {
-  const { setSnackbarState, snackBarState } = useContext(Context);
+  const { setSnackbarState, snackbarState } = useContext(Context);
 
   const handleClose = () => {
     setSnackbarState((prevState) => {
@@ -14,12 +14,12 @@ export const CustomSnackbar = () => {
     });
   };
 
-  if (!snackBarState) return null;
+  if (!snackbarState) return null;
 
   return (
     <MuiSnackbar
       data-testid="snackbar"
-      open={snackBarState.open || false}
+      open={snackbarState.open || false}
       autoHideDuration={5000}
       onClose={handleClose}
       anchorOrigin={{
@@ -29,11 +29,11 @@ export const CustomSnackbar = () => {
     >
       <Alert
         onClose={handleClose}
-        severity={snackBarState.severity}
+        severity={snackbarState.severity}
         variant="filled"
         sx={{ width: '100%' }}
       >
-        {snackBarState.message}
+        {snackbarState.message}
       </Alert>
     </MuiSnackbar>
   );
