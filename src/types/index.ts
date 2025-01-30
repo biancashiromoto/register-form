@@ -7,6 +7,8 @@ export interface UserType {
   birthDate: string;
   password: string;
   confirmPassword: string;
+  avatar?: string;
+  id?: string;
 }
 
 export type FormStepsType = {
