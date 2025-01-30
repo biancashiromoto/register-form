@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { CustomSnackbar } from '..';
 import { Context } from '@/context';
 import { ContextProps } from '@/context/index.types';
@@ -36,6 +36,13 @@ describe('CustomSnackbar', () => {
         screen.getByText(mockContext.snackBarState.message),
       ).toBeInTheDocument();
     });
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /close/i,
+      }),
+    );
+    expect(mockSetSnackbarState).toHaveBeenCalledTimes(1);
   });
 
   it('should not render snackbar if openSnackbar is false', () => {
@@ -48,9 +55,8 @@ describe('CustomSnackbar', () => {
       },
     });
 
-    screen.logTestingPlaygroundURL();
-    // expect(
-    //   screen.getByText(mockContext.snackBarState.message),
-    // ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(mockContext.snackBarState.message),
+    ).not.toBeInTheDocument();
   });
 });
