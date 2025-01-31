@@ -46,11 +46,19 @@ const RegisterUser = () => {
     clearErrors();
   };
 
-  const registerUserMutation = useRegisterUser(clearForm);
+  const { mutate: registerUser } = useRegisterUser(clearForm);
 
   const onSubmit = async (data: any) => {
-    const { confirmPassword, ...userData } = data;
-    registerUserMutation.mutate(userData);
+    const { password, confirmPassword, ...userData } = data;
+
+    registerUser(
+      { ...userData },
+      {
+        onError: (error) => {
+          console.error('Error registering user:', error);
+        },
+      },
+    );
   };
 
   return (
