@@ -7,7 +7,7 @@ import { useContext } from 'react';
 const useRegisterUser = (onSuccess?: () => void) => {
   const { setSnackbarState } = useContext(Context);
 
-  const mutation = useMutation({
+  const { mutate } = useMutation({
     mutationKey: ['registerUser'],
     mutationFn: (data: UserType) => registerUser(data),
     onSuccess: () => {
@@ -27,7 +27,7 @@ const useRegisterUser = (onSuccess?: () => void) => {
     },
   });
 
-  return mutation;
+  return { mutate };
 };
 
 export default useRegisterUser;
