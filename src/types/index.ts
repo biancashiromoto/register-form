@@ -5,10 +5,11 @@ export interface UserType {
   lastName: string;
   email: string;
   birthDate: string;
-  password: string;
-  confirmPassword: string;
+  password?: string;
+  confirmPassword?: string;
   avatar?: string;
   id?: string;
+  token?: string;
 }
 
 export type FormStepsType = {
