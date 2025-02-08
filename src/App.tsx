@@ -1,3 +1,4 @@
+import Footer from './components/Footer';
 import RegisterUser from './components/RegisterUser';
 
 function App() {
@@ -5,6 +6,7 @@ function App() {
     <>
       <h1>Register Form</h1>
       <RegisterUser />
+      <Footer />
     </>
   );
 }
