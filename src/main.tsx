@@ -5,6 +5,16 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import './index.css';
 import Provider from './context/Provider';
+import { routeTree } from './routeTree.gen';
+import { createRouter, RouterProvider } from '@tanstack/react-router';
+
+const router = createRouter({ routeTree });
+
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,6 +31,7 @@ createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
         <App />
         <ReactQueryDevtools initialIsOpen={false} />
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </Provider>
   </StrictMode>,
