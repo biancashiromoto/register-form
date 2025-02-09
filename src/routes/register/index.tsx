@@ -1,10 +1,13 @@
-import { createRoute, Link, Outlet } from '@tanstack/react-router';
+import { createRoute, Link, Outlet, redirect } from '@tanstack/react-router';
 import { Route as RootRoute } from '../__root';
 
 export const Route = createRoute({
   getParentRoute: () => RootRoute,
   path: '/register',
   component: RouteComponent,
+  loader: async () => {
+    return redirect({ to: '/register/user' });
+  },
 });
 
 function RouteComponent() {
