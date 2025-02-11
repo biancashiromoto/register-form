@@ -1,4 +1,5 @@
 import { AlertColor } from '@mui/material';
+import { ICity, ICountry, IState } from 'country-state-city';
 
 export interface UserType {
   firstName: string;
@@ -10,7 +11,18 @@ export interface UserType {
   avatar?: string;
   id?: string;
   token?: string;
+  address: {
+    country: string;
+    state: string;
+    city: string;
+  };
 }
+
+export type AddressType = {
+  country: ICountry;
+  state: IState;
+  city: ICity;
+};
 
 export type FormStepsType = {
   activeStep: number;
