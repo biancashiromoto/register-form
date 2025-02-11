@@ -2,10 +2,12 @@ import { Context } from '@/context';
 import { registerUser } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 
-const useRegisterUser = (onSuccess?: () => void) => {
+const useRegisterUser = () => {
   const { setSnackbarState } = useContext(Context);
+  const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationKey: ['registerUser'],
@@ -16,7 +18,7 @@ const useRegisterUser = (onSuccess?: () => void) => {
         message: 'User successfully registered!',
         severity: 'success',
       });
-      if (onSuccess) onSuccess();
+      navigate({ to: '/' });
     },
     onError: ({ message }) => {
       setSnackbarState({
