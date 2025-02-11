@@ -11,6 +11,9 @@ export const registerUser = async (user: UserType) => {
         last_name: user.lastName,
         email: user.email,
         birth_date: user.birthDate,
+        country: user.address.country.isoCode,
+        state: user.address.state.isoCode,
+        city: user.address.city.name,
       },
     ])
     .select()
