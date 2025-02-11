@@ -31,12 +31,12 @@ export default function Select({
         style={{ marginBottom: '24px' }}
         onChange={(_event, newValue) => {
           if (!newValue) return;
-          console.log('newValue: ', name, newValue);
           setValue(name, newValue || null);
         }}
         id={name}
         options={options}
         autoHighlight
+        clearOnEscape
         groupBy={(option) => option.name[0]}
         filterOptions={(options, state) => filterOptions(options, state)}
         getOptionLabel={(option: any) => option[displayedValue]}
