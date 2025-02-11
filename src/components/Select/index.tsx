@@ -7,7 +7,6 @@ export type SelectProps = {
   setValue: any;
   errors: any;
   shouldShow: boolean;
-  register?: any;
   name: string;
   options: any[];
   label?: string;
@@ -20,7 +19,6 @@ export default function Select({
   setValue,
   errors,
   shouldShow,
-  register,
   name,
   options,
   displayedValue,
@@ -56,7 +54,6 @@ export default function Select({
         }}
         renderInput={(params) => (
           <TextField
-            {...register(name)}
             error={!!errors[name]}
             helperText={errors?.message}
             {...params}
