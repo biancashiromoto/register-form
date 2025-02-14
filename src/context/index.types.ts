@@ -6,4 +6,6 @@ export interface ContextProps {
   setSnackbarState: Dispatch<SetStateAction<SnackbarStateType>>;
   user: UserType | null;
   setUser: Dispatch<SetStateAction<UserType | null>>;
+  selectedLocation: AddressType;
+  setSelectedLocation: Dispatch<SetStateAction<AddressType>>;
 }
