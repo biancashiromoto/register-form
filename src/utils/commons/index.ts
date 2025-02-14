@@ -1,5 +1,4 @@
-import { AddressType, UserType } from '@/types';
-import { ICity, ICountry, IState } from 'country-state-city';
+import { UserType } from '@/types';
 
 export const INITIAL_ADDRESS_STATE: UserType['address'] = {
   country: '',
