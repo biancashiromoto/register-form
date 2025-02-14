@@ -11,7 +11,7 @@ import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_ADDRESS_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button } from '@mui/material';
-import { createRoute } from '@tanstack/react-router';
+import { createRoute, useNavigate } from '@tanstack/react-router';
 import { ICountry, IState } from 'country-state-city';
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -31,7 +31,6 @@ function RouteComponent() {
     reset,
     clearErrors,
     setValue,
-    getValues,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(secondStepSchema),
@@ -40,6 +39,7 @@ function RouteComponent() {
   });
   const { snackbarState, setSnackbarState, setUser, user } =
     useContext(Context);
+  const navigate = useNavigate();
 
   const country = watch('country');
   const state = watch('state');
@@ -82,6 +82,10 @@ function RouteComponent() {
     setUser(updatedUser);
 
     registerUser(updatedUser);
+
+    setTimeout(() => {
+      navigate({ to: '/register' });
+    }, 1500);
   };
 
   return user ? (
@@ -104,8 +108,8 @@ function RouteComponent() {
         />
 
         <SelectCity
-          selectedCountry={selectedCountry}
-          selectedState={selectedState}
+          selectedCountry={selectedCountry.isoCode}
+          selectedState={selectedState.isoCode}
           shouldShow={!!country && !errors.country && !!state && !errors.state}
           setValue={setValue}
           errors={errors}
