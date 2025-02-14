@@ -7,7 +7,8 @@ import { Context } from '@/context';
 import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { secondStepSchema } from '@/schemas/secondStepSchema';
-import { AddressType, SnackbarStateType, UserType } from '@/types';
+import { SnackbarStateType, UserType } from '@/types';
+import { INITIAL_ADDRESS_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button } from '@mui/material';
 import { createRoute } from '@tanstack/react-router';
@@ -15,7 +16,6 @@ import { ICountry, IState } from 'country-state-city';
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
-import { INITIAL_ADDRESS_STATE } from '@/utils/commons';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
