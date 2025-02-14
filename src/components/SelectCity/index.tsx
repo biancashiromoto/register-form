@@ -6,8 +6,8 @@ export type SelectCityProps = {
   setValue: any;
   errors: any;
   shouldShow: boolean;
-  selectedState: IState;
-  selectedCountry: ICountry;
+  selectedState: IState['isoCode'];
+  selectedCountry: ICountry['isoCode'];
 };
 
 const SelectCity = ({
@@ -21,8 +21,8 @@ const SelectCity = ({
 
   useEffect(() => {
     const filteredCities = City.getCitiesOfState(
-      selectedCountry.isoCode,
-      selectedState.isoCode,
+      selectedCountry,
+      selectedState,
     );
     setCities(filteredCities);
   }, [selectedState]);
