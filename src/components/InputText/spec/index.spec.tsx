@@ -13,14 +13,7 @@ describe('InputText', () => {
   };
 
   const renderComponent = (props = mockProps) => {
-    render(
-      <InputText
-        shouldShow={props.shouldShow}
-        register={mockRegister}
-        errors={props.errors}
-        name="firstName"
-      />,
-    );
+    render(<InputText {...props} />);
   };
 
   it('does not render when shouldShow is false', () => {
