@@ -33,6 +33,7 @@ describe('InputText', () => {
   it('displays error message when there is an error', () => {
     const errors = {
       firstName: {
+        type: 'required',
         message: 'Invalid input',
       },
     };
