@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { FieldErrors } from 'react-hook-form';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
-export type InputTextProps = {
+export type InputPasswordProps = {
   shouldShow: boolean;
   register: any;
   errors: FieldErrors<UserType>;
@@ -23,7 +23,7 @@ const InputPassword = ({
   errors,
   register,
   isConfirmPassword = false,
-}: InputTextProps) => {
+}: InputPasswordProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
