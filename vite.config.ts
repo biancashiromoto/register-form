@@ -1,11 +1,11 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
-import viteReact from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react';
 import path from 'path';
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 
 export default defineConfig({
-  plugins: [TanStackRouterVite({ autoCodeSplitting: true }), viteReact()],
+  plugins: [TanStackRouterVite({ autoCodeSplitting: true }), react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
