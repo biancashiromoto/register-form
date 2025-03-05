@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
 import Footer from './components/Footer';
 
 function App() {
+  useEffect(() => {
+    console.log('VITE_PROJECT_URL:', process.env.VITE_PROJECT_URL);
+  }, []);
+
   return (
     <>
       <header>
