@@ -10,7 +10,7 @@ export default tseslint.config(
   {
     extends: [
       js.configs.recommended,
-      ...tseslint.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked,
       'plugin:react/recommended'
     ],
     files: ['**/*.{ts,tsx}'],
@@ -21,6 +21,10 @@ export default tseslint.config(
         jsx: true,
       },
       globals: globals.browser,
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     plugins: {
       'react': react,
@@ -41,6 +45,8 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      ...react.configs.recommended.rules,
+      ...react.configs['jsx-runtime'].rules,
 
       // TypeScript Rules
       '@typescript-eslint/no-explicit-any': 'warn',

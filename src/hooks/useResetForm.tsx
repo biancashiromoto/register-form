@@ -1,15 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { UseFormResetField } from 'react-hook-form';
 
 export const useResetForm = (
-  watchField: string | number | undefined,
+  watchField: any,
   resetField: UseFormResetField<any>,
-  dependentFieldName: string,
-  validationLength = 2,
+  dependentFields: string[] | string,
 ) => {
+  const prevValueRef = useRef<any>(watchField);
+
   useEffect(() => {
-    if (!watchField) {
-      resetField(dependentFieldName);
+    if (watchField !== prevValueRef.current) {
+      if (Array.isArray(dependentFields)) {
+        dependentFields.forEach((field) => resetField(field));
+      } else {
+        resetField(dependentFields);
+      }
     }
-  }, [watchField, resetField, dependentFieldName, validationLength]);
+    prevValueRef.current = watchField;
+  }, [watchField, resetField, dependentFields]);
 };

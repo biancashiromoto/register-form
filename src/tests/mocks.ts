@@ -1,12 +1,5 @@
-import { countries } from '@/helpers';
 import { UserType } from '@/types';
-import { City, State } from 'country-state-city';
-
-export const mockStates = State.getStatesOfCountry(countries[0].isoCode);
-export const mockCities = City.getCitiesOfState(
-  countries[0].isoCode,
-  mockStates[0].isoCode,
-);
+import { Country, ICountry } from 'country-state-city';
 
 export const mockUser: UserType = {
   birthDate: '1990-11-11',
@@ -15,4 +8,31 @@ export const mockUser: UserType = {
   lastName: 'Doe',
   password: 'Password123#',
   confirmPassword: 'Password123#',
+  address: {
+    country: 'BR',
+    state: 'SP',
+    city: 'São Paulo',
+  },
 };
+
+export const mockCountries = [Country.getCountryByCode('BR') as ICountry];
+
+export const mockStates = [
+  {
+    countryCode: 'BR',
+    isoCode: 'SP',
+    latitude: '-23.55051990',
+    longitude: '-46.63330940',
+    name: 'São Paulo',
+  },
+];
+
+export const mockCities = [
+  {
+    countryCode: 'BR',
+    stateCode: 'SP',
+    latitude: '-23.54750000',
+    longitude: '-46.63611000',
+    name: 'São Paulo',
+  },
+];

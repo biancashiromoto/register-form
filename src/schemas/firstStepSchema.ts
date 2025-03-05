@@ -9,14 +9,20 @@ export const firstStepSchema = z
       })
       .min(2, 'First name must have at least 2 characters')
       .max(50, 'First name must have at most 50 characters')
-      .regex(/^[a-zA-Z\s]*$/, 'Name must contain only letters'),
+      .regex(/^[a-zA-Z\s]*$/, 'Name must contain only letters')
+      .transform(
+        (val) => val.charAt(0).toUpperCase() + val.slice(1).toLowerCase(),
+      ),
     lastName: z
       .string({
         required_error: 'Last name is required',
       })
       .min(2, 'Last name must have at least 2 characters')
       .max(50, 'Last name must have at most 50 characters')
-      .regex(/^[a-zA-Z\s]*$/, 'Name must contain only letters'),
+      .regex(/^[a-zA-Z\s]*$/, 'Name must contain only letters')
+      .transform(
+        (val) => val.charAt(0).toUpperCase() + val.slice(1).toLowerCase(),
+      ),
     birthDate: z
       .string({
         required_error: 'Birth date is required',

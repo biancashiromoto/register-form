@@ -1,28 +1,63 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import { vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { CustomSnackbar } from '..';
+import { Context } from '@/context';
+import { ContextProps } from '@/context/index.types';
+import { SnackbarStateType } from '@/types';
 
 describe('CustomSnackbar', () => {
-  const mockSetOpenSnackbar = vi.fn();
+  const mockSetSnackbarState = vi.fn();
 
-  const renderComponent = (props: any = { openSnackbar: true }) => {
+  const mockContext = {
+    setSnackbarState: mockSetSnackbarState,
+    snackbarState: {
+      open: true,
+      severity: 'success',
+      message: 'Test messsage',
+    },
+  } as unknown as ContextProps;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const renderComponent = (context = mockContext) => {
     render(
-      <CustomSnackbar
-        openSnackbar={props.openSnackbar}
-        setOpenSnackbar={mockSetOpenSnackbar}
-        message="Test message"
-      />,
+      <Context.Provider value={context}>
+        <CustomSnackbar />
+      </Context.Provider>,
     );
   };
 
-  it('should render snackbar if openSnackbar is true', () => {
+  it('should render snackbar if openSnackbar is true', async () => {
     renderComponent();
-    expect(screen.getByText('Test message')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(mockContext.snackbarState.message),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /close/i,
+      }),
+    );
+    expect(mockSetSnackbarState).toHaveBeenCalledTimes(1);
   });
 
   it('should not render snackbar if openSnackbar is false', () => {
-    renderComponent(false);
-    expect(screen.queryByText('Test message')).not.toBeInTheDocument();
+    renderComponent({
+      setSnackbarState: mockSetSnackbarState,
+      snackbarState: {
+        open: false,
+        message: 'Test message',
+        severity: 'success',
+      },
+    });
+
+    expect(
+      screen.queryByText(mockContext.snackbarState.message),
+    ).not.toBeInTheDocument();
   });
 });

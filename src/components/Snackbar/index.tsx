@@ -1,26 +1,40 @@
-import { Snackbar as MuiSnackbar } from '@mui/material';
+import { Context } from '@/context';
+import { Alert, Snackbar as MuiSnackbar } from '@mui/material';
+import { useContext } from 'react';
 
-type CustomSnackbarProps = {
-  openSnackbar: boolean;
-  setOpenSnackbar: (open: boolean) => void;
-  message: string;
-};
+export const CustomSnackbar = () => {
+  const { setSnackbarState, snackbarState } = useContext(Context);
 
-export const CustomSnackbar = ({
-  openSnackbar,
-  setOpenSnackbar,
-  message,
-}: CustomSnackbarProps) => {
+  const handleClose = () => {
+    setSnackbarState((prevState) => {
+      return {
+        ...prevState,
+        open: false,
+      };
+    });
+  };
+
+  if (!snackbarState) return null;
+
   return (
     <MuiSnackbar
-      open={openSnackbar}
+      data-testid="snackbar"
+      open={snackbarState.open || false}
       autoHideDuration={5000}
-      onClose={() => setOpenSnackbar(false)}
-      message={message}
+      onClose={handleClose}
       anchorOrigin={{
         vertical: 'top',
         horizontal: 'right',
       }}
-    />
+    >
+      <Alert
+        onClose={handleClose}
+        severity={snackbarState.severity}
+        variant="filled"
+        sx={{ width: '100%' }}
+      >
+        {snackbarState.message}
+      </Alert>
+    </MuiSnackbar>
   );
 };
