@@ -4,4 +4,5 @@ export const Route = createFileRoute('/')({
   loader: async () => {
     return redirect({ to: '/' });
   },
+  component: () => <div>Hello world!</div>,
 });
