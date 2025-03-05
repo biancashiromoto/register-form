@@ -19,4 +19,5 @@ const RootLayout = () => {
 
 export const Route = createRootRoute({
   component: RootLayout,
+  notFoundComponent: () => <div>NOT FOUND</div>,
 });
