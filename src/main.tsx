@@ -8,7 +8,7 @@ import Provider from './context/Provider';
 import { routeTree } from './routeTree.gen';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 
-const router = createRouter({ routeTree });
+const router = createRouter({ routeTree, basepath: '/' });
 
 declare module '@tanstack/react-router' {
   interface Register {
