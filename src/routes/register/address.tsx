@@ -82,10 +82,6 @@ function RouteComponent() {
     setUser(updatedUser);
 
     registerUser(updatedUser);
-
-    setTimeout(() => {
-      navigate({ to: '/register' });
-    }, 1500);
   };
 
   return user ? (
@@ -138,12 +134,25 @@ function RouteComponent() {
           type="button"
           fullWidth
           style={{ marginTop: '24px' }}
+          onClick={() => navigate({ to: '/' })}
+        >
+          Return to previous page
+        </Button>
+
+        <Button
+          variant="outlined"
+          color="primary"
+          type="button"
+          fullWidth
+          style={{ marginTop: '24px' }}
           onClick={clearForm}
         >
           Clear form
         </Button>
 
-        {snackbarState && <CustomSnackbar />}
+        {snackbarState && (
+          <CustomSnackbar onCloseCallback={() => navigate({ to: '/' })} />
+        )}
       </Box>
     </Form>
   ) : (

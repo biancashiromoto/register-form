@@ -2,7 +2,13 @@ import { Context } from '@/context';
 import { Alert, Snackbar as MuiSnackbar } from '@mui/material';
 import { useContext } from 'react';
 
-export const CustomSnackbar = () => {
+const SNACKBAR_DURATION = 2500;
+
+type CustomSnackbarProps = {
+  onCloseCallback?: () => void;
+};
+
+export const CustomSnackbar = ({ onCloseCallback }: CustomSnackbarProps) => {
   const { setSnackbarState, snackbarState } = useContext(Context);
 
   const handleClose = () => {
@@ -12,6 +18,7 @@ export const CustomSnackbar = () => {
         open: false,
       };
     });
+    onCloseCallback && onCloseCallback();
   };
 
   if (!snackbarState) return null;
@@ -20,7 +27,7 @@ export const CustomSnackbar = () => {
     <MuiSnackbar
       data-testid="snackbar"
       open={snackbarState.open || false}
-      autoHideDuration={5000}
+      autoHideDuration={SNACKBAR_DURATION}
       onClose={handleClose}
       anchorOrigin={{
         vertical: 'top',

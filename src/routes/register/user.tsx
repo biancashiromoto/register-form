@@ -32,11 +32,12 @@ function RouteComponent() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(firstStepSchema),
-    mode: 'onBlur',
+    mode: 'all',
     defaultValues: INITIAL_USER_STATE,
   });
   const navigate = useNavigate();
-  const { snackbarState, setSnackbarState, setUser } = useContext(Context);
+  const { snackbarState, setSnackbarState, user, setUser } =
+    useContext(Context);
 
   useEffect(
     () =>
@@ -46,6 +47,12 @@ function RouteComponent() {
       })),
     [],
   );
+
+  useEffect(() => {
+    if (user) {
+      reset(user);
+    }
+  }, [user, reset]);
 
   const firstName = watch('firstName');
   const lastName = watch('lastName');
