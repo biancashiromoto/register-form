@@ -16,34 +16,6 @@ export const registerUser = async (user: UserType) => {
   return { data };
 };
 
-export const fetchUserById = async (id: UserType['id']) => {
-  const token = await getToken();
-
-  if (!token) {
-    throw new Error('Unauthenticated.');
-  }
-
-  const { data: authUser, error: authError } =
-    await supabase.auth.getUser(token);
-
-  if (authError || !authUser) {
-    throw new Error('Expired token.');
-  }
-
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/users?select=${id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: SUPABASE_KEY,
-      authorization: `Bearer ${token}`,
-    },
-  });
-
-  const data = await response.json();
-
-  return data;
-};
-
 export const loginUser = async (userInfo: any) => {
   const { email, password } = userInfo;
 
