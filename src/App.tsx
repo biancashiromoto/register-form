@@ -1,10 +1,12 @@
-import RegisterUser from './components/RegisterUser';
+import Footer from './components/Footer';
 
 function App() {
   return (
     <>
-      <h1>Register Form</h1>
-      <RegisterUser />
+      <header>
+        <h1>Project Register Form</h1>
+      </header>
+      <Footer />
     </>
   );
 }

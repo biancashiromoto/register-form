@@ -13,14 +13,7 @@ describe('InputText', () => {
   };
 
   const renderComponent = (props = mockProps) => {
-    render(
-      <InputText
-        shouldShow={props.shouldShow}
-        register={mockRegister}
-        errors={props.errors}
-        name="firstName"
-      />,
-    );
+    render(<InputText {...props} />);
   };
 
   it('does not render when shouldShow is false', () => {
@@ -33,6 +26,7 @@ describe('InputText', () => {
   it('displays error message when there is an error', () => {
     const errors = {
       firstName: {
+        type: 'required',
         message: 'Invalid input',
       },
     };
