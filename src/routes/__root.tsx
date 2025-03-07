@@ -12,9 +12,9 @@ const RootLayout = () => {
         <Link to="/register" activeProps={activeProps}>
           Register
         </Link>
-        {/* <Link to="/login" activeProps={activeProps}>
+        <Link to="/login" activeProps={activeProps}>
           Login
-        </Link> */}
+        </Link>
       </nav>
       <hr />
       <Outlet />
