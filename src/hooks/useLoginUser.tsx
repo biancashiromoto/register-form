@@ -8,7 +8,7 @@ interface LoginCredentials {
   password: string;
 }
 
-type SetErrorFunction = UseFormSetError<{ email: string; password: string }>;
+type SetErrorFunction = UseFormSetError<LoginCredentials>;
 
 const useLoginUser = (setError: SetErrorFunction) => {
   const navigate = useNavigate();
