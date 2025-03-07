@@ -3,27 +3,17 @@ import { UserType } from '@/types';
 import { getToken } from './auth';
 
 export const registerUser = async (user: UserType) => {
-  const { error, status, data } = await supabase
-    .from('users')
-    .insert([
-      {
-        first_name: user.firstName,
-        last_name: user.lastName,
-        email: user.email,
-        birth_date: user.birthDate,
-        country: user.address.country.isoCode,
-        state: user.address.state.isoCode,
-        city: user.address.city.name,
-      },
-    ])
-    .select()
-    .single();
+  const { email, password } = user;
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (!email || !password) return;
 
-  return { status, data };
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
+
+  if (error) throw new Error(error.message);
+  return { data };
 };
 
 export const fetchUserById = async (id: UserType['id']) => {
@@ -52,4 +42,19 @@ export const fetchUserById = async (id: UserType['id']) => {
   const data = await response.json();
 
   return data;
+};
+
+export const loginUser = async (userInfo: any) => {
+  const { email, password } = userInfo;
+
+  if (!email || !password) return;
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return { data };
 };
