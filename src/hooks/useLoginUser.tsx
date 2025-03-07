@@ -1,5 +1,6 @@
-import { useMutation } from '@tanstack/react-query';
+import { useAuth } from '@/context/authContext';
 import { loginUser } from '@/services/user';
+import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { UseFormSetError } from 'react-hook-form';
 
@@ -12,6 +13,7 @@ type SetErrorFunction = UseFormSetError<LoginCredentials>;
 
 const useLoginUser = (setError: SetErrorFunction) => {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const mutation = useMutation({
     mutationKey: ['loginUser'],
@@ -20,6 +22,7 @@ const useLoginUser = (setError: SetErrorFunction) => {
       if (!response || !response.data?.session) {
         throw new Error('Invalid login credentials');
       }
+      setUser(response.data.user);
       return response.data;
     },
     onSuccess: () => {
