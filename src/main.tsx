@@ -1,12 +1,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App';
-import './index.css';
+import { AuthProvider } from './context/authContext';
 import Provider from './context/Provider';
+import './index.css';
 import { routeTree } from './routeTree.gen';
-import { createRouter, RouterProvider } from '@tanstack/react-router';
 
 const router = createRouter({ routeTree });
 
@@ -27,11 +27,13 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider>
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </Provider>
+    <AuthProvider>
+      <Provider>
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </Provider>
+    </AuthProvider>
   </StrictMode>,
 );

@@ -6,7 +6,7 @@ import { FieldErrors } from 'react-hook-form';
 type LabelKeys = keyof typeof labels;
 
 export type InputTextProps = {
-  shouldShow: boolean;
+  shouldShow?: boolean;
   name: LabelKeys;
   register: any;
   errors: FieldErrors<UserType>;

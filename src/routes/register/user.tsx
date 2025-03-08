@@ -36,8 +36,12 @@ function RouteComponent() {
     defaultValues: INITIAL_USER_STATE,
   });
   const navigate = useNavigate();
-  const { snackbarState, setSnackbarState, user, setUser } =
-    useContext(Context);
+  const {
+    snackbarState,
+    setSnackbarState,
+    registeringUser,
+    setRegisteringUser,
+  } = useContext(Context);
 
   useEffect(
     () =>
@@ -49,10 +53,10 @@ function RouteComponent() {
   );
 
   useEffect(() => {
-    if (user) {
-      reset(user);
+    if (registeringUser) {
+      reset(registeringUser);
     }
-  }, [user, reset]);
+  }, [registeringUser, reset]);
 
   const firstName = watch('firstName');
   const lastName = watch('lastName');
@@ -74,12 +78,12 @@ function RouteComponent() {
 
   const onSubmit = async (data: any) => {
     const { password, confirmPassword, ...userData } = data;
-    setUser(userData);
+    setRegisteringUser(userData);
     navigate({ to: '/register/address' });
   };
 
   return (
-    <Form step={1}>
+    <Form>
       <Box
         width="100%"
         maxWidth="400px"

@@ -3,53 +3,30 @@ import { UserType } from '@/types';
 import { getToken } from './auth';
 
 export const registerUser = async (user: UserType) => {
-  const { error, status, data } = await supabase
-    .from('users')
-    .insert([
-      {
-        first_name: user.firstName,
-        last_name: user.lastName,
-        email: user.email,
-        birth_date: user.birthDate,
-        country: user.address.country.isoCode,
-        state: user.address.state.isoCode,
-        city: user.address.city.name,
-      },
-    ])
-    .select()
-    .single();
+  const { email, password } = user;
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (!email || !password) return;
 
-  return { status, data };
-};
-
-export const fetchUserById = async (id: UserType['id']) => {
-  const token = await getToken();
-
-  if (!token) {
-    throw new Error('Unauthenticated.');
-  }
-
-  const { data: authUser, error: authError } =
-    await supabase.auth.getUser(token);
-
-  if (authError || !authUser) {
-    throw new Error('Expired token.');
-  }
-
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/users?select=${id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: SUPABASE_KEY,
-      authorization: `Bearer ${token}`,
-    },
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
   });
 
-  const data = await response.json();
+  if (error) throw new Error(error.message);
+  return { data };
+};
 
-  return data;
+export const loginUser = async (userInfo: any) => {
+  const { email, password } = userInfo;
+
+  if (!email || !password) return;
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return { data };
 };
