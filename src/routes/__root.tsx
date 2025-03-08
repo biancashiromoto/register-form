@@ -6,7 +6,6 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 const RootLayout = () => {
   return (
     <>
-      <Navbar />
       <App />
       <hr />
       <Outlet />
