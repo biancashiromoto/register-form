@@ -61,6 +61,7 @@ function RouteComponent() {
           shouldShow={!!email}
           errors={errors}
           register={register}
+          isExistingPassword
         />
 
         {!!email && !errors.email && !!password && !errors.password && (
