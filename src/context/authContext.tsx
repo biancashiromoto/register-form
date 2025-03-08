@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 const AuthContext = createContext({} as any);
 
 export const AuthProvider = ({ children }: any) => {
-  const [user, setUser] = useState({} as User);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -16,10 +16,6 @@ export const AuthProvider = ({ children }: any) => {
     };
     fetchUser();
   }, []);
-
-  useEffect(() => {
-    console.log('user: ', user);
-  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
