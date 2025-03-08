@@ -11,23 +11,10 @@ function RouteComponent() {
   const navigate = useNavigate();
   const { user, setUser } = useAuth();
 
-  return user.role ? (
+  return user ? (
     <Box width="100%" maxWidth="400px" mx="auto" mt={4} component="div">
       <h2>Home</h2>
       You have successfully logged in!
-      <Button
-        variant="text"
-        color="primary"
-        fullWidth
-        style={{ marginTop: '24px' }}
-        onClick={async () => {
-          await supabase.auth.signOut();
-          setUser(null);
-          navigate({ to: '/login' });
-        }}
-      >
-        Logout
-      </Button>
     </Box>
   ) : (
     <>
