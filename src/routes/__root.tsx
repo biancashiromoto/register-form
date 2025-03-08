@@ -1,34 +1,14 @@
 import App from '@/App';
-import { useAuth } from '@/context/authContext';
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router';
+import Navbar from '@/components/Navbar';
+import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 
-const activeProps = { style: { fontWeight: 'bold' } };
-
 const RootLayout = () => {
-  const { user } = useAuth();
-
   return (
     <>
+      <Navbar />
       <App />
-      <nav className="navbar">
-        {!user && (
-          <Link to="/register" activeProps={activeProps}>
-            Register
-          </Link>
-        )}
-        {!user && (
-          <Link to="/login" activeProps={activeProps}>
-            Login
-          </Link>
-        )}
-        {user && (
-          <Link to="/home" activeProps={activeProps}>
-            Home
-          </Link>
-        )}
-      </nav>
-      <hr />
+      <hr style={{ width: '400px', margin: '0 auto' }} />
       <Outlet />
       {process.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
     </>
