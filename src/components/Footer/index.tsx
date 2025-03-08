@@ -10,6 +10,7 @@ const Footer = () => {
         width: '100%',
         padding: '12px 6px',
       }}
+      data-testid="footer"
     >
       <a
         target="_blank"
