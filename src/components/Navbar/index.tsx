@@ -10,7 +10,7 @@ const Navbar = () => {
   const currentPath = location.pathname;
 
   return (
-    <nav className="navbar">
+    <nav className="navbar" data-testid="navbar">
       {!user && !currentPath.includes('/register') && (
         <p>
           Not registered yet?{' '}
