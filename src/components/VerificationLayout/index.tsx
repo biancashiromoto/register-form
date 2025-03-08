@@ -4,19 +4,19 @@ import {
   useLocation,
   useNavigate,
 } from '@tanstack/react-router';
-import { ReactNode, FC, useEffect } from 'react';
+import { FC, ReactNode } from 'react';
 
 const VerificationLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, initializing } = useAuth();
   const publicRoutes = ['/login', '/unauthenticated'];
   const isRegisterRoute = location.pathname.includes('/register');
   const isPublicRoute =
     publicRoutes.includes(location.pathname) || isRegisterRoute;
 
   useLayoutEffect(() => {
-    if (location.pathname === '/') return;
+    if (location.pathname === '/' || initializing) return;
     if (!user && !isPublicRoute) {
       navigate({ to: '/unauthenticated', replace: true });
     }
