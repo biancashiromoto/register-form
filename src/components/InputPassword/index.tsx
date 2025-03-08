@@ -52,7 +52,7 @@ const InputPassword = ({
           {isConfirmPassword ? 'Confirm password' : 'Password'}
         </InputLabel>
         <OutlinedInput
-          autoComplete={!isConfirmPassword ? 'new-password' : 'off'}
+          autoComplete="new-password"
           required
           {...register(`${isConfirmPassword ? 'confirmPassword' : 'password'}`)}
           id={isConfirmPassword ? 'confirmPassword' : 'password'}
