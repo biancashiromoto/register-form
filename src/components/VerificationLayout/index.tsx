@@ -1,5 +1,9 @@
 import { useAuth } from '@/context/authContext';
-import { useLocation, useNavigate } from '@tanstack/react-router';
+import {
+  useLayoutEffect,
+  useLocation,
+  useNavigate,
+} from '@tanstack/react-router';
 import { ReactNode, FC, useEffect } from 'react';
 
 const VerificationLayout: FC<{ children: ReactNode }> = ({ children }) => {
@@ -11,11 +15,12 @@ const VerificationLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const isPublicRoute =
     publicRoutes.includes(location.pathname) || isRegisterRoute;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (location.pathname === '/') return;
     if (!user && !isPublicRoute) {
       navigate({ to: '/unauthenticated', replace: true });
     }
-  }, [user, location.pathname]);
+  }, [user, location.pathname, navigate]);
 
   return <div>{children}</div>;
 };
