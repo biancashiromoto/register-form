@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 
 const useRegisterUser = () => {
-  const { setSnackbarState, setUser } = useContext(Context);
+  const { setSnackbarState, setRegisteringUser } = useContext(Context);
 
   const { mutate } = useMutation({
     mutationKey: ['registerUser'],
@@ -26,7 +26,7 @@ const useRegisterUser = () => {
       });
     },
     onSettled: () => {
-      setUser(INITIAL_USER_STATE);
+      setRegisteringUser(INITIAL_USER_STATE);
     },
   });
 
