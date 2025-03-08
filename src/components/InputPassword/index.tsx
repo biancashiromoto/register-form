@@ -12,7 +12,7 @@ import { FieldErrors } from 'react-hook-form';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
 export type InputPasswordProps = {
-  shouldShow: boolean;
+  shouldShow?: boolean;
   register: any;
   errors: FieldErrors<UserType>;
   isConfirmPassword?: boolean;

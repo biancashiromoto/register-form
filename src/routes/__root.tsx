@@ -1,22 +1,14 @@
 import App from '@/App';
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router';
+import Navbar from '@/components/Navbar';
+import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-
-const activeProps = { style: { fontWeight: 'bold' } };
 
 const RootLayout = () => {
   return (
     <>
+      <Navbar />
       <App />
-      <nav>
-        <Link to="/register" activeProps={activeProps}>
-          Register
-        </Link>
-        {/* <Link to="/login" activeProps={activeProps}>
-          Login
-        </Link> */}
-      </nav>
-      <hr />
+      <hr style={{ width: '400px', margin: '0 auto' }} />
       <Outlet />
       {process.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
     </>

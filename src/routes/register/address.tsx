@@ -37,8 +37,12 @@ function RouteComponent() {
     mode: 'onBlur',
     defaultValues: INITIAL_ADDRESS_STATE,
   });
-  const { snackbarState, setSnackbarState, setUser, user } =
-    useContext(Context);
+  const {
+    snackbarState,
+    setSnackbarState,
+    setRegisteringUser,
+    registeringUser,
+  } = useContext(Context);
   const navigate = useNavigate();
 
   const country = watch('country');
@@ -77,15 +81,15 @@ function RouteComponent() {
   const { mutate: registerUser } = useRegisterUser();
 
   const onSubmit = async (data: UserType['address']) => {
-    if (!user) return;
-    const updatedUser: UserType = { ...user, address: data };
-    setUser(updatedUser);
+    if (!registeringUser) return;
+    const updatedUser: UserType = { ...registeringUser, address: data };
+    setRegisteringUser(updatedUser);
 
     registerUser(updatedUser);
   };
 
-  return user ? (
-    <Form step={2}>
+  return registeringUser ? (
+    <Form>
       <Box
         width="100%"
         maxWidth="400px"

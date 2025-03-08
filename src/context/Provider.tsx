@@ -9,14 +9,14 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     message: '',
     severity: undefined,
   });
-  const [user, setUser] = useState<UserType | null>(null);
+  const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
   const [selectedLocation, setSelectedLocation] = useState({} as AddressType);
 
   const value: ContextProps = {
     snackbarState,
     setSnackbarState,
-    user,
-    setUser,
+    registeringUser,
+    setRegisteringUser,
     selectedLocation,
     setSelectedLocation,
   };
