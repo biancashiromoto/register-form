@@ -16,6 +16,7 @@ export type InputPasswordProps = {
   register: any;
   errors: FieldErrors<UserType>;
   isConfirmPassword?: boolean;
+  isExistingPassword?: boolean;
 };
 
 const InputPassword = ({
@@ -23,6 +24,7 @@ const InputPassword = ({
   errors,
   register,
   isConfirmPassword = false,
+  isExistingPassword = false,
 }: InputPasswordProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -52,7 +54,7 @@ const InputPassword = ({
           {isConfirmPassword ? 'Confirm password' : 'Password'}
         </InputLabel>
         <OutlinedInput
-          autoComplete="new-password"
+          autoComplete={isExistingPassword ? 'off' : 'new-password'}
           required
           {...register(`${isConfirmPassword ? 'confirmPassword' : 'password'}`)}
           id={isConfirmPassword ? 'confirmPassword' : 'password'}
