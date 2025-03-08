@@ -3,10 +3,12 @@ import { registerUser } from '@/services/user';
 import { UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 
 const useRegisterUser = () => {
-  const { setSnackbarState, setUser } = useContext(Context);
+  const { setSnackbarState, setRegisteringUser } = useContext(Context);
+  const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationKey: ['registerUser'],
@@ -17,6 +19,9 @@ const useRegisterUser = () => {
         message: 'User successfully registered!',
         severity: 'success',
       });
+      setTimeout(() => {
+        navigate({ to: '/login', replace: true });
+      }, 2000);
     },
     onError: (error) => {
       setSnackbarState({
@@ -26,7 +31,7 @@ const useRegisterUser = () => {
       });
     },
     onSettled: () => {
-      setUser(INITIAL_USER_STATE);
+      setRegisteringUser(INITIAL_USER_STATE);
     },
   });
 

@@ -13,7 +13,18 @@ type SetErrorFunction = UseFormSetError<LoginCredentials>;
 
 const useLoginUser = (setError: SetErrorFunction) => {
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { setUser, setCurrentSession, userRef } = useAuth();
+
+  const waitForUserUpdate = (): Promise<void> => {
+    return new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (userRef.current !== null) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 50);
+    });
+  };
 
   const mutation = useMutation({
     mutationKey: ['loginUser'],
@@ -23,9 +34,10 @@ const useLoginUser = (setError: SetErrorFunction) => {
         throw new Error('Invalid login credentials');
       }
       setUser(response.data.user);
-      return response.data;
+      setCurrentSession(response.data.session);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await waitForUserUpdate();
       navigate({ to: '/home' });
     },
     onError: (error: any) => {
