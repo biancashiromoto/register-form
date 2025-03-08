@@ -1,22 +1,42 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { ReactNode } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-describe('App Form', () => {
-  const queryClient = new QueryClient();
+vi.mock('@/context/authContext', () => ({
+  useAuth: vi.fn(),
+}));
 
+vi.mock('@/components/VerificationLayout', () => ({
+  default: ({ children }: { children: ReactNode }) => <>{children}</>,
+}));
+
+vi.mock('@/components/Navbar', () => ({
+  default: ({ children }: { children: ReactNode }) => (
+    <nav data-testid="navbar">{children}</nav>
+  ),
+}));
+
+vi.mock('@/components/Footer', () => ({
+  default: ({ children }: { children: ReactNode }) => (
+    <footer data-testid="footer">{children}</footer>
+  ),
+}));
+
+describe('App Component', () => {
   beforeEach(() => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>,
-    );
+    vi.resetAllMocks();
+
+    render(<App />);
   });
 
-  it('renders the initial form', () => {
-    expect(
-      screen.getByRole('heading', { name: /register form/i }),
-    ).toBeInTheDocument();
+  it('renders the Navbar', () => {
+    const navbar = screen.getByTestId('navbar');
+    expect(navbar).toBeInTheDocument();
+  });
+
+  it('renders the Footer', () => {
+    const footer = screen.getByTestId('footer');
+    expect(footer).toBeInTheDocument();
   });
 });
