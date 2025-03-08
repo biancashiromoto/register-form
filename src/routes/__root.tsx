@@ -8,7 +8,7 @@ const RootLayout = () => {
     <>
       <Navbar />
       <App />
-      <hr style={{ width: '400px', margin: '0 auto' }} />
+      <hr />
       <Outlet />
       {process.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
     </>
