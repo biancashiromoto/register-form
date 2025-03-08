@@ -83,118 +83,121 @@ function RouteComponent() {
   };
 
   return (
-    <Form>
-      <Box
-        width="100%"
-        maxWidth="400px"
-        mx="auto"
-        mt={4}
-        component="form"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <InputText
-          shouldShow
-          errors={errors}
-          name="firstName"
-          register={register}
-          required
-        />
+    <>
+      <h2>Register</h2>
+      <Form>
+        <Box
+          width="100%"
+          maxWidth="400px"
+          mx="auto"
+          mt={4}
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <InputText
+            shouldShow
+            errors={errors}
+            name="firstName"
+            register={register}
+            required
+          />
 
-        <InputText
-          shouldShow={!!firstName && !errors.firstName}
-          errors={errors}
-          name="lastName"
-          register={register}
-          required
-        />
+          <InputText
+            shouldShow={!!firstName && !errors.firstName}
+            errors={errors}
+            name="lastName"
+            register={register}
+            required
+          />
 
-        <DatePicker
-          shouldShow={
-            !!firstName && !errors.firstName && !!lastName && !errors.lastName
-          }
-          errors={errors}
-          register={register}
-          required
-        />
+          <DatePicker
+            shouldShow={
+              !!firstName && !errors.firstName && !!lastName && !errors.lastName
+            }
+            errors={errors}
+            register={register}
+            required
+          />
 
-        <InputText
-          shouldShow={
-            !!firstName &&
-            !errors.firstName &&
-            !!lastName &&
-            !errors.lastName &&
-            !!birthDate &&
-            !errors.birthDate
-          }
-          errors={errors}
-          name="email"
-          register={register}
-          required
-          autoComplete="email"
-        />
+          <InputText
+            shouldShow={
+              !!firstName &&
+              !errors.firstName &&
+              !!lastName &&
+              !errors.lastName &&
+              !!birthDate &&
+              !errors.birthDate
+            }
+            errors={errors}
+            name="email"
+            register={register}
+            required
+            autoComplete="email"
+          />
 
-        <InputPassword
-          shouldShow={
-            !!firstName &&
-            !errors.firstName &&
-            !!lastName &&
-            !errors.lastName &&
-            !!email &&
-            !errors.email
-          }
-          errors={errors}
-          register={register}
-        />
+          <InputPassword
+            shouldShow={
+              !!firstName &&
+              !errors.firstName &&
+              !!lastName &&
+              !errors.lastName &&
+              !!email &&
+              !errors.email
+            }
+            errors={errors}
+            register={register}
+          />
 
-        <InputPassword
-          shouldShow={
-            !!firstName &&
+          <InputPassword
+            shouldShow={
+              !!firstName &&
+              !errors.firstName &&
+              !!lastName &&
+              !errors.lastName &&
+              !!email &&
+              !errors.email &&
+              !!password &&
+              !errors.password
+            }
+            errors={errors}
+            register={register}
+            isConfirmPassword
+          />
+
+          {!!firstName &&
             !errors.firstName &&
             !!lastName &&
             !errors.lastName &&
             !!email &&
             !errors.email &&
             !!password &&
-            !errors.password
-          }
-          errors={errors}
-          register={register}
-          isConfirmPassword
-        />
+            !errors.password &&
+            !!confirmPassword &&
+            !errors.confirmPassword && (
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                fullWidth
+                style={{ marginTop: '24px' }}
+              >
+                Next
+              </Button>
+            )}
+          <Button
+            variant="outlined"
+            color="primary"
+            type="button"
+            fullWidth
+            style={{ marginTop: '24px' }}
+            onClick={clearForm}
+          >
+            Clear form
+          </Button>
 
-        {!!firstName &&
-          !errors.firstName &&
-          !!lastName &&
-          !errors.lastName &&
-          !!email &&
-          !errors.email &&
-          !!password &&
-          !errors.password &&
-          !!confirmPassword &&
-          !errors.confirmPassword && (
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              fullWidth
-              style={{ marginTop: '24px' }}
-            >
-              Next
-            </Button>
-          )}
-        <Button
-          variant="outlined"
-          color="primary"
-          type="button"
-          fullWidth
-          style={{ marginTop: '24px' }}
-          onClick={clearForm}
-        >
-          Clear form
-        </Button>
-
-        {snackbarState && <CustomSnackbar />}
-      </Box>
-    </Form>
+          {snackbarState && <CustomSnackbar />}
+        </Box>
+      </Form>
+    </>
   );
 }

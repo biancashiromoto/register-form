@@ -1,14 +1,12 @@
 import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
-import { Button } from '@mui/material';
-import { Link, useLocation, useNavigate } from '@tanstack/react-router';
+import { Link, useLocation } from '@tanstack/react-router';
 
 const Navbar = () => {
   const activeProps = { style: { fontWeight: 'bold' } };
 
   const { user, setUser } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
   const currentPath = location.pathname;
 
   return (

@@ -1,24 +1,78 @@
 import { supabase } from '@/services/supabase';
-import { User } from '@supabase/supabase-js';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { Session, User } from '@supabase/supabase-js';
+import { ReactNode } from '@tanstack/react-router';
+import {
+  createContext,
+  MutableRefObject,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-const AuthContext = createContext({} as any);
+interface AuthContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  currentSession: Session | null;
+  setCurrentSession: (session: Session | null) => void;
+  initializing: boolean;
+  userRef: MutableRefObject<User | null>;
+}
 
-export const AuthProvider = ({ children }: any) => {
+const AuthContext = createContext({} as AuthContextType);
+
+const fetchSession = async () => {
+  return await supabase.auth.getSession();
+};
+
+export const AuthProvider = ({ children }: ReactNode) => {
   const [user, setUser] = useState<User | null>(null);
+  const [currentSession, setCurrentSession] = useState<Session | null>(null);
+  const [initializing, setInitializing] = useState(true);
+
+  const userRef = useRef<User | null>(user);
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserSession = async () => {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      user && setUser(user);
+        data: { session },
+      } = await fetchSession();
+
+      if (session) {
+        setCurrentSession(session);
+        setUser(session.user);
+      }
+      setInitializing(false);
     };
-    fetchUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+        setCurrentSession(session);
+        setInitializing(false);
+      },
+    );
+    fetchUserSession();
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        currentSession,
+        setCurrentSession,
+        initializing,
+        userRef,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
