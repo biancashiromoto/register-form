@@ -14,6 +14,7 @@ import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
 import { SnackbarStateType } from '@/types';
+import InputPasswordContainer from '@/components/InputPassword/Container';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
@@ -132,10 +133,10 @@ function RouteComponent() {
             name="email"
             register={register}
             required
-            autoComplete="email"
+            autoComplete="username email"
           />
 
-          <InputPassword
+          <InputPasswordContainer
             shouldShow={
               !!firstName &&
               !errors.firstName &&
@@ -146,22 +147,6 @@ function RouteComponent() {
             }
             errors={errors}
             register={register}
-          />
-
-          <InputPassword
-            shouldShow={
-              !!firstName &&
-              !errors.firstName &&
-              !!lastName &&
-              !errors.lastName &&
-              !!email &&
-              !errors.email &&
-              !!password &&
-              !errors.password
-            }
-            errors={errors}
-            register={register}
-            isConfirmPassword
           />
 
           {!!firstName &&
