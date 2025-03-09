@@ -1,6 +1,5 @@
-import { supabase, SUPABASE_KEY, SUPABASE_URL } from '@/services/supabase';
+import { supabase } from '@/services/supabase';
 import { UserType } from '@/types';
-import { getToken } from './auth';
 
 export const registerUser = async (user: UserType) => {
   const { email, password } = user;
