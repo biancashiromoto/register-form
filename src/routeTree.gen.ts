@@ -17,7 +17,6 @@ import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as HomeIndexImport } from './routes/home/index'
 import { Route as RegisterUserImport } from './routes/register/user'
-import { Route as RegisterAddressImport } from './routes/register/address'
 
 // Create/Update Routes
 
@@ -57,12 +56,6 @@ const RegisterUserRoute = RegisterUserImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const RegisterAddressRoute = RegisterAddressImport.update({
-  id: '/register/address',
-  path: '/register/address',
-  getParentRoute: () => rootRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -72,13 +65,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/register/address': {
-      id: '/register/address'
-      path: '/register/address'
-      fullPath: '/register/address'
-      preLoaderRoute: typeof RegisterAddressImport
       parentRoute: typeof rootRoute
     }
     '/register/user': {
@@ -123,7 +109,6 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/register/address': typeof RegisterAddressRoute
   '/register/user': typeof RegisterUserRoute
   '/home': typeof HomeIndexRoute
   '/login': typeof LoginIndexRoute
@@ -133,7 +118,6 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/register/address': typeof RegisterAddressRoute
   '/register/user': typeof RegisterUserRoute
   '/home': typeof HomeIndexRoute
   '/login': typeof LoginIndexRoute
@@ -144,7 +128,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/register/address': typeof RegisterAddressRoute
   '/register/user': typeof RegisterUserRoute
   '/home/': typeof HomeIndexRoute
   '/login/': typeof LoginIndexRoute
@@ -156,7 +139,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/register/address'
     | '/register/user'
     | '/home'
     | '/login'
@@ -165,7 +147,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/register/address'
     | '/register/user'
     | '/home'
     | '/login'
@@ -174,7 +155,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/register/address'
     | '/register/user'
     | '/home/'
     | '/login/'
@@ -185,7 +165,6 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  RegisterAddressRoute: typeof RegisterAddressRoute
   RegisterUserRoute: typeof RegisterUserRoute
   HomeIndexRoute: typeof HomeIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
@@ -195,7 +174,6 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  RegisterAddressRoute: RegisterAddressRoute,
   RegisterUserRoute: RegisterUserRoute,
   HomeIndexRoute: HomeIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
@@ -214,7 +192,6 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/register/address",
         "/register/user",
         "/home/",
         "/login/",
@@ -224,9 +201,6 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
-    },
-    "/register/address": {
-      "filePath": "register/address.tsx"
     },
     "/register/user": {
       "filePath": "register/user.tsx"
