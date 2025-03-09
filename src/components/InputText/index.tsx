@@ -1,3 +1,4 @@
+import { useAuth } from '@/context/authContext';
 import { labels } from '@/helpers/labels';
 import { UserType } from '@/types';
 import { Box, TextField } from '@mui/material';
@@ -23,6 +24,8 @@ const InputText = ({
   autoComplete = '',
   ...rest
 }: InputTextProps) => {
+  const { user } = useAuth();
+
   return (
     shouldShow && (
       <Box mb={2}>
@@ -36,6 +39,7 @@ const InputText = ({
           required={required}
           autoComplete={autoComplete}
           {...rest}
+          defaultValue={user?.user_metadata[name]}
         />
       </Box>
     )
