@@ -8,7 +8,9 @@ type CustomSnackbarProps = {
   onCloseCallback?: () => void;
 };
 
-export const CustomSnackbar = ({ onCloseCallback }: CustomSnackbarProps) => {
+export const CustomSnackbar = ({
+  onCloseCallback = undefined,
+}: CustomSnackbarProps) => {
   const { setSnackbarState, snackbarState } = useContext(Context);
 
   const handleClose = () => {
@@ -20,8 +22,6 @@ export const CustomSnackbar = ({ onCloseCallback }: CustomSnackbarProps) => {
     });
     onCloseCallback && onCloseCallback();
   };
-
-  if (!snackbarState) return null;
 
   return (
     <MuiSnackbar
