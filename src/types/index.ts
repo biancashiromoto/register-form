@@ -1,6 +1,11 @@
 import { AlertColor } from '@mui/material';
 import { ICity, ICountry, IState } from 'country-state-city';
 
+type TopLevelKeys = Exclude<keyof UserType, 'address'>;
+type AddressKeys = keyof UserType['address'];
+
+export type RegisterField = TopLevelKeys | `address.${AddressKeys}`;
+
 export interface UserType {
   firstName: string;
   lastName: string;
@@ -9,8 +14,6 @@ export interface UserType {
   password?: string;
   confirmPassword?: string;
   avatar?: string;
-  id?: string;
-  token?: string;
   address: {
     country: string;
     state: string;
