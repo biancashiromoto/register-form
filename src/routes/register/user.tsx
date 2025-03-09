@@ -9,12 +9,20 @@ import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button } from '@mui/material';
+import { Autocomplete, Box, Button, TextField } from '@mui/material';
 import { createRoute, useNavigate } from '@tanstack/react-router';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
 import useRegisterUser from '@/hooks/useRegisterUser';
+import {
+  City,
+  Country,
+  ICity,
+  ICountry,
+  IState,
+  State,
+} from 'country-state-city';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
@@ -23,6 +31,9 @@ export const Route = createRoute({
 });
 
 function RouteComponent() {
+  const [selectedCountry, setSelectedCountry] = useState({} as ICountry);
+  const [selectedState, setSelectedState] = useState({} as IState);
+  const [selectedCity, setSelectedCity] = useState({} as ICity);
   const {
     register,
     handleSubmit,
@@ -30,13 +41,15 @@ function RouteComponent() {
     resetField,
     reset,
     clearErrors,
+    getValues,
+    setValue,
     formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(firstStepSchema),
     mode: 'all',
     defaultValues: INITIAL_USER_STATE,
   });
-  const navigate = useNavigate();
+
   const { snackbarState, setSnackbarState } = useContext(Context);
   const { mutate: registerUser } = useRegisterUser();
 
@@ -114,8 +127,71 @@ function RouteComponent() {
             autoComplete="username email"
           />
 
+          <Autocomplete
+            hidden={!getValues('email') && !errors.email}
+            disablePortal
+            options={Country.getAllCountries()}
+            getOptionLabel={(option: ICountry) => option.name}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                helperText={errors?.address?.country?.message}
+                label="Country"
+              />
+            )}
+            onChange={(_event, newValue) => {
+              if (!newValue) return;
+              setSelectedCountry(newValue);
+              setValue('address.country', newValue.name);
+            }}
+          />
+
+          <Autocomplete
+            hidden={!getValues('address.country') && !errors?.address?.country}
+            disablePortal
+            options={State.getStatesOfCountry(selectedCountry.isoCode)}
+            getOptionLabel={(option: IState) => option.name}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                helperText={errors?.address?.country?.message}
+                label="State"
+              />
+            )}
+            onChange={(_event, newValue) => {
+              if (!newValue) return;
+              setSelectedState(newValue);
+              setValue('address.state', newValue.name);
+            }}
+          />
+
+          <Autocomplete
+            hidden={!getValues('address.state') && !errors?.address?.state}
+            disablePortal
+            options={City.getCitiesOfState(
+              selectedCountry.isoCode,
+              selectedState.isoCode,
+            )}
+            getOptionLabel={(option: ICity) => option.name}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                helperText={errors?.address?.state?.message}
+                label="City"
+              />
+            )}
+            onChange={(_event, newValue) => {
+              if (!newValue) return;
+              setSelectedCity(newValue);
+              setValue('address.city', newValue.name);
+            }}
+          />
+
           <InputPasswordContainer
-            shouldShow={!!email && !errors.email}
+            shouldShow={!!getValues('address.city') && !errors?.address?.city}
             errors={errors}
             register={register}
           />
@@ -131,6 +207,7 @@ function RouteComponent() {
               Next
             </Button>
           )}
+
           <Button
             variant="outlined"
             color="primary"
