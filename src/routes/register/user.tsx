@@ -29,7 +29,7 @@ function RouteComponent() {
     resetField,
     reset,
     clearErrors,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(firstStepSchema),
     mode: 'all',
@@ -38,9 +38,9 @@ function RouteComponent() {
   const navigate = useNavigate();
   const {
     snackbarState,
-    setSnackbarState,
     registeringUser,
     setRegisteringUser,
+    setSnackbarState,
   } = useContext(Context);
 
   useEffect(
@@ -111,23 +111,14 @@ function RouteComponent() {
           />
 
           <DatePicker
-            shouldShow={
-              !!firstName && !errors.firstName && !!lastName && !errors.lastName
-            }
+            shouldShow={!!lastName && !errors.lastName}
             errors={errors}
             register={register}
             required
           />
 
           <InputText
-            shouldShow={
-              !!firstName &&
-              !errors.firstName &&
-              !!lastName &&
-              !errors.lastName &&
-              !!birthDate &&
-              !errors.birthDate
-            }
+            shouldShow={!!birthDate && !errors.birthDate}
             errors={errors}
             name="email"
             register={register}
@@ -136,38 +127,22 @@ function RouteComponent() {
           />
 
           <InputPasswordContainer
-            shouldShow={
-              !!firstName &&
-              !errors.firstName &&
-              !!lastName &&
-              !errors.lastName &&
-              !!email &&
-              !errors.email
-            }
+            shouldShow={!!email && !errors.email}
             errors={errors}
             register={register}
           />
 
-          {!!firstName &&
-            !errors.firstName &&
-            !!lastName &&
-            !errors.lastName &&
-            !!email &&
-            !errors.email &&
-            !!password &&
-            !errors.password &&
-            !!confirmPassword &&
-            !errors.confirmPassword && (
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                fullWidth
-                style={{ marginTop: '24px' }}
-              >
-                Next
-              </Button>
-            )}
+          {isValid && (
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              fullWidth
+              style={{ marginTop: '24px' }}
+            >
+              Next
+            </Button>
+          )}
           <Button
             variant="outlined"
             color="primary"
