@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { useNavigate, useLocation } from '@tanstack/react-router';
 import { useAuth } from '@/context/authContext';
@@ -81,5 +81,14 @@ describe('VerificationLayout Component', () => {
     });
 
     expect(navigateMock).not.toHaveBeenCalled();
+  });
+
+  it('should show loader if initializing is true', () => {
+    renderComponent({
+      ...mockProps,
+      initializing: true,
+    });
+
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 });
