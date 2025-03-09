@@ -6,7 +6,7 @@ import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
-import { SnackbarStateType } from '@/types';
+import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button } from '@mui/material';
@@ -14,6 +14,7 @@ import { createRoute, useNavigate } from '@tanstack/react-router';
 import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
+import useRegisterUser from '@/hooks/useRegisterUser';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
@@ -36,12 +37,8 @@ function RouteComponent() {
     defaultValues: INITIAL_USER_STATE,
   });
   const navigate = useNavigate();
-  const {
-    snackbarState,
-    registeringUser,
-    setRegisteringUser,
-    setSnackbarState,
-  } = useContext(Context);
+  const { snackbarState, setSnackbarState } = useContext(Context);
+  const { mutate: registerUser } = useRegisterUser();
 
   useEffect(
     () =>
@@ -52,18 +49,11 @@ function RouteComponent() {
     [],
   );
 
-  useEffect(() => {
-    if (registeringUser) {
-      reset(registeringUser);
-    }
-  }, [registeringUser, reset]);
-
   const firstName = watch('firstName');
   const lastName = watch('lastName');
   const birthDate = watch('birthDate');
   const email = watch('email');
   const password = watch('password');
-  const confirmPassword = watch('confirmPassword');
 
   useResetForm(firstName, resetField, 'lastName');
   useResetForm(lastName, resetField, 'birthDate');
@@ -76,10 +66,8 @@ function RouteComponent() {
     clearErrors();
   };
 
-  const onSubmit = async (data: any) => {
-    const { password, confirmPassword, ...userData } = data;
-    setRegisteringUser(userData);
-    navigate({ to: '/register/address' });
+  const onSubmit = async (data: UserType) => {
+    registerUser(data);
   };
 
   return (
