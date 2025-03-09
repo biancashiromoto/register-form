@@ -30,7 +30,7 @@ const CustomAutocomplete = <T extends { name: string }>({
 }: CustomAutocompleteProps<T>) => {
   return (
     <Autocomplete
-      style={{ width: '100%' }}
+      style={{ width: '100%', marginBottom: '1em' }}
       hidden={
         !getValues(previousField) &&
         !errors[previousField as keyof FieldErrors<UserType>]
