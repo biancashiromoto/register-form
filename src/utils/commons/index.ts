@@ -14,4 +14,5 @@ export const INITIAL_USER_STATE: UserType = {
   password: '',
   confirmPassword: '',
   address: INITIAL_ADDRESS_STATE,
+  avatar: '',
 };
