@@ -1,20 +1,16 @@
 import DatePicker from '@/components/DatePicker';
-import Form from '@/components/Form';
 import InputPasswordContainer from '@/components/InputPassword/Container';
 import InputText from '@/components/InputText';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
+import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Autocomplete, Box, Button, TextField } from '@mui/material';
-import { createRoute, useNavigate } from '@tanstack/react-router';
-import { useContext, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Route as RegisterRoute } from '.';
-import useRegisterUser from '@/hooks/useRegisterUser';
+import { createRoute } from '@tanstack/react-router';
 import {
   City,
   Country,
@@ -23,6 +19,10 @@ import {
   IState,
   State,
 } from 'country-state-city';
+import { useContext, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Route as RegisterRoute } from '.';
+import CustomAutocomplete from '@/components/Autocomplete';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
@@ -34,6 +34,7 @@ function RouteComponent() {
   const [selectedCountry, setSelectedCountry] = useState({} as ICountry);
   const [selectedState, setSelectedState] = useState({} as IState);
   const [selectedCity, setSelectedCity] = useState({} as ICity);
+
   const {
     register,
     handleSubmit,
@@ -126,67 +127,40 @@ function RouteComponent() {
           autoComplete="username email"
         />
 
-        <Autocomplete
-          hidden={!getValues('email') && !errors.email}
-          disablePortal
+        <CustomAutocomplete
+          errors={errors}
+          field="address.country"
+          getValues={getValues}
+          label="Country"
           options={Country.getAllCountries()}
-          getOptionLabel={(option: ICountry) => option.name}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              helperText={errors?.address?.country?.message}
-              label="Country"
-            />
-          )}
-          onChange={(_event, newValue) => {
-            if (!newValue) return;
-            setSelectedCountry(newValue);
-            setValue('address.country', newValue.name);
-          }}
+          previousField="email"
+          setValue={setValue}
+          setterCallback={setSelectedCountry}
         />
 
-        <Autocomplete
-          hidden={!getValues('address.country') && !errors?.address?.country}
-          disablePortal
+        <CustomAutocomplete
+          errors={errors}
+          field="address.state"
+          getValues={getValues}
+          label="State"
           options={State.getStatesOfCountry(selectedCountry.isoCode)}
-          getOptionLabel={(option: IState) => option.name}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              helperText={errors?.address?.country?.message}
-              label="State"
-            />
-          )}
-          onChange={(_event, newValue) => {
-            if (!newValue) return;
-            setSelectedState(newValue);
-            setValue('address.state', newValue.name);
-          }}
+          previousField="address.country"
+          setValue={setValue}
+          setterCallback={setSelectedState}
         />
 
-        <Autocomplete
-          hidden={!getValues('address.state') && !errors?.address?.state}
-          disablePortal
+        <CustomAutocomplete
+          errors={errors}
+          field="address.city"
+          getValues={getValues}
+          label="City"
           options={City.getCitiesOfState(
             selectedCountry.isoCode,
             selectedState.isoCode,
           )}
-          getOptionLabel={(option: ICity) => option.name}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              helperText={errors?.address?.state?.message}
-              label="City"
-            />
-          )}
-          onChange={(_event, newValue) => {
-            if (!newValue) return;
-            setSelectedCity(newValue);
-            setValue('address.city', newValue.name);
-          }}
+          previousField="address.state"
+          setValue={setValue}
+          setterCallback={setSelectedCity}
         />
 
         <InputPasswordContainer
