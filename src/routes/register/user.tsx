@@ -1,11 +1,12 @@
 import DatePicker from '@/components/DatePicker';
 import Form from '@/components/Form';
-import InputPassword from '@/components/InputPassword';
+import InputPasswordContainer from '@/components/InputPassword/Container';
 import InputText from '@/components/InputText';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
+import { SnackbarStateType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button } from '@mui/material';
@@ -13,8 +14,6 @@ import { createRoute, useNavigate } from '@tanstack/react-router';
 import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
-import { SnackbarStateType } from '@/types';
-import InputPasswordContainer from '@/components/InputPassword/Container';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,

@@ -27,6 +27,9 @@ const InputPassword = ({
   isExistingPassword = false,
 }: InputPasswordProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const passwordInputIdentification = isConfirmPassword
+    ? 'confirmPassword'
+    : 'password';
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -47,17 +50,18 @@ const InputPassword = ({
       <FormControl
         sx={{ width: '100%' }}
         variant="outlined"
-        id={isConfirmPassword ? 'confirmPassword' : 'password'}
+        id={passwordInputIdentification}
         error={!!errors.password}
       >
-        <InputLabel htmlFor="password">
+        <InputLabel htmlFor={passwordInputIdentification}>
           {isConfirmPassword ? 'Confirm password' : 'Password'}
         </InputLabel>
         <OutlinedInput
+          aria-label={isConfirmPassword ? 'confirm password' : 'password'}
           autoComplete={isExistingPassword ? 'off' : 'new-password'}
           required
-          {...register(`${isConfirmPassword ? 'confirmPassword' : 'password'}`)}
-          id={isConfirmPassword ? 'confirmPassword' : 'password'}
+          {...register(`${passwordInputIdentification}`)}
+          id={passwordInputIdentification}
           data-testid={isConfirmPassword ? 'confirm-password' : 'password'}
           type={showPassword ? 'text' : 'password'}
           endAdornment={
@@ -77,12 +81,9 @@ const InputPassword = ({
           }
           label={isConfirmPassword ? 'Confirm password' : 'Password'}
         />
-        {errors[isConfirmPassword ? 'confirmPassword' : 'password'] && (
+        {errors[passwordInputIdentification] && (
           <FormHelperText error>
-            {
-              errors[isConfirmPassword ? 'confirmPassword' : 'password']
-                ?.message
-            }
+            {errors[passwordInputIdentification]?.message}
           </FormHelperText>
         )}
       </FormControl>
