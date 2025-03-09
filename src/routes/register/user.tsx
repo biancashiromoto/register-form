@@ -86,142 +86,140 @@ function RouteComponent() {
   return (
     <>
       <h2>Register</h2>
-      <Form>
-        <Box
-          width="100%"
-          maxWidth="400px"
-          mx="auto"
-          mt={4}
-          component="form"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <InputText
-            shouldShow
-            errors={errors}
-            name="firstName"
-            register={register}
-            required
-          />
+      <Box
+        width="100%"
+        maxWidth="400px"
+        mx="auto"
+        mt={4}
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <InputText
+          shouldShow
+          errors={errors}
+          name="firstName"
+          register={register}
+          required
+        />
 
-          <InputText
-            shouldShow={!!firstName && !errors.firstName}
-            errors={errors}
-            name="lastName"
-            register={register}
-            required
-          />
+        <InputText
+          shouldShow={!!firstName && !errors.firstName}
+          errors={errors}
+          name="lastName"
+          register={register}
+          required
+        />
 
-          <DatePicker
-            shouldShow={!!lastName && !errors.lastName}
-            errors={errors}
-            register={register}
-            required
-          />
+        <DatePicker
+          shouldShow={!!lastName && !errors.lastName}
+          errors={errors}
+          register={register}
+          required
+        />
 
-          <InputText
-            shouldShow={!!birthDate && !errors.birthDate}
-            errors={errors}
-            name="email"
-            register={register}
-            required
-            autoComplete="username email"
-          />
+        <InputText
+          shouldShow={!!birthDate && !errors.birthDate}
+          errors={errors}
+          name="email"
+          register={register}
+          required
+          autoComplete="username email"
+        />
 
-          <Autocomplete
-            hidden={!getValues('email') && !errors.email}
-            disablePortal
-            options={Country.getAllCountries()}
-            getOptionLabel={(option: ICountry) => option.name}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                helperText={errors?.address?.country?.message}
-                label="Country"
-              />
-            )}
-            onChange={(_event, newValue) => {
-              if (!newValue) return;
-              setSelectedCountry(newValue);
-              setValue('address.country', newValue.name);
-            }}
-          />
-
-          <Autocomplete
-            hidden={!getValues('address.country') && !errors?.address?.country}
-            disablePortal
-            options={State.getStatesOfCountry(selectedCountry.isoCode)}
-            getOptionLabel={(option: IState) => option.name}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                helperText={errors?.address?.country?.message}
-                label="State"
-              />
-            )}
-            onChange={(_event, newValue) => {
-              if (!newValue) return;
-              setSelectedState(newValue);
-              setValue('address.state', newValue.name);
-            }}
-          />
-
-          <Autocomplete
-            hidden={!getValues('address.state') && !errors?.address?.state}
-            disablePortal
-            options={City.getCitiesOfState(
-              selectedCountry.isoCode,
-              selectedState.isoCode,
-            )}
-            getOptionLabel={(option: ICity) => option.name}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                helperText={errors?.address?.state?.message}
-                label="City"
-              />
-            )}
-            onChange={(_event, newValue) => {
-              if (!newValue) return;
-              setSelectedCity(newValue);
-              setValue('address.city', newValue.name);
-            }}
-          />
-
-          <InputPasswordContainer
-            shouldShow={!!getValues('address.city') && !errors?.address?.city}
-            errors={errors}
-            register={register}
-          />
-
-          {isValid && (
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              fullWidth
-              style={{ marginTop: '24px' }}
-            >
-              Next
-            </Button>
+        <Autocomplete
+          hidden={!getValues('email') && !errors.email}
+          disablePortal
+          options={Country.getAllCountries()}
+          getOptionLabel={(option: ICountry) => option.name}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              helperText={errors?.address?.country?.message}
+              label="Country"
+            />
           )}
+          onChange={(_event, newValue) => {
+            if (!newValue) return;
+            setSelectedCountry(newValue);
+            setValue('address.country', newValue.name);
+          }}
+        />
 
+        <Autocomplete
+          hidden={!getValues('address.country') && !errors?.address?.country}
+          disablePortal
+          options={State.getStatesOfCountry(selectedCountry.isoCode)}
+          getOptionLabel={(option: IState) => option.name}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              helperText={errors?.address?.country?.message}
+              label="State"
+            />
+          )}
+          onChange={(_event, newValue) => {
+            if (!newValue) return;
+            setSelectedState(newValue);
+            setValue('address.state', newValue.name);
+          }}
+        />
+
+        <Autocomplete
+          hidden={!getValues('address.state') && !errors?.address?.state}
+          disablePortal
+          options={City.getCitiesOfState(
+            selectedCountry.isoCode,
+            selectedState.isoCode,
+          )}
+          getOptionLabel={(option: ICity) => option.name}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              helperText={errors?.address?.state?.message}
+              label="City"
+            />
+          )}
+          onChange={(_event, newValue) => {
+            if (!newValue) return;
+            setSelectedCity(newValue);
+            setValue('address.city', newValue.name);
+          }}
+        />
+
+        <InputPasswordContainer
+          shouldShow={!!getValues('address.city') && !errors?.address?.city}
+          errors={errors}
+          register={register}
+        />
+
+        {isValid && (
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
-            type="button"
+            type="submit"
             fullWidth
             style={{ marginTop: '24px' }}
-            onClick={clearForm}
           >
-            Clear form
+            Next
           </Button>
+        )}
 
-          {snackbarState && <CustomSnackbar />}
-        </Box>
-      </Form>
+        <Button
+          variant="outlined"
+          color="primary"
+          type="button"
+          fullWidth
+          style={{ marginTop: '24px' }}
+          onClick={clearForm}
+        >
+          Clear form
+        </Button>
+
+        {snackbarState && <CustomSnackbar />}
+      </Box>
     </>
   );
 }
