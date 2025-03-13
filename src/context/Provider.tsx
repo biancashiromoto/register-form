@@ -23,7 +23,13 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     () =>
       createTheme({
         palette: {
-          mode: !isDarkModeOn ? 'light' : 'dark',
+          mode: isDarkModeOn ? 'dark' : 'light',
+          background: {
+            default: isDarkModeOn ? '#1D2125' : '#DEE4EA',
+          },
+          text: {
+            primary: !isDarkModeOn ? '#red' : '#DEE4EA',
+          },
         },
       }),
     [isDarkModeOn],
