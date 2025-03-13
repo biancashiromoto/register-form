@@ -1,7 +1,7 @@
 import { useAuth } from '@/context/authContext';
 import { labels } from '@/helpers/labels';
 import { UserType } from '@/types';
-import { Box, TextField } from '@mui/material';
+import { Box, TextField, useTheme } from '@mui/material';
 import { ComponentProps } from 'react';
 import { FieldErrors } from 'react-hook-form';
 
@@ -25,6 +25,7 @@ const InputText = ({
   ...rest
 }: InputTextProps) => {
   const { user } = useAuth();
+  const theme = useTheme();
 
   if (hidden) {
     return null;
@@ -33,6 +34,9 @@ const InputText = ({
   return (
     <Box mb={2}>
       <TextField
+        sx={{
+          backgroundColor: theme.palette.background.default,
+        }}
         id={name}
         label={labels[name]}
         fullWidth
