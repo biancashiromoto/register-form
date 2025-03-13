@@ -1,4 +1,3 @@
-import CustomAutocomplete from '@/components/Autocomplete';
 import DatePicker from '@/components/DatePicker';
 import InputPasswordContainer from '@/components/InputPassword/Container';
 import InputText from '@/components/InputText';
@@ -10,7 +9,7 @@ import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button } from '@mui/material';
+import { Autocomplete, Box, Button, TextField } from '@mui/material';
 import { createRoute } from '@tanstack/react-router';
 import {
   City,
@@ -23,6 +22,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
+import CustomAutocomplete from '@/components/Autocomplete';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
@@ -104,7 +104,7 @@ function RouteComponent() {
         />
 
         <InputText
-          hidden={true}
+          hidden={firstName.length <= 2 || !!errors.firstName}
           errors={errors}
           name="lastName"
           register={register}
@@ -112,14 +112,14 @@ function RouteComponent() {
         />
 
         <DatePicker
-          shouldShow={!!lastName && !errors.lastName}
+          hidden={lastName.length <= 2 || !!errors.lastName}
           errors={errors}
           register={register}
           required
         />
 
         <InputText
-          hidden={true}
+          hidden={!birthDate || !!errors.birthDate}
           errors={errors}
           name="email"
           register={register}
