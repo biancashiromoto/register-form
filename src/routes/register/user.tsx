@@ -1,3 +1,4 @@
+import CustomAutocomplete from '@/components/Autocomplete';
 import DatePicker from '@/components/DatePicker';
 import InputPasswordContainer from '@/components/InputPassword/Container';
 import InputText from '@/components/InputText';
@@ -9,7 +10,7 @@ import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Autocomplete, Box, Button, TextField } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { createRoute } from '@tanstack/react-router';
 import {
   City,
@@ -22,7 +23,6 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
-import CustomAutocomplete from '@/components/Autocomplete';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
@@ -96,7 +96,7 @@ function RouteComponent() {
         onSubmit={handleSubmit(onSubmit)}
       >
         <InputText
-          shouldShow
+          hidden={false}
           errors={errors}
           name="firstName"
           register={register}
@@ -104,7 +104,7 @@ function RouteComponent() {
         />
 
         <InputText
-          shouldShow={!!firstName && !errors.firstName}
+          hidden={true}
           errors={errors}
           name="lastName"
           register={register}
@@ -119,7 +119,7 @@ function RouteComponent() {
         />
 
         <InputText
-          shouldShow={!!birthDate && !errors.birthDate}
+          hidden={true}
           errors={errors}
           name="email"
           register={register}
