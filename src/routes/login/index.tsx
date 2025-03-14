@@ -5,7 +5,7 @@ import useLoginUser from '@/hooks/useLoginUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { loginSchema } from '@/schemas/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { SignInWithPasswordCredentials } from '@supabase/supabase-js';
 import { createFileRoute } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
@@ -41,37 +41,39 @@ function RouteComponent() {
   };
 
   return (
-    <Box
-      mt={2}
-      mx={2}
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      gap={2}
-    >
-      <InputText
-        errors={errors}
-        name="email"
-        register={register}
-        required
-        autoComplete="email"
-      />
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
+      <Box
+        mt={2}
+        mx={2}
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        gap={2}
+      >
+        <InputText
+          errors={errors}
+          name="email"
+          register={register}
+          required
+          autoComplete="email"
+        />
 
-      <InputPassword
-        hidden={!!errors.email}
-        errors={errors}
-        register={register}
-        isExistingPassword
-      />
+        <InputPassword
+          hidden={!!errors.email}
+          errors={errors}
+          register={register}
+          isExistingPassword
+        />
 
-      {!!email && !errors.email && !!password && !errors.password && (
-        <CustomButton variant="contained" color="primary" type="submit">
-          Next
-        </CustomButton>
-      )}
-    </Box>
+        {!!email && !errors.email && !!password && !errors.password && (
+          <CustomButton variant="contained" color="primary" type="submit">
+            Next
+          </CustomButton>
+        )}
+      </Box>
+    </Container>
   );
 }
