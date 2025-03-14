@@ -1,7 +1,7 @@
 import { useAuth } from '@/context/authContext';
 import { labels } from '@/helpers/labels';
 import { UserType } from '@/types';
-import { Box, TextField, useTheme } from '@mui/material';
+import { TextField, useTheme } from '@mui/material';
 import { ComponentProps } from 'react';
 import { FieldErrors } from 'react-hook-form';
 
@@ -32,23 +32,21 @@ const InputText = ({
   }
 
   return (
-    <Box mb={2}>
-      <TextField
-        sx={{
-          backgroundColor: theme.palette.background.default,
-        }}
-        id={name}
-        label={labels[name]}
-        fullWidth
-        {...register(name)}
-        error={!!errors[name]}
-        helperText={errors[name]?.message?.toString()}
-        required={required}
-        autoComplete={autoComplete}
-        defaultValue={user?.user_metadata[name]}
-        {...rest}
-      />
-    </Box>
+    <TextField
+      sx={{
+        backgroundColor: theme.palette.background.default,
+      }}
+      id={name}
+      label={labels[name]}
+      {...register(name)}
+      error={!!errors[name]}
+      helperText={errors[name]?.message?.toString()}
+      required={required}
+      autoComplete={autoComplete}
+      defaultValue={user?.user_metadata[name]}
+      fullWidth
+      {...rest}
+    />
   );
 };
 
