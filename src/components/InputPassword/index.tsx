@@ -50,6 +50,7 @@ const InputPassword = ({
         variant="outlined"
         id={passwordInputIdentification}
         error={!!errors.password}
+        fullWidth
       >
         <InputLabel htmlFor={passwordInputIdentification}>
           {isConfirmPassword ? 'Confirm password' : 'Password'}
