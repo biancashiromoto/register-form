@@ -5,8 +5,12 @@ export const ToggleThemeSwitch = styled(Switch)(({ theme }) => ({
   height: 34,
   padding: 7,
   transform: 'translateX(-16px)',
-  position: 'absolute',
-  left: '50%',
+
+  [theme.breakpoints.up('md')]: {
+    left: '50%',
+    transform: 'translateX(-16px)',
+  },
+
   '& .MuiSwitch-switchBase': {
     margin: 1,
     padding: 0,
