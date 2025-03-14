@@ -24,6 +24,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
 import CustomButton from '@/components/Button';
+import LoadingLayer from '@/components/LoadingLayer';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
@@ -53,16 +54,7 @@ function RouteComponent() {
   });
 
   const { snackbarState, setSnackbarState } = useContext(Context);
-  const { mutate: registerUser } = useRegisterUser();
-
-  useEffect(
-    () =>
-      setSnackbarState((prevState: SnackbarStateType) => ({
-        ...prevState,
-        open: false,
-      })),
-    [],
-  );
+  const { mutate: registerUser, isPending } = useRegisterUser();
 
   const firstName = watch('firstName');
   const lastName = watch('lastName');
@@ -84,6 +76,17 @@ function RouteComponent() {
   const onSubmit = async (data: UserType) => {
     registerUser(data);
   };
+
+  useEffect(
+    () =>
+      setSnackbarState((prevState: SnackbarStateType) => ({
+        ...prevState,
+        open: false,
+      })),
+    [],
+  );
+
+  if (isPending) return <LoadingLayer open={isPending} />;
 
   return (
     <Container maxWidth="sm">
