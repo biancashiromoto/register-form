@@ -20,7 +20,7 @@ const RootLayout = () => {
       <App />
       <hr />
       <Container maxWidth="sm" sx={{ marginTop: '16px' }}>
-        <Typography variant="h5" align="left">
+        <Typography variant="h5" align="left" gutterBottom>
           {page.title}
         </Typography>
       </Container>
