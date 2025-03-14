@@ -1,3 +1,4 @@
+import CustomAutocomplete from '@/components/Autocomplete';
 import DatePicker from '@/components/DatePicker';
 import InputPasswordContainer from '@/components/InputPassword/Container';
 import InputText from '@/components/InputText';
@@ -9,7 +10,7 @@ import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Autocomplete, Box, Button, TextField } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { createRoute } from '@tanstack/react-router';
 import {
   City,
@@ -22,7 +23,6 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
-import CustomAutocomplete from '@/components/Autocomplete';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
@@ -86,14 +86,16 @@ function RouteComponent() {
 
   return (
     <>
-      <h2>Register</h2>
       <Box
-        width="100%"
-        maxWidth="400px"
-        mx="auto"
-        mt={4}
+        mt={2}
+        mx={2}
         component="form"
         onSubmit={handleSubmit(onSubmit)}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        gap={2}
       >
         <InputText
           hidden={false}
@@ -186,14 +188,12 @@ function RouteComponent() {
           color="primary"
           type="button"
           fullWidth
-          style={{ marginTop: '24px' }}
           onClick={clearForm}
         >
           Clear form
         </Button>
-
-        {snackbarState && <CustomSnackbar />}
       </Box>
+      {snackbarState && <CustomSnackbar />}
     </>
   );
 }
