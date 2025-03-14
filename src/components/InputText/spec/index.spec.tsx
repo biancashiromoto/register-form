@@ -6,7 +6,7 @@ import { labels } from '@/helpers/labels';
 describe('InputText', () => {
   const mockRegister = vi.fn();
   const mockProps: InputTextProps = {
-    shouldShow: true,
+    hidden: false,
     errors: {},
     name: 'firstName',
     register: mockRegister,
@@ -16,8 +16,8 @@ describe('InputText', () => {
     render(<InputText {...props} />);
   };
 
-  it('does not render when shouldShow is false', () => {
-    renderComponent({ ...mockProps, shouldShow: false });
+  it('does not render when hidden is true', () => {
+    renderComponent({ ...mockProps, hidden: true });
     expect(
       screen.queryByLabelText(labels[mockProps.name]),
     ).not.toBeInTheDocument();
