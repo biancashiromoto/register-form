@@ -1,5 +1,6 @@
 import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
+import { Typography } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { ComponentProps, FC } from 'react';
 
@@ -12,24 +13,27 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
+  if (currentPath === '/unauthenticated' || currentPath === '/not-found')
+    return null;
+
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
       {!user && !currentPath.includes('/register') && (
-        <p>
+        <Typography variant="body2">
           Not registered yet?{' '}
           <Link to="/register" activeProps={activeProps}>
             Register
           </Link>
-        </p>
+        </Typography>
       )}
 
       {!user && currentPath !== '/login' && (
-        <p>
+        <Typography variant="body2">
           Already registered?{' '}
           <Link to="/login" activeProps={activeProps}>
             Login
           </Link>
-        </p>
+        </Typography>
       )}
 
       {user && currentPath !== '/home' && (
@@ -39,15 +43,17 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
       )}
 
       {user && currentPath === '/home' && (
-        <Link
-          to="/login"
-          onClick={async () => {
-            await supabase.auth.signOut();
-            setUser(null);
-          }}
-        >
-          Logout
-        </Link>
+        <Typography variant="body2">
+          <Link
+            to="/login"
+            onClick={async () => {
+              await supabase.auth.signOut();
+              setUser(null);
+            }}
+          >
+            Logout
+          </Link>
+        </Typography>
       )}
     </nav>
   );
