@@ -10,7 +10,7 @@ import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { createRoute } from '@tanstack/react-router';
 import {
   City,
@@ -86,7 +86,7 @@ function RouteComponent() {
   };
 
   return (
-    <>
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Box
         mt={2}
         mx={2}
@@ -183,6 +183,6 @@ function RouteComponent() {
         </CustomButton>
       </Box>
       {snackbarState && <CustomSnackbar />}
-    </>
+    </Container>
   );
 }
