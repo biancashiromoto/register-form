@@ -1,11 +1,11 @@
 import Footer from './components/Footer';
-import Navbar from './components/Navbar';
+import Header from './components/Header';
 import VerificationLayout from './components/VerificationLayout';
 
 function App() {
   return (
     <VerificationLayout>
-      <Navbar />
+      <Header />
       <Footer />
     </VerificationLayout>
   );
