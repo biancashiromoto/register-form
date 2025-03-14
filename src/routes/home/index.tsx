@@ -1,5 +1,5 @@
 import { useAuth } from '@/context/authContext';
-import { Box } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/home/')({
@@ -11,10 +11,7 @@ function RouteComponent() {
 
   return (
     user && (
-      <Box width="100%" maxWidth="400px" mx="auto" mt={4} component="div">
-        <h2>Home</h2>
-        You have successfully logged in!
-      </Box>
+      <Container maxWidth="sm">You have successfully logged in!</Container>
     )
   );
 }
