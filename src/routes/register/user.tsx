@@ -167,7 +167,7 @@ function RouteComponent() {
         />
 
         <InputPasswordContainer
-          shouldShow={!!getValues('address.city') && !errors?.address?.city}
+          hidden={!getValues('address.city') || !!errors?.address?.city}
           errors={errors}
           register={register}
         />
