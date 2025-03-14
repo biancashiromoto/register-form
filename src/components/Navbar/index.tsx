@@ -36,11 +36,12 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
         </Typography>
       )}
 
+      {/* 
       {user && currentPath !== '/home' && (
         <Link to="/home" activeProps={activeProps}>
           Home
         </Link>
-      )}
+      )} */}
 
       {user && currentPath === '/home' && (
         <Typography variant="body2">
