@@ -2,8 +2,8 @@ import { Button, ButtonBaseProps } from '@mui/material';
 import { FC, ReactNode } from 'react';
 
 export interface CustomButtonProps extends ButtonBaseProps {
-  variant: 'text' | 'outlined' | 'contained';
-  color:
+  variant?: 'text' | 'outlined' | 'contained';
+  color?:
     | 'inherit'
     | 'primary'
     | 'secondary'
@@ -16,20 +16,20 @@ export interface CustomButtonProps extends ButtonBaseProps {
 }
 
 const CustomButton: FC<CustomButtonProps> = ({
-  className,
-  variant,
-  color,
+  className = '',
+  variant = 'contained',
+  color = 'primary',
   type = 'button',
-  href,
+  href = undefined,
   children,
   ...rest
 }) => {
   return (
     <Button
-      className={className || ''}
+      className={className}
       variant={variant}
       color={color}
-      href={href || undefined}
+      href={href}
       component={href ? 'a' : 'button'}
       type={type}
       fullWidth
