@@ -21,7 +21,7 @@ describe('InputPassword', () => {
   };
 
   it('does not render when shouldShow is false', () => {
-    renderComponent({ ...mockProps, shouldShow: false });
+    renderComponent({ ...mockProps, hidden: true });
     expect(screen.queryByLabelText(/password/i)).not.toBeInTheDocument();
   });
 

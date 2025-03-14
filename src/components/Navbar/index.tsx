@@ -1,8 +1,11 @@
 import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
 import { Link, useLocation } from '@tanstack/react-router';
+import { ComponentProps, FC } from 'react';
 
-const Navbar = () => {
+interface NavbarProps extends ComponentProps<'nav'> {}
+
+const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
 
   const { user, setUser } = useAuth();
@@ -10,7 +13,7 @@ const Navbar = () => {
   const currentPath = location.pathname;
 
   return (
-    <nav className="navbar" data-testid="navbar">
+    <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
       {!user && !currentPath.includes('/register') && (
         <p>
           Not registered yet?{' '}

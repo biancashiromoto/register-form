@@ -1,33 +1,32 @@
-import { Box, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
+import { ComponentProps } from 'react';
 
-export type DatePickerProps = {
-  shouldShow?: boolean;
+export interface DatePickerProps extends ComponentProps<'input'> {
   errors: any;
   register: any;
-  required: boolean;
-};
+}
 
 const DatePicker = ({
-  shouldShow = true,
   errors,
   register,
   required = false,
+  hidden,
+  ...rest
 }: DatePickerProps) => {
   return (
-    shouldShow && (
-      <Box mb={2}>
-        <TextField
-          id="birth-date"
-          label="Birth date"
-          fullWidth
-          type="date"
-          slotProps={{ inputLabel: { shrink: true } }}
-          {...register('birthDate')}
-          error={!!errors.birthDate}
-          helperText={errors.birthDate?.message?.toString()}
-          required={required}
-        />
-      </Box>
+    !hidden && (
+      <TextField
+        id="birth-date"
+        label="Birth date"
+        fullWidth
+        type="date"
+        slotProps={{ inputLabel: { shrink: true } }}
+        {...register('birthDate')}
+        error={!!errors.birthDate}
+        helperText={errors.birthDate?.message?.toString()}
+        required={required}
+        {...rest}
+      />
     )
   );
 };

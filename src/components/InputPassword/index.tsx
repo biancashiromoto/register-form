@@ -7,20 +7,19 @@ import {
   InputLabel,
   OutlinedInput,
 } from '@mui/material';
-import { useState } from 'react';
+import { ComponentProps, useState } from 'react';
 import { FieldErrors } from 'react-hook-form';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
-export type InputPasswordProps = {
-  shouldShow?: boolean;
+export interface InputPasswordProps extends ComponentProps<'input'> {
   register: any;
   errors: FieldErrors<UserType>;
   isConfirmPassword?: boolean;
   isExistingPassword?: boolean;
-};
+}
 
 const InputPassword = ({
-  shouldShow = true,
+  hidden,
   errors,
   register,
   isConfirmPassword = false,
@@ -46,9 +45,8 @@ const InputPassword = ({
   };
 
   return (
-    shouldShow && (
+    !hidden && (
       <FormControl
-        sx={{ width: '100%' }}
         variant="outlined"
         id={passwordInputIdentification}
         error={!!errors.password}
