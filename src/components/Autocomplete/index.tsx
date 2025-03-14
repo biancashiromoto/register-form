@@ -1,13 +1,13 @@
 import { RegisterField, UserType } from '@/types';
 import { Autocomplete, TextField } from '@mui/material';
-import { Dispatch, SetStateAction } from 'react';
+import { ComponentProps, Dispatch, SetStateAction } from 'react';
 import {
   FieldErrors,
   UseFormGetValues,
   UseFormSetValue,
 } from 'react-hook-form';
 
-export type CustomAutocompleteProps<T> = {
+export interface CustomAutocompleteProps<T> extends ComponentProps<'select'> {
   getValues: UseFormGetValues<UserType>;
   errors: FieldErrors<UserType>;
   options: T[];
@@ -16,7 +16,7 @@ export type CustomAutocompleteProps<T> = {
   field: RegisterField;
   previousField: RegisterField;
   label: string;
-};
+}
 
 const CustomAutocomplete = <T extends { name: string }>({
   getValues,
