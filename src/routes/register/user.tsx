@@ -86,7 +86,7 @@ function RouteComponent() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
+    <Container maxWidth="sm">
       <Box
         mt={2}
         mx={2}
