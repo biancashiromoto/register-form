@@ -10,7 +10,7 @@ import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import { createRoute } from '@tanstack/react-router';
 import {
   City,
@@ -23,6 +23,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
+import CustomButton from '@/components/Button';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
@@ -172,26 +173,14 @@ function RouteComponent() {
         />
 
         {isValid && (
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            fullWidth
-            style={{ marginTop: '24px' }}
-          >
+          <CustomButton variant="contained" color="primary" type="submit">
             Next
-          </Button>
+          </CustomButton>
         )}
 
-        <Button
-          variant="outlined"
-          color="primary"
-          type="button"
-          fullWidth
-          onClick={clearForm}
-        >
+        <CustomButton variant="outlined" color="primary" onClick={clearForm}>
           Clear form
-        </Button>
+        </CustomButton>
       </Box>
       {snackbarState && <CustomSnackbar />}
     </>
