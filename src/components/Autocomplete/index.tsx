@@ -30,7 +30,7 @@ const CustomAutocomplete = <T extends { name: string }>({
 }: CustomAutocompleteProps<T>) => {
   return (
     <Autocomplete
-      style={{ width: '100%', marginBottom: '1em' }}
+      style={{ width: '100%' }}
       hidden={
         !getValues(previousField) &&
         !errors[previousField as keyof FieldErrors<UserType>]
@@ -38,7 +38,6 @@ const CustomAutocomplete = <T extends { name: string }>({
       disablePortal
       options={options}
       getOptionLabel={(option: T) => option.name}
-      sx={{ width: 300 }}
       renderInput={(params) => (
         <TextField
           {...params}
