@@ -13,6 +13,7 @@ export interface CustomButtonProps extends ButtonBaseProps {
     | 'warning';
   href?: string;
   children?: ReactNode;
+  fullWidth?: boolean;
 }
 
 const CustomButton: FC<CustomButtonProps> = ({
@@ -22,6 +23,7 @@ const CustomButton: FC<CustomButtonProps> = ({
   type = 'button',
   href = undefined,
   children,
+  fullWidth = true,
   ...rest
 }) => {
   return (
@@ -32,7 +34,7 @@ const CustomButton: FC<CustomButtonProps> = ({
       href={href}
       component={href ? 'a' : 'button'}
       type={type}
-      fullWidth
+      fullWidth={fullWidth}
       {...rest}
     >
       {children}

@@ -4,7 +4,7 @@ import InputPassword, { InputPasswordProps } from '../index';
 
 const mockRegister = vi.fn();
 const mockProps: InputPasswordProps = {
-  shouldShow: true,
+  hidden: false,
   errors: {},
   register: mockRegister,
   isConfirmPassword: false,

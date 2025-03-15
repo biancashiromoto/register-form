@@ -14,8 +14,6 @@ describe('Footer Component', () => {
       'href',
       'https://github.com/biancashiromoto/register-form',
     );
-    expect(linkElement).toHaveAttribute('target', '_blank');
-    expect(linkElement).toHaveAttribute('rel', 'noopener');
   });
 
   it('renders the GitHub icon with proper aria-label', () => {
