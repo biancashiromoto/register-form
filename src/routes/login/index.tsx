@@ -37,7 +37,7 @@ function RouteComponent() {
   useResetForm(email, resetField, 'password');
   const { mutate: login, isPending } = useLoginUser(setError);
 
-  if (isPending) return <LoadingLayer open={isPending} />;
+  if (isPending) return <LoadingLayer />;
 
   const onSubmit = (data: SignInWithPasswordCredentials) => {
     login(data);
