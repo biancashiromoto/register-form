@@ -4,15 +4,15 @@ import {
   useLocation,
   useNavigate,
 } from '@tanstack/react-router';
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useContext } from 'react';
 import LoadingLayer from '../LoadingLayer';
-import { privateRoutes } from '@/utils/commons/privateRoutes';
+import { Context } from '@/context';
 
 const VerificationLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentSession, initializing } = useAuth();
-  const isPrivateRoute = privateRoutes.includes(location.pathname);
+  const { isPrivateRoute } = useContext(Context);
 
   useLayoutEffect(() => {
     if (initializing) return;
@@ -21,9 +21,7 @@ const VerificationLayout: FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, [location.pathname, currentSession, initializing, isPrivateRoute]);
 
-  if (initializing) {
-    return <LoadingLayer open={initializing} />;
-  }
+  if (initializing) return <LoadingLayer />;
 
   return <div>{children}</div>;
 };
