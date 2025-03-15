@@ -6,8 +6,7 @@ import {
 } from '@tanstack/react-router';
 import { FC, ReactNode } from 'react';
 import LoadingLayer from '../LoadingLayer';
-
-export const privateRoutes = ['/home'];
+import { privateRoutes } from '@/utils/commons/privateRoutes';
 
 const VerificationLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const location = useLocation();
