@@ -3,6 +3,7 @@ import { supabase } from '@/services/supabase';
 import { Typography } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { ComponentProps, FC } from 'react';
+import { privateRoutes } from '../VerificationLayout';
 
 interface NavbarProps extends ComponentProps<'nav'> {}
 
@@ -16,7 +17,7 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
 
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
-      {!user && pathname !== '/register' && (
+      {pathname !== '/register' && !privateRoutes.includes(pathname) && (
         <Typography variant="body2">
           Not registered yet?{' '}
           <Link to="/register" activeProps={activeProps}>
@@ -25,7 +26,7 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
         </Typography>
       )}
 
-      {!user && pathname !== '/login' && (
+      {pathname !== '/login' && !privateRoutes.includes(pathname) && (
         <Typography variant="body2">
           Already registered?{' '}
           <Link to="/login" activeProps={activeProps}>
