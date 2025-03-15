@@ -19,6 +19,10 @@ const locations = {
     route: '/register',
     title: 'Register',
   },
+  profile: {
+    route: '/profile',
+    title: 'Profile',
+  },
 };
 
 const usePageTitle = () => {
