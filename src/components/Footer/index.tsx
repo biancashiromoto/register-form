@@ -4,18 +4,21 @@ import { Box, Container } from '@mui/material';
 
 const Footer = () => {
   return (
-    <Container
-      sx={{
-        position: 'fixed',
-        bottom: '0',
-        borderTop: 'solid 1px gray',
-      }}
-      data-testid="footer"
-    >
-      <Box component="footer" width={'100%'}>
+    <Container data-testid="footer">
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: '0',
+          borderTop: 'solid 1px gray',
+          textAlign: 'center',
+        }}
+        component="footer"
+        width={'100%'}
+      >
         <CustomButton
           variant="text"
           href="https://github.com/biancashiromoto/register-form"
+          fullWidth={false}
         >
           <IoLogoGithub
             size={25}
