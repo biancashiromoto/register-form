@@ -1,11 +1,15 @@
+import { Container, Paper } from '@mui/material';
 import { IoLogoGithub, IoOpenOutline } from 'react-icons/io5';
 import CustomButton from '../Button';
-import { Box, Container } from '@mui/material';
 
 const Footer = () => {
   return (
     <Container>
-      <Box component="footer" width={'100%'}>
+      <Paper
+        sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 2 }}
+        elevation={3}
+        component="footer"
+      >
         <CustomButton
           variant="text"
           href="https://github.com/biancashiromoto/register-form"
@@ -18,7 +22,7 @@ const Footer = () => {
           />
           GitHub repo <IoOpenOutline aria-label="Opens in a new tab" />
         </CustomButton>{' '}
-      </Box>
+      </Paper>
     </Container>
   );
 };
