@@ -6,6 +6,7 @@ import InputText from '@/components/InputText';
 import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
+import { useAuth } from '@/context/authContext';
 import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
@@ -13,7 +14,7 @@ import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import {
   City,
   Country,
@@ -51,7 +52,9 @@ function RouteComponent() {
   });
 
   const { snackbarState, setSnackbarState } = useContext(Context);
+  const { currentSession } = useAuth();
   const { mutate: registerUser, isPending } = useRegisterUser();
+  const navigate = useNavigate();
 
   const firstName = watch('firstName');
   const lastName = watch('lastName');
@@ -74,16 +77,15 @@ function RouteComponent() {
     registerUser(data);
   };
 
-  useEffect(
-    () =>
-      setSnackbarState((prevState: SnackbarStateType) => ({
-        ...prevState,
-        open: false,
-      })),
-    [],
-  );
+  useEffect(() => {
+    setSnackbarState((prevState: SnackbarStateType) => ({
+      ...prevState,
+      open: false,
+    }));
+    if (currentSession) navigate({ to: '/home' });
+  }, []);
 
-  if (isPending) return <LoadingLayer open={isPending} />;
+  if (isPending) return <LoadingLayer />;
 
   return (
     <Container maxWidth="sm">
