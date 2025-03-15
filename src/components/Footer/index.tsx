@@ -4,10 +4,7 @@ import { Box, Container } from '@mui/material';
 
 const Footer = () => {
   return (
-    <Container
-      data-testid="footer"
-      style={{ position: 'fixed', bottom: '0px' }}
-    >
+    <Container>
       <Box component="footer" width={'100%'}>
         <CustomButton
           variant="text"
