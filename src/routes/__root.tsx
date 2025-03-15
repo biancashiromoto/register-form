@@ -27,8 +27,8 @@ const RootLayout = () => {
             {page.title}
           </Typography>
         </Container>
-        <Footer />
         <Outlet />
+        <Footer />
       </ThemeProvider>
       {process.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
     </VerificationLayout>
