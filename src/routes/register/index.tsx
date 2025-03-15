@@ -59,6 +59,12 @@ function RouteComponent() {
   const email = watch('email');
   const password = watch('password');
 
+  useResetForm(firstName, resetField, 'lastName');
+  useResetForm(lastName, resetField, 'birthDate');
+  useResetForm(birthDate, resetField, 'email');
+  useResetForm(email, resetField, 'password');
+  useResetForm(password, resetField, 'confirmPassword');
+
   const clearForm = () => {
     reset(INITIAL_USER_STATE);
     clearErrors();
