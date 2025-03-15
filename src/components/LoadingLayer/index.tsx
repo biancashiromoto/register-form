@@ -1,11 +1,11 @@
 import { Backdrop, CircularProgress } from '@mui/material';
 
 export interface LoadingLayerProps {
-  open: boolean;
+  open?: boolean;
   handleClose?: () => void;
 }
 
-const LoadingLayer = ({ handleClose, open }: LoadingLayerProps) => {
+const LoadingLayer = ({ handleClose, open = true }: LoadingLayerProps) => {
   return (
     <Backdrop
       sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
