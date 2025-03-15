@@ -10,15 +10,13 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
 
   const { user, setUser } = useAuth();
-  const location = useLocation();
-  const currentPath = location.pathname;
+  const { pathname } = useLocation();
 
-  if (currentPath === '/unauthenticated' || currentPath === '/not-found')
-    return null;
+  if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
 
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
-      {!user && !currentPath.includes('/register') && (
+      {!user && pathname !== '/register' && (
         <Typography variant="body2">
           Not registered yet?{' '}
           <Link to="/register" activeProps={activeProps}>
@@ -27,7 +25,7 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
         </Typography>
       )}
 
-      {!user && currentPath !== '/login' && (
+      {!user && pathname !== '/login' && (
         <Typography variant="body2">
           Already registered?{' '}
           <Link to="/login" activeProps={activeProps}>
@@ -37,13 +35,13 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
       )}
 
       {/* 
-      {user && currentPath !== '/home' && (
+      {user && pathname !== '/home' && (
         <Link to="/home" activeProps={activeProps}>
           Home
         </Link>
       )} */}
 
-      {user && currentPath === '/home' && (
+      {user && pathname === '/home' && (
         <Typography variant="body2">
           <Link
             to="/login"
