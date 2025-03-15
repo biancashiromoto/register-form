@@ -1,8 +1,10 @@
-// import CustomBottomNavigation from '@/components/BottomNavigation';
+import CustomBottomNavigation from '@/components/BottomNavigation';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import VerificationLayout from '@/components/VerificationLayout';
 import { Context } from '@/context';
+import { useAuth } from '@/context/authContext';
+import Provider from '@/context/Provider';
 import usePageTitle from '@/hooks/usePageTitle';
 import {
   Container,
@@ -12,9 +14,11 @@ import {
 } from '@mui/material';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { useContext } from 'react';
+
 const RootLayout = () => {
-  const { theme } = useContext(Context);
+  const { theme, isPrivateRoute } = useContext(Context);
   const { page } = usePageTitle();
+  const { currentSession } = useAuth();
 
   return (
     <VerificationLayout>
@@ -28,7 +32,7 @@ const RootLayout = () => {
           </Typography>
         </Container>
         <Outlet />
-        {/* <CustomBottomNavigation /> */}
+        {isPrivateRoute && <CustomBottomNavigation />}
         <Footer />
       </ThemeProvider>
     </VerificationLayout>
@@ -36,5 +40,9 @@ const RootLayout = () => {
 };
 
 export const Route = createRootRoute({
-  component: RootLayout,
+  component: () => (
+    <Provider>
+      <RootLayout />
+    </Provider>
+  ),
 });
