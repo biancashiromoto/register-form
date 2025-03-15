@@ -21,28 +21,28 @@ const RootLayout = () => {
   const { currentSession } = useAuth();
 
   return (
-    <VerificationLayout>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Header />
-        <hr />
-        <Container maxWidth="sm" sx={{ marginTop: '16px' }}>
-          <Typography variant="h5" align="left" gutterBottom>
-            {page.title}
-          </Typography>
-        </Container>
-        <Outlet />
-        {isPrivateRoute && <CustomBottomNavigation />}
-        <Footer />
-      </ThemeProvider>
-    </VerificationLayout>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Header />
+      <hr />
+      <Container maxWidth="sm" sx={{ marginTop: '16px' }}>
+        <Typography variant="h5" align="left" gutterBottom>
+          {page.title}
+        </Typography>
+      </Container>
+      <Outlet />
+      {isPrivateRoute && currentSession && <CustomBottomNavigation />}
+      <Footer />
+    </ThemeProvider>
   );
 };
 
 export const Route = createRootRoute({
   component: () => (
     <Provider>
-      <RootLayout />
+      <VerificationLayout>
+        <RootLayout />
+      </VerificationLayout>
     </Provider>
   ),
 });
