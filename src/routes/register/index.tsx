@@ -82,7 +82,6 @@ function RouteComponent() {
       ...prevState,
       open: false,
     }));
-    if (currentSession) navigate({ to: '/home' });
   }, []);
 
   if (isPending) return <LoadingLayer />;
