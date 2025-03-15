@@ -1,4 +1,6 @@
-import App from '@/App';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+import VerificationLayout from '@/components/VerificationLayout';
 import { Context } from '@/context';
 import usePageTitle from '@/hooks/usePageTitle';
 import {
@@ -15,18 +17,21 @@ const RootLayout = () => {
   const { page } = usePageTitle();
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
-      <hr />
-      <Container maxWidth="sm" sx={{ marginTop: '16px' }}>
-        <Typography variant="h5" align="left" gutterBottom>
-          {page.title}
-        </Typography>
-      </Container>
-      <Outlet />
+    <VerificationLayout>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Header />
+        <hr />
+        <Container maxWidth="sm" sx={{ marginTop: '16px' }}>
+          <Typography variant="h5" align="left" gutterBottom>
+            {page.title}
+          </Typography>
+        </Container>
+        <Footer />
+        <Outlet />
+      </ThemeProvider>
       {process.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
-    </ThemeProvider>
+    </VerificationLayout>
   );
 };
 
