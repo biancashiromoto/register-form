@@ -1,9 +1,11 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { useNavigate, useLocation } from '@tanstack/react-router';
 import { useAuth } from '@/context/authContext';
 import VerificationLayout from '..';
 import { Session } from '@supabase/supabase-js';
+import { Context } from '@/context';
+import { ContextProps } from '@/context/index.types';
 
 vi.mock('@tanstack/react-router', async () => {
   const actual = await vi.importActual('@tanstack/react-router');
@@ -34,11 +36,18 @@ const mockProps: {
   initializing: false,
 };
 
+const mockContext = {
+  isPrivateRoute: false,
+} as unknown as ContextProps;
+
 describe('VerificationLayout Component', () => {
   const navigateMock = vi.fn();
-  beforeEach(() => vi.resetAllMocks());
 
-  const renderComponent = (props = mockProps) => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  const renderComponent = (props = mockProps, context = mockContext) => {
     (useAuth as any).mockReturnValue({
       user: props.currentSession?.user ?? null,
       currentSession: props.currentSession,
@@ -48,18 +57,22 @@ describe('VerificationLayout Component', () => {
     (useNavigate as any).mockReturnValue(navigateMock);
 
     render(
-      <VerificationLayout>
-        <div>Protected Content</div>
-      </VerificationLayout>,
+      <Context.Provider value={context}>
+        <VerificationLayout>
+          <div>Protected Content</div>
+        </VerificationLayout>
+      </Context.Provider>,
     );
   };
 
-  it('should redirect to /unauthenticated if user is not authenticated and route is not public', async () => {
-    renderComponent({
-      ...mockProps,
-      currentSession: null,
-    });
-
+  it('should redirect to /unauthenticated if user is not authenticated and route is private', async () => {
+    renderComponent(
+      {
+        ...mockProps,
+        currentSession: null,
+      },
+      { isPrivateRoute: true } as unknown as ContextProps,
+    );
     await waitFor(() => {
       expect(navigateMock).toHaveBeenCalledWith({
         to: '/unauthenticated',
@@ -70,7 +83,6 @@ describe('VerificationLayout Component', () => {
 
   it('should not redirect if user is authenticated', () => {
     renderComponent({ ...mockProps, initializing: false });
-
     expect(navigateMock).not.toHaveBeenCalled();
   });
 
@@ -79,7 +91,6 @@ describe('VerificationLayout Component', () => {
       ...mockProps,
       location: { pathname: '/login' },
     });
-
     expect(navigateMock).not.toHaveBeenCalled();
   });
 
@@ -88,7 +99,6 @@ describe('VerificationLayout Component', () => {
       ...mockProps,
       initializing: true,
     });
-
     expect(screen.getByTestId('loading-img')).toBeInTheDocument();
   });
 });
