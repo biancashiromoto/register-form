@@ -14,10 +14,7 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^3.10.0",
-    "@mui/material": "^6.3.1",
     "@tanstack/eslint-plugin-query": "^5.62.16",
     "@tanstack/query-sync-storage-persister": "^5.62.16",
     "@tanstack/react-query-devtools": "^5.63.0",
@@ -30,7 +27,11 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@eslint/js": "^9.17.0",
+    "@mui/icons-material": "^6.4.7",
+    "@mui/material": "^6.4.7",
     "@supabase/supabase-js": "^2.48.1",
     "@tanstack/react-query": "^5.65.1",
     "@tanstack/react-router": "^1.99.13",
