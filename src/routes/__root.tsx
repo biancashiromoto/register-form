@@ -1,3 +1,4 @@
+// import CustomBottomNavigation from '@/components/BottomNavigation';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import VerificationLayout from '@/components/VerificationLayout';
@@ -10,7 +11,6 @@ import {
   Typography,
 } from '@mui/material';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { useContext } from 'react';
 const RootLayout = () => {
   const { theme } = useContext(Context);
@@ -28,9 +28,9 @@ const RootLayout = () => {
           </Typography>
         </Container>
         <Outlet />
+        {/* <CustomBottomNavigation /> */}
         <Footer />
       </ThemeProvider>
-      {process.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
     </VerificationLayout>
   );
 };
