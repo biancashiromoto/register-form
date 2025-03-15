@@ -2,13 +2,15 @@ import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import InputText from '@/components/InputText';
 import LoadingLayer from '@/components/LoadingLayer';
+import { useAuth } from '@/context/authContext';
 import useLoginUser from '@/hooks/useLoginUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { loginSchema } from '@/schemas/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
 import { SignInWithPasswordCredentials } from '@supabase/supabase-js';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/login/')({
@@ -36,12 +38,18 @@ function RouteComponent() {
   const password = watch('password');
   useResetForm(email, resetField, 'password');
   const { mutate: login, isPending } = useLoginUser(setError);
+  const { currentSession } = useAuth();
+  const navigate = useNavigate();
 
-  if (isPending) return <LoadingLayer />;
+  useEffect(() => {
+    if (currentSession) navigate({ to: '/home' });
+  }, []);
 
   const onSubmit = (data: SignInWithPasswordCredentials) => {
     login(data);
   };
+
+  if (isPending) return <LoadingLayer />;
 
   return (
     <Container maxWidth="sm">
