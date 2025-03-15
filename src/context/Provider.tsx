@@ -2,7 +2,7 @@ import { AddressType, SnackbarStateType, UserType } from '@/types';
 import {
   getLocalStorage,
   setLocalStorage,
-} from '@/utils/commons/localStorageManagement';
+} from '@/helpers/localStorageManagement';
 import { createTheme, useMediaQuery } from '@mui/material';
 import { FC, ReactNode, useMemo, useState } from 'react';
 import { Context } from '.';

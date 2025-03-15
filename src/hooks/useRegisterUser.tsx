@@ -1,4 +1,5 @@
 import { Context } from '@/context';
+import { scrollToTop } from '@/helpers';
 import { registerUser } from '@/services/user';
 import { UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
@@ -12,13 +13,9 @@ const useRegisterUser = () => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ['registerUser'],
-    mutationFn: async (data: UserType) => {
-      const response = await registerUser(data);
-      if (!response || !response.data?.session) {
-        throw new Error('Error registering user');
-      }
-    },
+    mutationFn: (data: UserType) => registerUser(data),
     onSuccess: () => {
+      scrollToTop();
       setSnackbarState({
         open: true,
         message: 'User successfully registered!',
@@ -26,7 +23,7 @@ const useRegisterUser = () => {
       });
       setTimeout(() => {
         navigate({ to: '/login', replace: true });
-      }, 500);
+      }, 100);
     },
     onError: (error) => {
       setSnackbarState({

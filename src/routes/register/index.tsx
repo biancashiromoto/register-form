@@ -180,7 +180,7 @@ function RouteComponent() {
 
         {isValid && (
           <CustomButton variant="contained" color="primary" type="submit">
-            Sign in
+            Sign up
           </CustomButton>
         )}
 
