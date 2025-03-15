@@ -25,6 +25,7 @@ import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
 import CustomButton from '@/components/Button';
 import LoadingLayer from '@/components/LoadingLayer';
+import InputPassword from '@/components/InputPassword';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
@@ -169,11 +170,16 @@ function RouteComponent() {
           setterCallback={setSelectedCity}
         />
 
-        <InputPasswordContainer
-          hidden={!getValues('address.city') || !!errors?.address?.city}
-          errors={errors}
-          register={register}
-        />
+        {!!getValues('address.city') && !errors?.address?.city && (
+          <Box width={'100%'} display="flex" flexDirection="column" gap={2}>
+            <InputPassword errors={errors} register={register} />
+            <InputPassword
+              errors={errors}
+              register={register}
+              isConfirmPassword
+            />
+          </Box>
+        )}
 
         {isValid && (
           <CustomButton variant="contained" color="primary" type="submit">
