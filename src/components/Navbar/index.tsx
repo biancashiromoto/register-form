@@ -1,9 +1,9 @@
 import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
+import { privateRoutes } from '@/utils/commons/privateRoutes';
 import { Typography } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { ComponentProps, FC } from 'react';
-import { privateRoutes } from '../VerificationLayout';
 
 interface NavbarProps extends ComponentProps<'nav'> {}
 
