@@ -71,7 +71,7 @@ function RouteComponent() {
           isExistingPassword
         />
 
-        {!!email && !errors.email && !!password && !errors.password && (
+        {!!password && !errors.password && (
           <CustomButton variant="contained" color="primary" type="submit">
             Next
           </CustomButton>
