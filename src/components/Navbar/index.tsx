@@ -1,9 +1,10 @@
+import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
 import { privateRoutes } from '@/utils/commons/privateRoutes';
 import { Typography } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
-import { ComponentProps, FC } from 'react';
+import { ComponentProps, FC, useContext } from 'react';
 
 interface NavbarProps extends ComponentProps<'nav'> {}
 
@@ -12,6 +13,7 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
 
   const { user, setUser } = useAuth();
   const { pathname } = useLocation();
+  const { isPrivateRoute } = useContext(Context);
 
   if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
 
@@ -42,7 +44,7 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
         </Link>
       )} */}
 
-      {user && pathname === '/home' && (
+      {!isPrivateRoute && (
         <Typography variant="body2">
           <Link
             to="/login"
