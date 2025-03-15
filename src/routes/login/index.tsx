@@ -9,8 +9,7 @@ import { loginSchema } from '@/schemas/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
 import { SignInWithPasswordCredentials } from '@supabase/supabase-js';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useEffect } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/login/')({
@@ -39,11 +38,6 @@ function RouteComponent() {
   useResetForm(email, resetField, 'password');
   const { mutate: login, isPending } = useLoginUser(setError);
   const { currentSession } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (currentSession) navigate({ to: '/home' });
-  }, []);
 
   const onSubmit = (data: SignInWithPasswordCredentials) => {
     login(data);
