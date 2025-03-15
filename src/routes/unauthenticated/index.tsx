@@ -9,11 +9,11 @@ export const Route = createFileRoute('/unauthenticated/')({
 function RouteComponent() {
   return (
     <Container maxWidth="sm">
-      <Typography variant="h3" gutterBottom>
+      <Typography variant="h3" fontSize={32} gutterBottom>
         Oops, you are not authenticated!
       </Typography>
       <Typography variant="body1" gutterBottom>
-        It seems you're not logged in. To acces this page, please login or
+        It seems you are not logged in. To acces this page, please login or
         register.
       </Typography>
       <Box
