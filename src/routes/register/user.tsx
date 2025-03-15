@@ -1,7 +1,9 @@
 import CustomAutocomplete from '@/components/Autocomplete';
+import CustomButton from '@/components/Button';
 import DatePicker from '@/components/DatePicker';
-import InputPasswordContainer from '@/components/InputPassword/Container';
+import InputPassword from '@/components/InputPassword';
 import InputText from '@/components/InputText';
+import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import useRegisterUser from '@/hooks/useRegisterUser';
@@ -23,9 +25,6 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Route as RegisterRoute } from '.';
-import CustomButton from '@/components/Button';
-import LoadingLayer from '@/components/LoadingLayer';
-import InputPassword from '@/components/InputPassword';
 
 export const Route = createRoute({
   getParentRoute: () => RegisterRoute,
