@@ -27,16 +27,16 @@ export default function CustomBottomNavigation() {
             setValue(newValue);
           }}
         >
-          <BottomNavigationAction
-            label="Profile"
-            icon={<AccountCircleIcon />}
-            onClick={() => navigate({ to: '/profile' })}
-          />
           {/* <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} /> */}
           <BottomNavigationAction
             label="Home"
             icon={<HomeIcon />}
             onClick={() => navigate({ to: '/home' })}
+          />
+          <BottomNavigationAction
+            label="Profile"
+            icon={<AccountCircleIcon />}
+            onClick={() => navigate({ to: '/profile' })}
           />
         </BottomNavigation>
       </Paper>
