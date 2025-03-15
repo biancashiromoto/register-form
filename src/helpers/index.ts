@@ -39,3 +39,7 @@ export const filterOptions = (
 export const passwordValidation = new RegExp(
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
 );
+
+export const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'instant' });
+};
