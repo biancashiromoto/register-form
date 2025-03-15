@@ -1,4 +1,8 @@
 import { AddressType, SnackbarStateType, UserType } from '@/types';
+import {
+  getLocalStorage,
+  setLocalStorage,
+} from '@/utils/commons/localStorageManagement';
 import { createTheme, useMediaQuery } from '@mui/material';
 import { FC, ReactNode, useMemo, useState } from 'react';
 import { Context } from '.';
@@ -6,7 +10,13 @@ import { ContextProps } from './index.types';
 
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [isDarkModeOn, setIsDarkModeOn] = useState(prefersDarkMode);
+  const [isDarkModeOn, setIsDarkModeOn] = useState<boolean>(() => {
+    const storedTheme = getLocalStorage('theme');
+    if (storedTheme) {
+      return storedTheme === 'dark';
+    }
+    return prefersDarkMode;
+  });
   const [snackbarState, setSnackbarState] = useState<SnackbarStateType>({
     open: false,
     message: '',
@@ -16,7 +26,11 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const [selectedLocation, setSelectedLocation] = useState({} as AddressType);
 
   const toggleTheme = () => {
-    setIsDarkModeOn((prevMode) => !prevMode);
+    setIsDarkModeOn((prevMode: boolean) => {
+      const newMode = !prevMode;
+      setLocalStorage('theme', newMode ? 'dark' : 'light');
+      return newMode;
+    });
   };
 
   const theme = useMemo(

@@ -1,13 +1,19 @@
 import { styled, Switch } from '@mui/material';
 
-export const CustomSwitch = styled(Switch)(({ theme }) => ({
+export const ToggleThemeSwitch = styled(Switch)(({ theme }) => ({
   width: 62,
   height: 34,
   padding: 7,
+  transform: 'translateX(-16px)',
+
+  [theme.breakpoints.up('md')]: {
+    left: '50%',
+    transform: 'translateX(-16px)',
+  },
+
   '& .MuiSwitch-switchBase': {
     margin: 1,
     padding: 0,
-    transform: 'translateX(6px)',
     '&.Mui-checked': {
       color: '#fff',
       transform: 'translateX(22px)',

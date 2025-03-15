@@ -54,7 +54,7 @@ describe('useLoginUser', () => {
     });
 
     act(() => {
-      result.current.login({ email: 'user@example.com', password: 'pass' });
+      result.current.mutate({ email: 'user@example.com', password: 'pass' });
     });
 
     await waitFor(() => {
@@ -76,7 +76,7 @@ describe('useLoginUser', () => {
     });
 
     act(() => {
-      result.current.login({
+      result.current.mutate({
         email: 'user@example.com',
         password: 'wrongpass',
       });

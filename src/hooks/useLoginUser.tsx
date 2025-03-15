@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { UseFormSetError } from 'react-hook-form';
 
-type SetErrorFunction = UseFormSetError<SignInWithPasswordCredentials>;
+type SetErrorFunction = UseFormSetError<{ email: string; password: string }>;
 
 const useLoginUser = (setError: SetErrorFunction) => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const useLoginUser = (setError: SetErrorFunction) => {
     });
   };
 
-  const mutation = useMutation({
+  const { isError, mutate, isPending } = useMutation({
     mutationKey: ['loginUser'],
     mutationFn: async (credentials: SignInWithPasswordCredentials) => {
       const response = await loginUser(credentials);
@@ -49,8 +49,9 @@ const useLoginUser = (setError: SetErrorFunction) => {
   });
 
   return {
-    login: mutation.mutate,
-    isError: mutation.isError,
+    mutate,
+    isError,
+    isPending,
   };
 };
 

@@ -10,9 +10,14 @@ const useRegisterUser = () => {
   const { setSnackbarState, setRegisteringUser } = useContext(Context);
   const navigate = useNavigate();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ['registerUser'],
-    mutationFn: (data: UserType) => registerUser(data),
+    mutationFn: async (data: UserType) => {
+      const response = await registerUser(data);
+      if (!response || !response.data?.session) {
+        throw new Error('Error registering user');
+      }
+    },
     onSuccess: () => {
       setSnackbarState({
         open: true,
@@ -21,7 +26,7 @@ const useRegisterUser = () => {
       });
       setTimeout(() => {
         navigate({ to: '/login', replace: true });
-      }, 2000);
+      }, 500);
     },
     onError: (error) => {
       setSnackbarState({
@@ -35,7 +40,7 @@ const useRegisterUser = () => {
     },
   });
 
-  return { mutate };
+  return { mutate, isPending };
 };
 
 export default useRegisterUser;

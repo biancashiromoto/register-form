@@ -1,5 +1,7 @@
 import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
+import { privateRoutes } from '@/utils/commons/privateRoutes';
+import { Typography } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { ComponentProps, FC } from 'react';
 
@@ -9,45 +11,49 @@ const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
 
   const { user, setUser } = useAuth();
-  const location = useLocation();
-  const currentPath = location.pathname;
+  const { pathname } = useLocation();
+
+  if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
 
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
-      {!user && !currentPath.includes('/register') && (
-        <p>
+      {pathname !== '/register' && !privateRoutes.includes(pathname) && (
+        <Typography variant="body2">
           Not registered yet?{' '}
           <Link to="/register" activeProps={activeProps}>
             Register
           </Link>
-        </p>
+        </Typography>
       )}
 
-      {!user && currentPath !== '/login' && (
-        <p>
+      {pathname !== '/login' && !privateRoutes.includes(pathname) && (
+        <Typography variant="body2">
           Already registered?{' '}
           <Link to="/login" activeProps={activeProps}>
             Login
           </Link>
-        </p>
+        </Typography>
       )}
 
-      {user && currentPath !== '/home' && (
+      {/* 
+      {user && pathname !== '/home' && (
         <Link to="/home" activeProps={activeProps}>
           Home
         </Link>
-      )}
+      )} */}
 
-      {user && currentPath === '/home' && (
-        <Link
-          to="/login"
-          onClick={async () => {
-            await supabase.auth.signOut();
-            setUser(null);
-          }}
-        >
-          Logout
-        </Link>
+      {user && pathname === '/home' && (
+        <Typography variant="body2">
+          <Link
+            to="/login"
+            onClick={async () => {
+              await supabase.auth.signOut();
+              setUser(null);
+            }}
+          >
+            Logout
+          </Link>
+        </Typography>
       )}
     </nav>
   );

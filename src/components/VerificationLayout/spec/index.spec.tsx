@@ -89,6 +89,6 @@ describe('VerificationLayout Component', () => {
       initializing: true,
     });
 
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByTestId('loading-img')).toBeInTheDocument();
   });
 });
