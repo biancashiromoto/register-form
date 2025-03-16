@@ -1,11 +1,12 @@
 import { Context } from '@/context';
-import { scrollToTop } from '@/helpers';
 import { signUpUser } from '@/services/user';
 import { UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const useRegisterUser = () => {
   const { setSnackbarState, setRegisteringUser } = useContext(Context);
@@ -14,16 +15,14 @@ const useRegisterUser = () => {
   const { mutate, isPending } = useMutation({
     mutationKey: ['registerUser'],
     mutationFn: (data: UserType) => signUpUser(data),
-    onSuccess: () => {
-      scrollToTop();
+    onSuccess: async () => {
       setSnackbarState({
         open: true,
         message: 'User successfully registered!',
         severity: 'success',
       });
-      setTimeout(() => {
-        navigate({ to: '/login', replace: true });
-      }, 100);
+      await delay(100);
+      navigate({ to: '/login', replace: true, viewTransition: true });
     },
     onError: (error) => {
       setSnackbarState({
