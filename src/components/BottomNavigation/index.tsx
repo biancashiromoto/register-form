@@ -31,12 +31,12 @@ export default function CustomBottomNavigation() {
           <BottomNavigationAction
             label="Home"
             icon={<HomeIcon />}
-            onClick={() => navigate({ to: '/home' })}
+            onClick={() => navigate({ to: '/home', viewTransition: true })}
           />
           <BottomNavigationAction
             label="Profile"
             icon={<AccountCircleIcon />}
-            onClick={() => navigate({ to: '/profile' })}
+            onClick={() => navigate({ to: '/profile', viewTransition: true })}
           />
         </BottomNavigation>
       </Paper>
