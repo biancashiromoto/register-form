@@ -17,6 +17,7 @@ import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as HomeIndexImport } from './routes/home/index'
+import { Route as RegisterSuccessIndexImport } from './routes/register/success/index'
 
 // Create/Update Routes
 
@@ -53,6 +54,12 @@ const LoginIndexRoute = LoginIndexImport.update({
 const HomeIndexRoute = HomeIndexImport.update({
   id: '/home/',
   path: '/home/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const RegisterSuccessIndexRoute = RegisterSuccessIndexImport.update({
+  id: '/register/success/',
+  path: '/register/success/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedIndexImport
       parentRoute: typeof rootRoute
     }
+    '/register/success/': {
+      id: '/register/success/'
+      path: '/register/success'
+      fullPath: '/register/success'
+      preLoaderRoute: typeof RegisterSuccessIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -114,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileIndexRoute
   '/register': typeof RegisterIndexRoute
   '/unauthenticated': typeof UnauthenticatedIndexRoute
+  '/register/success': typeof RegisterSuccessIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -123,6 +138,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileIndexRoute
   '/register': typeof RegisterIndexRoute
   '/unauthenticated': typeof UnauthenticatedIndexRoute
+  '/register/success': typeof RegisterSuccessIndexRoute
 }
 
 export interface FileRoutesById {
@@ -133,6 +149,7 @@ export interface FileRoutesById {
   '/profile/': typeof ProfileIndexRoute
   '/register/': typeof RegisterIndexRoute
   '/unauthenticated/': typeof UnauthenticatedIndexRoute
+  '/register/success/': typeof RegisterSuccessIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -144,8 +161,16 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/unauthenticated'
+    | '/register/success'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/login' | '/profile' | '/register' | '/unauthenticated'
+  to:
+    | '/'
+    | '/home'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/unauthenticated'
+    | '/register/success'
   id:
     | '__root__'
     | '/'
@@ -154,6 +179,7 @@ export interface FileRouteTypes {
     | '/profile/'
     | '/register/'
     | '/unauthenticated/'
+    | '/register/success/'
   fileRoutesById: FileRoutesById
 }
 
@@ -164,6 +190,7 @@ export interface RootRouteChildren {
   ProfileIndexRoute: typeof ProfileIndexRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
   UnauthenticatedIndexRoute: typeof UnauthenticatedIndexRoute
+  RegisterSuccessIndexRoute: typeof RegisterSuccessIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -173,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileIndexRoute: ProfileIndexRoute,
   RegisterIndexRoute: RegisterIndexRoute,
   UnauthenticatedIndexRoute: UnauthenticatedIndexRoute,
+  RegisterSuccessIndexRoute: RegisterSuccessIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -190,7 +218,8 @@ export const routeTree = rootRoute
         "/login/",
         "/profile/",
         "/register/",
-        "/unauthenticated/"
+        "/unauthenticated/",
+        "/register/success/"
       ]
     },
     "/": {
@@ -210,6 +239,9 @@ export const routeTree = rootRoute
     },
     "/unauthenticated/": {
       "filePath": "unauthenticated/index.tsx"
+    },
+    "/register/success/": {
+      "filePath": "register/success/index.tsx"
     }
   }
 }
