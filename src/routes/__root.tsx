@@ -26,9 +26,12 @@ const RootLayout = () => {
       <Header />
       <hr />
       <Container maxWidth="sm" sx={{ marginTop: '16px' }}>
-        <Typography variant="h5" align="left" gutterBottom>
-          {page?.title}
-        </Typography>
+        {((isPrivateRoute && currentSession) ||
+          (!isPrivateRoute && !currentSession)) && (
+          <Typography variant="h5" align="left" gutterBottom>
+            {page?.title}
+          </Typography>
+        )}
       </Container>
       <Outlet />
       {isPrivateRoute && currentSession && <CustomBottomNavigation />}
