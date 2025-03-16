@@ -1,3 +1,4 @@
+import AlreadySignedIn from '@/components/AlreadySignedIn';
 import CustomAutocomplete from '@/components/Autocomplete';
 import CustomButton from '@/components/Button';
 import DatePicker from '@/components/DatePicker';
@@ -14,8 +15,7 @@ import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
-import { useLayoutEffect } from '@tanstack/react-router';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   City,
   Country,
@@ -54,6 +54,7 @@ function RouteComponent() {
 
   const { snackbarState, setSnackbarState } = useContext(Context);
   const { mutate: registerUser, isPending } = useRegisterUser();
+  const { currentSession, setUser } = useAuth();
 
   const firstName = watch('firstName');
   const lastName = watch('lastName');
@@ -82,6 +83,8 @@ function RouteComponent() {
       open: false,
     }));
   }, []);
+
+  if (currentSession) return <AlreadySignedIn />;
 
   if (isPending) return <LoadingLayer />;
 
