@@ -1,57 +1,71 @@
+import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
-import { privateRoutes } from '@/utils/commons/privateRoutes';
-import { Typography } from '@mui/material';
+import { Typography, useTheme } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
-import { ComponentProps, FC } from 'react';
+import { ComponentProps, FC, useContext, useState } from 'react';
+import LoadingLayer from '../LoadingLayer';
 
-interface NavbarProps extends ComponentProps<'nav'> {}
-
-const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
+const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
 
-  const { user, setUser } = useAuth();
+  const { setUser, currentSession } = useAuth();
+  const theme = useTheme();
   const { pathname } = useLocation();
+  const { isPrivateRoute } = useContext(Context);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
 
+  if (isLoggingOut) return <LoadingLayer />;
+
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
-      {pathname !== '/register' && !privateRoutes.includes(pathname) && (
+      {!pathname.includes('/register') && !currentSession && (
         <Typography variant="body2">
           Not registered yet?{' '}
-          <Link to="/register" activeProps={activeProps}>
-            Register
+          <Link
+            to="/register"
+            activeProps={activeProps}
+            style={{
+              color: theme.palette.text.secondary,
+            }}
+          >
+            Sign up
           </Link>
         </Typography>
       )}
 
-      {pathname !== '/login' && !privateRoutes.includes(pathname) && (
+      {!pathname.includes('/login') && !currentSession && (
         <Typography variant="body2">
           Already registered?{' '}
-          <Link to="/login" activeProps={activeProps}>
-            Login
+          <Link
+            to="/login"
+            activeProps={activeProps}
+            style={{
+              color: theme.palette.text.secondary,
+            }}
+          >
+            Sign in
           </Link>
         </Typography>
       )}
 
-      {/* 
-      {user && pathname !== '/home' && (
-        <Link to="/home" activeProps={activeProps}>
-          Home
-        </Link>
-      )} */}
-
-      {user && pathname === '/home' && (
+      {isPrivateRoute && currentSession && (
         <Typography variant="body2">
           <Link
             to="/login"
             onClick={async () => {
+              setIsLoggingOut(true);
               await supabase.auth.signOut();
               setUser(null);
+              setIsLoggingOut(false);
+            }}
+            style={{
+              color: theme.palette.text.secondary,
             }}
           >
-            Logout
+            Sign out
           </Link>
         </Typography>
       )}

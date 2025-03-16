@@ -1,3 +1,4 @@
+import AlreadySignedIn from '@/components/AlreadySignedIn';
 import CustomAutocomplete from '@/components/Autocomplete';
 import CustomButton from '@/components/Button';
 import DatePicker from '@/components/DatePicker';
@@ -6,6 +7,7 @@ import InputText from '@/components/InputText';
 import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
+import { useAuth } from '@/context/authContext';
 import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
@@ -50,8 +52,10 @@ function RouteComponent() {
     defaultValues: INITIAL_USER_STATE,
   });
 
-  const { snackbarState, setSnackbarState } = useContext(Context);
+  const { snackbarState, setSnackbarState, setRegisteringUser } =
+    useContext(Context);
   const { mutate: registerUser, isPending } = useRegisterUser();
+  const { currentSession } = useAuth();
 
   const firstName = watch('firstName');
   const lastName = watch('lastName');
@@ -71,19 +75,20 @@ function RouteComponent() {
   };
 
   const onSubmit = async (data: UserType) => {
-    registerUser(data);
+    setRegisteringUser({ ...data, address: getValues('address') });
+    registerUser({ ...data, address: getValues('address') });
   };
 
-  useEffect(
-    () =>
-      setSnackbarState((prevState: SnackbarStateType) => ({
-        ...prevState,
-        open: false,
-      })),
-    [],
-  );
+  useEffect(() => {
+    setSnackbarState((prevState: SnackbarStateType) => ({
+      ...prevState,
+      open: false,
+    }));
+  }, []);
 
-  if (isPending) return <LoadingLayer open={isPending} />;
+  if (currentSession) return <AlreadySignedIn />;
+
+  if (isPending) return <LoadingLayer />;
 
   return (
     <Container maxWidth="sm">

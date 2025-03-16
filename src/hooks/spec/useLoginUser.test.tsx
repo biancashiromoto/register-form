@@ -63,7 +63,10 @@ describe('useLoginUser', () => {
     });
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith({ to: '/home' });
+      expect(mockNavigate).toHaveBeenCalledWith({
+        to: '/home',
+        viewTransition: true,
+      });
     });
   });
 

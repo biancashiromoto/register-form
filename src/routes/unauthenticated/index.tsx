@@ -25,8 +25,10 @@ function RouteComponent() {
           flexDirection: 'column',
         }}
       >
-        <CustomButton href="/login">Login</CustomButton>
-        <CustomButton variant="outlined" href="/register">
+        <CustomButton href="/login" openInNewTab={false}>
+          Login
+        </CustomButton>
+        <CustomButton variant="outlined" href="/register" openInNewTab={false}>
           Register
         </CustomButton>
       </Box>

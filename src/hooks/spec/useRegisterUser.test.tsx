@@ -1,126 +1,77 @@
+import { FC, ReactNode } from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { vi } from 'vitest';
-import { INITIAL_USER_STATE } from '@/utils/commons';
-import { useNavigate } from '@tanstack/react-router';
 import { Context } from '@/context';
-import { registerUser } from '@/services/user';
-import useRegisterUser from '../useRegisterUser';
+import { INITIAL_USER_STATE } from '@/utils/commons';
+import { signUpUser } from '@/services/user';
+import { useNavigate } from '@tanstack/react-router';
+import { ContextProps } from '@/context/index.types';
 import { mockUser } from '@/tests/mocks';
+import useRegisterUser from '../useRegisterUser';
 
-vi.mock('@/services/user', () => ({
-  registerUser: vi.fn(),
+vi.mock('@/services/user');
+vi.mock('@tanstack/react-router', () => ({
+  useNavigate: vi.fn(),
 }));
 
-vi.mock('@tanstack/react-router', async () => {
-  const actual = await vi.importActual('@tanstack/react-router');
-  return {
-    ...actual,
-    useNavigate: vi.fn(),
-  };
-});
-
 describe('useRegisterUser', () => {
+  let setSnackbarStateMock: any;
+  let navigateMock: any;
   let queryClient: QueryClient;
-  let wrapper: React.FC<{ children: React.ReactNode }>;
-  const mockSetSnackbarState = vi.fn();
-  const mockSetRegisteringUser = vi.fn();
-  const mockNavigate = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
+    setSnackbarStateMock = vi.fn();
+    navigateMock = vi.fn();
+    (useNavigate as any).mockReturnValue(navigateMock);
     queryClient = new QueryClient();
-    (useNavigate as any).mockReturnValue(mockNavigate);
-
-    wrapper = ({ children }) => (
-      <Context.Provider
-        value={
-          {
-            setSnackbarState: mockSetSnackbarState,
-            setRegisteringUser: mockSetRegisteringUser,
-          } as any
-        }
-      >
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      </Context.Provider>
-    );
   });
 
-  it('navigates to /login on successful registration and calls setSnackbarState and setRegisteringUser', async () => {
-    const mockResponse = {
-      data: {
-        session: {
-          access_token: 'token',
-          user: { id: '1', email: 'test@test.com' },
-        },
-      },
-    };
-    (registerUser as any).mockResolvedValue(mockResponse);
+  const wrapper: FC<{ children: ReactNode }> = ({ children }) => (
+    <Context.Provider
+      value={
+        {
+          setSnackbarState: setSnackbarStateMock,
+        } as unknown as ContextProps
+      }
+    >
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </Context.Provider>
+  );
 
-    const { result } = renderHook(() => useRegisterUser(), {
-      wrapper,
-    });
+  it('should successfully register user', async () => {
+    (signUpUser as any).mockResolvedValue({ success: true });
+    const { result } = renderHook(() => useRegisterUser(), { wrapper });
 
     act(() => {
-      result.current.mutate({
-        email: 'test@test.com',
-        password: 'password',
-        firstName: '',
-        lastName: '',
-        birthDate: '',
-        address: {
-          country: '',
-          state: '',
-          city: '',
-        },
-      });
+      result.current.mutate(mockUser);
     });
 
     await waitFor(() => {
-      expect(mockSetSnackbarState).toHaveBeenCalledWith({
-        open: true,
-        message: 'User successfully registered!',
-        severity: 'success',
+      expect(signUpUser).toHaveBeenCalledTimes(1);
+      expect(navigateMock).toHaveBeenCalledWith({
+        to: '/register/success',
+        replace: true,
+        viewTransition: true,
       });
     });
-
-    vi.useFakeTimers();
-    act(() => {
-      vi.advanceTimersByTime(2000);
-    });
-    // vi.useRealTimers();
-    // expect(mockNavigate).toHaveBeenCalledWith({ to: '/login', replace: true });
-
-    expect(mockSetRegisteringUser).toHaveBeenCalledWith(INITIAL_USER_STATE);
   });
 
-  // it('calls setSnackbarState with error message on failed registration and calls setRegisteringUser', async () => {
-  //   const errorMessage = 'Invalid login credentials';
-  //   (registerUser as any).mockRejectedValue(new Error(errorMessage));
+  it('should handle error', async () => {
+    const errorMessage = 'Error registering';
+    (signUpUser as any).mockRejectedValue(new Error(errorMessage));
+    const { result } = renderHook(() => useRegisterUser(), { wrapper });
 
-  //   const { result } = renderHook(() => useRegisterUser(), { wrapper });
+    act(() => {
+      result.current.mutate(mockUser);
+    });
 
-  //   await act(async () => {
-  //     result.current.mutate({
-  //       email: 'test@test.com',
-  //       password: 'wrongpass',
-  //       firstName: 'name',
-  //       lastName: 'last name',
-  //       birthDate: mockUser.birthDate,
-  //       address: mockUser.address,
-  //     });
-  //   });
-
-  //   await waitFor(() => {
-  //     expect(mockSetSnackbarState).toHaveBeenCalledWith({
-  //       open: true,
-  //       message: errorMessage,
-  //       severity: 'error',
-  //     });
-  //   });
-
-  //   expect(mockSetRegisteringUser).toHaveBeenCalledWith(INITIAL_USER_STATE);
-  // });
+    await waitFor(() => {
+      expect(setSnackbarStateMock).toHaveBeenCalledWith({
+        open: true,
+        message: errorMessage,
+        severity: 'error',
+      });
+    });
+  });
 });

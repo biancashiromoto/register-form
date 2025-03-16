@@ -14,6 +14,7 @@ export interface CustomButtonProps extends ButtonBaseProps {
   href?: string;
   children?: ReactNode;
   fullWidth?: boolean;
+  openInNewTab?: boolean;
 }
 
 const CustomButton: FC<CustomButtonProps> = ({
@@ -24,6 +25,7 @@ const CustomButton: FC<CustomButtonProps> = ({
   href = undefined,
   children,
   fullWidth = true,
+  openInNewTab = true,
   ...rest
 }) => {
   return (
@@ -35,7 +37,7 @@ const CustomButton: FC<CustomButtonProps> = ({
       component={href ? 'a' : 'button'}
       type={type}
       fullWidth={fullWidth}
-      target={href ? '_blank' : undefined}
+      target={openInNewTab ? '_blank' : undefined}
       rel={href ? 'noopener noreferrer' : undefined}
       {...rest}
     >

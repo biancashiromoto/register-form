@@ -1,7 +1,7 @@
 import { isUserAdult, passwordValidation } from '@/helpers';
 import { z } from 'zod';
 
-export const userRegisterSchema = z
+export const registerSchema = z
   .object({
     firstName: z
       .string({
