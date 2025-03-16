@@ -1,6 +1,16 @@
+import CustomButton from '@/components/Button';
+import DatePicker from '@/components/DatePicker';
+import { CustomSnackbar } from '@/components/Snackbar';
+import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
-import { Container, Typography } from '@mui/material';
+import useUpdateUser from '@/hooks/useUpdateUser';
+import { profileEditSchema } from '@/schemas/profileEditSchema';
+import { SnackbarStateType } from '@/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Box, Container, TextField } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
+import { useContext, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/profile/')({
   component: RouteComponent,
@@ -8,21 +18,95 @@ export const Route = createFileRoute('/profile/')({
 
 function RouteComponent() {
   const { user } = useAuth();
+  const { mutate: updateUser } = useUpdateUser();
+  const { snackbarState, setSnackbarState } = useContext(Context);
 
-  console.log(user);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    resolver: zodResolver(profileEditSchema),
+    mode: 'all',
+  });
+
+  const onSubmit = async (data: any) => {
+    updateUser(data);
+  };
+
+  useEffect(() => console.log(user), []);
+
+  useEffect(() => {
+    setSnackbarState((prevState: SnackbarStateType) => ({
+      ...prevState,
+      open: false,
+    }));
+  }, []);
+
   return (
     <Container maxWidth="sm">
-      <Typography variant="body1" align="left" gutterBottom>
-        Name:
-        {`${user?.user_metadata.firstName} ${user?.user_metadata.lastName}`}
-      </Typography>
-      <Typography variant="body1" align="left" gutterBottom>
-        Email: {user?.user_metadata.email}
-      </Typography>
-      <Typography variant="body1" align="left" gutterBottom>
-        Birthdate:
-        {new Date(user?.user_metadata.birthDate).toLocaleDateString()}
-      </Typography>
+      <Box
+        mt={2}
+        mb={8}
+        mx={2}
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        gap={2}
+      >
+        <TextField
+          id="standard-basic"
+          label="First name"
+          variant="standard"
+          defaultValue={user?.user_metadata['first_name']}
+          fullWidth
+          {...register('firstName')}
+          required
+          error={!!errors['firstName']}
+        />
+
+        <TextField
+          id="standard-basic"
+          label="Last name"
+          variant="standard"
+          defaultValue={user?.user_metadata['last_name']}
+          fullWidth
+          {...register('lastName')}
+          required
+          error={!!errors['lastName']}
+        />
+
+        <DatePicker
+          defaultValue={
+            new Date(user?.user_metadata['birth_date'])
+              .toISOString()
+              .split('T')[0]
+          }
+          errors={errors}
+          register={register}
+          required
+        />
+
+        <TextField
+          id="standard-basic"
+          label="Email"
+          variant="standard"
+          defaultValue={user?.user_metadata.email}
+          fullWidth
+          {...register('email')}
+          required
+          error={!!errors['email']}
+          disabled
+        />
+
+        <CustomButton disabled={!isValid} type="submit">
+          Save
+        </CustomButton>
+      </Box>
+      {snackbarState && <CustomSnackbar />}
     </Container>
   );
 }
