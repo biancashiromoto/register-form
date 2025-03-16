@@ -37,7 +37,7 @@ const CustomButton: FC<CustomButtonProps> = ({
       component={href ? 'a' : 'button'}
       type={type}
       fullWidth={fullWidth}
-      target={openInNewTab}
+      target={openInNewTab ? '_blank' : undefined}
       rel={href ? 'noopener noreferrer' : undefined}
       {...rest}
     >
