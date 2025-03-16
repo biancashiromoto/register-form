@@ -22,7 +22,7 @@ const VerificationLayout: FC<{ children: ReactNode }> = ({ children }) => {
     )
       return;
     if (!currentSession && isPrivateRoute) {
-      navigate({ to: '/unauthenticated' });
+      navigate({ to: '/unauthenticated', viewTransition: true });
     }
   }, [location.pathname, currentSession, initializing, isPrivateRoute]);
 
