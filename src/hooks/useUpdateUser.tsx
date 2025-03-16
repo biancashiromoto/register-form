@@ -1,5 +1,4 @@
 import { Context } from '@/context';
-import { scrollToTop } from '@/helpers';
 import { updateUser } from '@/services/user';
 import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
@@ -11,7 +10,6 @@ const useUpdateUser = () => {
     mutationKey: ['updateUser'],
     mutationFn: (data: any) => updateUser(data),
     onSuccess: () => {
-      scrollToTop();
       setSnackbarState({
         open: true,
         message: 'User successfully updated!',
