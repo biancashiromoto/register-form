@@ -16,14 +16,12 @@ vi.mock('@tanstack/react-router', () => ({
 
 describe('useRegisterUser', () => {
   let setSnackbarStateMock: any;
-  let setRegisteringUserMock: any;
   let navigateMock: any;
   let queryClient: QueryClient;
 
   beforeEach(() => {
     vi.clearAllMocks();
     setSnackbarStateMock = vi.fn();
-    setRegisteringUserMock = vi.fn();
     navigateMock = vi.fn();
     (useNavigate as any).mockReturnValue(navigateMock);
     queryClient = new QueryClient();
@@ -34,7 +32,6 @@ describe('useRegisterUser', () => {
       value={
         {
           setSnackbarState: setSnackbarStateMock,
-          setRegisteringUser: setRegisteringUserMock,
         } as unknown as ContextProps
       }
     >
@@ -52,17 +49,11 @@ describe('useRegisterUser', () => {
 
     await waitFor(() => {
       expect(signUpUser).toHaveBeenCalledTimes(1);
-      expect(setSnackbarStateMock).toHaveBeenCalledWith({
-        open: true,
-        message: 'User successfully registered!',
-        severity: 'success',
-      });
       expect(navigateMock).toHaveBeenCalledWith({
-        to: '/login',
+        to: '/register/success',
         replace: true,
         viewTransition: true,
       });
-      expect(setRegisteringUserMock).toHaveBeenCalledWith(INITIAL_USER_STATE);
     });
   });
 
@@ -81,7 +72,6 @@ describe('useRegisterUser', () => {
         message: errorMessage,
         severity: 'error',
       });
-      expect(setRegisteringUserMock).toHaveBeenCalledWith(INITIAL_USER_STATE);
     });
   });
 });

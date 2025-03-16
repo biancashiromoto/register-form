@@ -76,7 +76,7 @@ describe('VerificationLayout Component', () => {
     await waitFor(() => {
       expect(navigateMock).toHaveBeenCalledWith({
         to: '/unauthenticated',
-        replace: true,
+        viewTransition: true,
       });
     });
   });

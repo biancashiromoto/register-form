@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Navbar from '..';
 import { ContextProps } from '@/context/index.types';
 import { Context } from '@/context';
+import { Session } from '@supabase/supabase-js';
 
 vi.mock('@/context/authContext', () => ({
   useAuth: vi.fn(),
@@ -38,41 +39,30 @@ vi.mock('@/services/supabase', () => ({
   },
 }));
 
-const mockProps: {
-  user: { id: string } | null;
-  location: { pathname: string };
-} = {
-  user: null,
-  location: { pathname: '/register' },
-};
-
-const mockContext = {
-  isPrivateRoute: false,
-} as unknown as ContextProps;
-
 describe('Navbar Component', () => {
   const mockSetUser = vi.fn();
   beforeEach(() => vi.resetAllMocks());
 
   const renderComponent = (
-    { user, location } = mockProps,
-    context = mockContext,
+    location: Location,
+    currentSession: Session | undefined = undefined,
+    isPrivateRoute: boolean = false,
   ) => {
     const navigateMock = vi.fn();
 
-    (useAuth as any).mockReturnValue({ user, setUser: mockSetUser });
+    (useAuth as any).mockReturnValue({ setUser: mockSetUser, currentSession });
     (useLocation as any).mockReturnValue(location);
     (useNavigate as any).mockReturnValue(navigateMock);
 
     render(
-      <Context.Provider value={context}>
+      <Context.Provider value={{ isPrivateRoute } as ContextProps}>
         <Navbar />
       </Context.Provider>,
     );
   };
 
   it('should not render "Sign up" link when route includes /register', () => {
-    renderComponent();
+    renderComponent({ pathname: '/register' } as Location);
 
     expect(screen.queryByText(/Not registered yet\?/i)).not.toBeInTheDocument();
     expect(
@@ -83,7 +73,7 @@ describe('Navbar Component', () => {
   });
 
   it('should not render "Log in" link when route is /login', () => {
-    renderComponent({ ...mockProps, location: { pathname: '/login' } });
+    renderComponent({ pathname: '/login' } as Location);
 
     expect(screen.getByText(/Not registered yet\?/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /sign up/i })).toBeInTheDocument();
@@ -94,16 +84,19 @@ describe('Navbar Component', () => {
   });
 
   it('renders "Sign out" link when user is logged in and current path is "/home", and calls signOut on click', async () => {
-    (useAuth as any).mockReturnValue({
-      user: { id: '123' },
-      setUser: mockSetUser,
-    });
-    (useLocation as any).mockReturnValue({ pathname: '/home' });
+    renderComponent(
+      { pathname: '/home' } as Location,
+      {
+        access_token: '',
+        refresh_token: '',
+        expires_in: 3600,
+        token_type: 'bearer',
+        user: { email: 'test@email.com' },
+      } as Session,
+      true,
+    );
 
-    renderComponent(undefined, {
-      isPrivateRoute: true,
-    } as unknown as ContextProps);
-    const logoutLink = screen.getByText(/sign out/i);
+    const logoutLink = await screen.findByRole('link', { name: /sign out/i });
     expect(logoutLink).toBeInTheDocument();
 
     fireEvent.click(logoutLink);
