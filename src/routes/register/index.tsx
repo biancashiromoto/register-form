@@ -14,6 +14,7 @@ import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
+import { useLayoutEffect } from '@tanstack/react-router';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import {
   City,
