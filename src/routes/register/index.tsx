@@ -52,9 +52,10 @@ function RouteComponent() {
     defaultValues: INITIAL_USER_STATE,
   });
 
-  const { snackbarState, setSnackbarState } = useContext(Context);
+  const { snackbarState, setSnackbarState, setRegisteringUser } =
+    useContext(Context);
   const { mutate: registerUser, isPending } = useRegisterUser();
-  const { currentSession, setUser } = useAuth();
+  const { currentSession } = useAuth();
 
   const firstName = watch('firstName');
   const lastName = watch('lastName');
@@ -74,6 +75,7 @@ function RouteComponent() {
   };
 
   const onSubmit = async (data: UserType) => {
+    setRegisteringUser({ ...data, address: getValues('address') });
     registerUser({ ...data, address: getValues('address') });
   };
 
