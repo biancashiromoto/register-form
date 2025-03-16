@@ -34,8 +34,6 @@ function RouteComponent() {
     updateUser(data);
   };
 
-  useEffect(() => console.log(user), []);
-
   useEffect(() => {
     setSnackbarState((prevState: SnackbarStateType) => ({
       ...prevState,
