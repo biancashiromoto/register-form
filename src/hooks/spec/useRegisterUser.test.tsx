@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { useNavigate } from '@tanstack/react-router';
 import { Context } from '@/context';
-import { registerUser } from '@/services/user';
+import { signUpUser } from '@/services/user';
 import useRegisterUser from '../useRegisterUser';
 import { mockUser } from '@/tests/mocks';
 
@@ -57,7 +57,7 @@ describe('useRegisterUser', () => {
         },
       },
     };
-    (registerUser as any).mockResolvedValue(mockResponse);
+    (signUpUser as any).mockResolvedValue(mockResponse);
 
     const { result } = renderHook(() => useRegisterUser(), {
       wrapper,
