@@ -1,6 +1,6 @@
 import { Context } from '@/context';
 import { scrollToTop } from '@/helpers';
-import { registerUser } from '@/services/user';
+import { signUpUser } from '@/services/user';
 import { UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { useMutation } from '@tanstack/react-query';
@@ -13,7 +13,7 @@ const useRegisterUser = () => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ['registerUser'],
-    mutationFn: (data: UserType) => registerUser(data),
+    mutationFn: (data: UserType) => signUpUser(data),
     onSuccess: () => {
       scrollToTop();
       setSnackbarState({
