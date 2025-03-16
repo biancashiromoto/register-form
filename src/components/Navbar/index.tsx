@@ -5,9 +5,7 @@ import { Typography } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { ComponentProps, FC, useContext } from 'react';
 
-interface NavbarProps extends ComponentProps<'nav'> {}
-
-const Navbar: FC<NavbarProps> = ({ className, ...rest }) => {
+const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
 
   const { setUser } = useAuth();
