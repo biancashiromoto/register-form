@@ -2,7 +2,6 @@ import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import InputText from '@/components/InputText';
 import LoadingLayer from '@/components/LoadingLayer';
-import { useAuth } from '@/context/authContext';
 import useLoginUser from '@/hooks/useLoginUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { loginSchema } from '@/schemas/loginSchema';
@@ -37,7 +36,6 @@ function RouteComponent() {
   const password = watch('password');
   useResetForm(email, resetField, 'password');
   const { mutate: login, isPending } = useLoginUser(setError);
-  const { currentSession } = useAuth();
 
   const onSubmit = (data: SignInWithPasswordCredentials) => {
     login(data);
