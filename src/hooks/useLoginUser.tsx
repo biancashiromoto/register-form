@@ -34,7 +34,7 @@ const useLoginUser = (setError: SetErrorFunction) => {
     },
     onSuccess: async () => {
       await waitForUserUpdate();
-      navigate({ to: '/home' });
+      navigate({ to: '/home', viewTransition: true });
     },
     onError: (error: any) => {
       setError('email', {

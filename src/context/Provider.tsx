@@ -1,9 +1,11 @@
-import { AddressType, SnackbarStateType, UserType } from '@/types';
 import {
   getLocalStorage,
   setLocalStorage,
 } from '@/helpers/localStorageManagement';
+import { AddressType, SnackbarStateType, UserType } from '@/types';
+import { privateRoutes } from '@/utils/commons/privateRoutes';
 import { createTheme, useMediaQuery } from '@mui/material';
+import { useLocation } from '@tanstack/react-router';
 import { FC, ReactNode, useMemo, useState } from 'react';
 import { Context } from '.';
 import { ContextProps } from './index.types';
@@ -24,6 +26,9 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   });
   const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
   const [selectedLocation, setSelectedLocation] = useState({} as AddressType);
+  const location = useLocation();
+  const normalizedPath = location.pathname.replace(/\/+$/, '');
+  const isPrivateRoute = privateRoutes.includes(normalizedPath);
 
   const toggleTheme = () => {
     setIsDarkModeOn((prevMode: boolean) => {
@@ -60,6 +65,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     setIsDarkModeOn,
     toggleTheme,
     theme,
+    isPrivateRoute,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

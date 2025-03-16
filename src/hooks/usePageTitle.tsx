@@ -1,11 +1,6 @@
 import { useLocation } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-type LocationType = {
-  route: string;
-  title: string;
-};
-
 const locations = {
   home: {
     route: '/home',
@@ -19,11 +14,20 @@ const locations = {
     route: '/register',
     title: 'Register',
   },
+  profile: {
+    route: '/profile',
+    title: 'Profile',
+  },
 };
 
 const usePageTitle = () => {
   const { pathname } = useLocation();
-  const [page, setPage] = useState({} as LocationType);
+  const normalizedPath = location.pathname.replace(/\/+$/, '');
+  const [page, setPage] = useState(
+    Object.values(locations).find((route) =>
+      route.route.includes(normalizedPath),
+    ),
+  );
 
   useEffect(() => {
     const currentPage = Object.values(locations).find(
