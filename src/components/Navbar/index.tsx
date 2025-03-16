@@ -2,7 +2,7 @@ import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
 import { Typography, useTheme } from '@mui/material';
-import { Link, useLocation, useNavigate } from '@tanstack/react-router';
+import { Link, useLocation } from '@tanstack/react-router';
 import { ComponentProps, FC, useContext, useState } from 'react';
 import LoadingLayer from '../LoadingLayer';
 
@@ -12,7 +12,6 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const { setUser, currentSession } = useAuth();
   const theme = useTheme();
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const { isPrivateRoute } = useContext(Context);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -22,39 +21,35 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
 
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
-      {!location.pathname.includes('/register') &&
-        !isPrivateRoute &&
-        !currentSession && (
-          <Typography variant="body2">
-            Not registered yet?{' '}
-            <Link
-              to="/register"
-              activeProps={activeProps}
-              style={{
-                color: theme.palette.text.secondary,
-              }}
-            >
-              Sign up
-            </Link>
-          </Typography>
-        )}
+      {!pathname.includes('/register') && !currentSession && (
+        <Typography variant="body2">
+          Not registered yet?{' '}
+          <Link
+            to="/register"
+            activeProps={activeProps}
+            style={{
+              color: theme.palette.text.secondary,
+            }}
+          >
+            Sign up
+          </Link>
+        </Typography>
+      )}
 
-      {!location.pathname.includes('/login') &&
-        !isPrivateRoute &&
-        !currentSession && (
-          <Typography variant="body2">
-            Already registered?{' '}
-            <Link
-              to="/login"
-              activeProps={activeProps}
-              style={{
-                color: theme.palette.text.secondary,
-              }}
-            >
-              Sign in
-            </Link>
-          </Typography>
-        )}
+      {!pathname.includes('/login') && !currentSession && (
+        <Typography variant="body2">
+          Already registered?{' '}
+          <Link
+            to="/login"
+            activeProps={activeProps}
+            style={{
+              color: theme.palette.text.secondary,
+            }}
+          >
+            Sign in
+          </Link>
+        </Typography>
+      )}
 
       {isPrivateRoute && currentSession && (
         <Typography variant="body2">
