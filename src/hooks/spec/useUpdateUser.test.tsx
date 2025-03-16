@@ -31,7 +31,7 @@ describe('useUpdateUser', () => {
     </Context.Provider>
   );
 
-  it('deve atualizar o usuário com sucesso', async () => {
+  it('should successfully update user', async () => {
     (updateUser as any).mockResolvedValue({ success: true });
 
     const { result } = renderHook(() => useUpdateUser(), { wrapper });
@@ -51,7 +51,7 @@ describe('useUpdateUser', () => {
     });
   });
 
-  it('deve tratar o erro ao atualizar o usuário', async () => {
+  it('should handle error updating user', async () => {
     const errorMessage = 'Erro ao atualizar usuário';
     (updateUser as any).mockRejectedValue(new Error(errorMessage));
 
