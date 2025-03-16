@@ -1,15 +1,14 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { vi } from 'vitest';
-import { INITIAL_USER_STATE } from '@/utils/commons';
-import { useNavigate } from '@tanstack/react-router';
 import { Context } from '@/context';
 import { signUpUser } from '@/services/user';
+import { INITIAL_USER_STATE } from '@/utils/commons';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { vi } from 'vitest';
 import useRegisterUser from '../useRegisterUser';
-import { mockUser } from '@/tests/mocks';
 
 vi.mock('@/services/user', () => ({
-  registerUser: vi.fn(),
+  signUpUser: vi.fn(),
 }));
 
 vi.mock('@tanstack/react-router', async () => {
