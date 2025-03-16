@@ -27,7 +27,8 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
   const [selectedLocation, setSelectedLocation] = useState({} as AddressType);
   const location = useLocation();
-  const isPrivateRoute = privateRoutes.includes(location.pathname);
+  const normalizedPath = location.pathname.replace(/\/+$/, '');
+  const isPrivateRoute = privateRoutes.includes(normalizedPath);
 
   const toggleTheme = () => {
     setIsDarkModeOn((prevMode: boolean) => {
