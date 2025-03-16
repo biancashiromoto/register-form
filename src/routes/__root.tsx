@@ -27,7 +27,7 @@ const RootLayout = () => {
       <hr />
       <Container maxWidth="sm" sx={{ marginTop: '16px' }}>
         <Typography variant="h5" align="left" gutterBottom>
-          {page.title}
+          {page?.title}
         </Typography>
       </Container>
       <Outlet />
