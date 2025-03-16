@@ -5,11 +5,10 @@ import {
 import { AddressType, SnackbarStateType, UserType } from '@/types';
 import { privateRoutes } from '@/utils/commons/privateRoutes';
 import { createTheme, useMediaQuery } from '@mui/material';
-import { useLocation, useNavigate } from '@tanstack/react-router';
-import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
+import { useLocation } from '@tanstack/react-router';
+import { FC, ReactNode, useMemo, useState } from 'react';
 import { Context } from '.';
 import { ContextProps } from './index.types';
-import { useAuth } from './authContext';
 
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -28,13 +27,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
   const [selectedLocation, setSelectedLocation] = useState({} as AddressType);
   const location = useLocation();
-  const navigate = useNavigate();
   const isPrivateRoute = privateRoutes.includes(location.pathname);
-  const { currentSession } = useAuth();
-
-  useEffect(() => {
-    if (!isPrivateRoute && currentSession) navigate({ to: '/home' });
-  }, [location.pathname, currentSession]);
 
   const toggleTheme = () => {
     setIsDarkModeOn((prevMode: boolean) => {
