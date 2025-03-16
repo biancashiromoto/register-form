@@ -52,9 +52,7 @@ function RouteComponent() {
   });
 
   const { snackbarState, setSnackbarState } = useContext(Context);
-  const { currentSession } = useAuth();
   const { mutate: registerUser, isPending } = useRegisterUser();
-  const navigate = useNavigate();
 
   const firstName = watch('firstName');
   const lastName = watch('lastName');
@@ -74,7 +72,7 @@ function RouteComponent() {
   };
 
   const onSubmit = async (data: UserType) => {
-    registerUser(data);
+    registerUser({ ...data, address: getValues('address') });
   };
 
   useEffect(() => {
