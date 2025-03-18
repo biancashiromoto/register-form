@@ -1,3 +1,5 @@
+import { Context } from '@/context';
+import { privateRoutes } from '@/utils/commons/privateRoutes';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -6,10 +8,11 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import { useNavigate } from '@tanstack/react-router';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 
 export default function CustomBottomNavigation() {
-  const [value, setValue] = useState(0);
+  const { normalizedPath } = useContext(Context);
+  const [value, setValue] = useState(privateRoutes.indexOf(normalizedPath));
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
