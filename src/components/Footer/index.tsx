@@ -15,13 +15,25 @@ const Footer = () => {
           href="https://github.com/biancashiromoto/register-form"
           fullWidth={false}
         >
-          <IoLogoGithub
-            size={25}
-            aria-label="GitHub repo"
-            style={{ paddingRight: '6px' }}
-          />
-          GitHub repo <IoOpenOutline aria-label="Opens in a new tab" />
-        </CustomButton>{' '}
+          <span
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <IoLogoGithub
+              size={25}
+              aria-label="GitHub repo"
+              style={{ marginRight: '6px' }}
+            />
+            GitHub repo{' '}
+            <IoOpenOutline
+              aria-label="Opens in a new tab"
+              style={{ marginLeft: '6px', transform: 'translateY(-2px)' }}
+            />
+          </span>
+        </CustomButton>
       </Paper>
     </Container>
   );
