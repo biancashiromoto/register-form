@@ -66,6 +66,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     toggleTheme,
     theme,
     isPrivateRoute,
+    normalizedPath,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

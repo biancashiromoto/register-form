@@ -14,4 +14,5 @@ export interface ContextProps {
   toggleTheme: () => void;
   theme: Theme;
   isPrivateRoute: boolean;
+  normalizedPath: string;
 }
