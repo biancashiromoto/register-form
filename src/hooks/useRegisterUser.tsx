@@ -1,14 +1,17 @@
 import { Context } from '@/context';
 import { signUpUser } from '@/services/user';
-import { UserType } from '@/types';
+import { AddressType, UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const useRegisterUser = () => {
-  const { setSnackbarState, setRegisteringUser } = useContext(Context);
+  const { setSnackbarState } = useContext(Context);
+  const [selectedLocation, setSelectedLocation] = useState({} as AddressType);
+  const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
+
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
@@ -31,7 +34,14 @@ const useRegisterUser = () => {
     },
   });
 
-  return { mutate, isPending };
+  return {
+    mutate,
+    isPending,
+    selectedLocation,
+    setSelectedLocation,
+    registeringUser,
+    setRegisteringUser,
+  };
 };
 
 export default useRegisterUser;
