@@ -1,8 +1,9 @@
 import { Container, Paper } from '@mui/material';
 import { IoLogoGithub, IoOpenOutline } from 'react-icons/io5';
 import CustomButton from '../Button';
+import { memo } from 'react';
 
-const Footer = () => {
+const Footer = memo(() => {
   return (
     <Container>
       <Paper
@@ -37,6 +38,6 @@ const Footer = () => {
       </Paper>
     </Container>
   );
-};
+});
 
 export default Footer;
