@@ -52,9 +52,12 @@ function RouteComponent() {
     defaultValues: INITIAL_USER_STATE,
   });
 
-  const { snackbarState, setSnackbarState, setRegisteringUser } =
-    useContext(Context);
-  const { mutate: registerUser, isPending } = useRegisterUser();
+  const { snackbarState, setSnackbarState } = useContext(Context);
+  const {
+    mutate: registerUser,
+    isPending,
+    setRegisteringUser,
+  } = useRegisterUser();
   const { currentSession } = useAuth();
 
   const firstName = watch('firstName');
