@@ -2,11 +2,11 @@ import {
   getLocalStorage,
   setLocalStorage,
 } from '@/helpers/localStorageManagement';
-import { AddressType, SnackbarStateType, UserType } from '@/types';
+import { SnackbarStateType } from '@/types';
 import { privateRoutes } from '@/utils/commons/privateRoutes';
 import { createTheme, useMediaQuery } from '@mui/material';
 import { useLocation } from '@tanstack/react-router';
-import { FC, ReactNode, useMemo, useState } from 'react';
+import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
 import { Context } from '.';
 import { ContextProps } from './index.types';
 
@@ -24,19 +24,17 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     message: '',
     severity: undefined,
   });
-  const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState({} as AddressType);
   const location = useLocation();
   const normalizedPath = location.pathname.replace(/\/+$/, '');
   const isPrivateRoute = privateRoutes.includes(normalizedPath);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setIsDarkModeOn((prevMode: boolean) => {
       const newMode = !prevMode;
       setLocalStorage('theme', newMode ? 'dark' : 'light');
       return newMode;
     });
-  };
+  }, [isDarkModeOn]);
 
   const theme = useMemo(
     () =>
@@ -57,10 +55,6 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const value: ContextProps = {
     snackbarState,
     setSnackbarState,
-    registeringUser,
-    setRegisteringUser,
-    selectedLocation,
-    setSelectedLocation,
     isDarkModeOn,
     setIsDarkModeOn,
     toggleTheme,
