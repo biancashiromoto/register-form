@@ -1,70 +1,67 @@
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
-import { supabase } from '@/services/supabase';
 import { Typography, useTheme } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
-import { ComponentProps, FC, useContext, useState } from 'react';
+import { ComponentProps, FC, memo, useContext, useMemo } from 'react';
 import LoadingLayer from '../LoadingLayer';
+import { useLogout } from '@/hooks/useLogout';
 
 const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
-  const activeProps = { style: { fontWeight: 'bold' } };
-
-  const { setUser, currentSession } = useAuth();
+  const activeProps = useMemo(() => ({ style: { fontWeight: 'bold' } }), []);
+  const { currentSession } = useAuth();
   const theme = useTheme();
   const { pathname } = useLocation();
   const { isPrivateRoute } = useContext(Context);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { isLoggingOut, handleLogout } = useLogout();
+
+  const linkStyle = useMemo(
+    () => ({
+      color: theme.palette.text.secondary,
+    }),
+    [theme.palette.text.secondary],
+  );
+
+  const showRegisterLink = useMemo(
+    () => !pathname.includes('/register') && !currentSession,
+    [pathname, currentSession],
+  );
+
+  const showLoginLink = useMemo(
+    () => !pathname.includes('/login') && !currentSession,
+    [pathname, currentSession],
+  );
+
+  const showLogout = useMemo(
+    () => isPrivateRoute && !!currentSession,
+    [isPrivateRoute, currentSession],
+  );
 
   if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
-
   if (isLoggingOut) return <LoadingLayer />;
 
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
-      {!pathname.includes('/register') && !currentSession && (
+      {showRegisterLink && (
         <Typography variant="body2">
           Not registered yet?{' '}
-          <Link
-            to="/register"
-            activeProps={activeProps}
-            style={{
-              color: theme.palette.text.secondary,
-            }}
-          >
+          <Link to="/register" activeProps={activeProps} style={linkStyle}>
             Sign up
           </Link>
         </Typography>
       )}
 
-      {!pathname.includes('/login') && !currentSession && (
+      {showLoginLink && (
         <Typography variant="body2">
           Already registered?{' '}
-          <Link
-            to="/login"
-            activeProps={activeProps}
-            style={{
-              color: theme.palette.text.secondary,
-            }}
-          >
+          <Link to="/login" activeProps={activeProps} style={linkStyle}>
             Sign in
           </Link>
         </Typography>
       )}
 
-      {isPrivateRoute && currentSession && (
+      {showLogout && (
         <Typography variant="body2">
-          <Link
-            to="/login"
-            onClick={async () => {
-              setIsLoggingOut(true);
-              await supabase.auth.signOut();
-              setUser(null);
-              setIsLoggingOut(false);
-            }}
-            style={{
-              color: theme.palette.text.secondary,
-            }}
-          >
+          <Link to="/login" onClick={handleLogout} style={linkStyle}>
             Sign out
           </Link>
         </Typography>
@@ -73,4 +70,4 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   );
 };
 
-export default Navbar;
+export default memo(Navbar);
