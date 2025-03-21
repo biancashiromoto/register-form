@@ -1,13 +1,12 @@
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
+import { useLogout } from '@/hooks/useLogout';
 import { Typography, useTheme } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { ComponentProps, FC, memo, useContext, useMemo } from 'react';
 import LoadingLayer from '../LoadingLayer';
-import { useLogout } from '@/hooks/useLogout';
 
 const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
-  const activeProps = useMemo(() => ({ style: { fontWeight: 'bold' } }), []);
   const { currentSession } = useAuth();
   const theme = useTheme();
   const { pathname } = useLocation();
@@ -44,7 +43,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
       {showRegisterLink && (
         <Typography variant="body2">
           Not registered yet?{' '}
-          <Link to="/register" activeProps={activeProps} style={linkStyle}>
+          <Link to="/register" style={linkStyle}>
             Sign up
           </Link>
         </Typography>
@@ -53,7 +52,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
       {showLoginLink && (
         <Typography variant="body2">
           Already registered?{' '}
-          <Link to="/login" activeProps={activeProps} style={linkStyle}>
+          <Link to="/login" style={linkStyle}>
             Sign in
           </Link>
         </Typography>
