@@ -1,4 +1,4 @@
-import { SnackbarStateType } from '@/types';
+import { SnackbarStateType, UserType } from '@/types';
 import { Theme } from '@mui/material';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -11,4 +11,6 @@ export interface ContextProps {
   theme: Theme;
   isPrivateRoute: boolean;
   normalizedPath: string;
+  registeringUser: UserType | null;
+  setRegisteringUser: Dispatch<SetStateAction<UserType | null>>;
 }
