@@ -2,7 +2,7 @@ import {
   getLocalStorage,
   setLocalStorage,
 } from '@/helpers/localStorageManagement';
-import { SnackbarStateType } from '@/types';
+import { SnackbarStateType, UserType } from '@/types';
 import { privateRoutes } from '@/utils/commons/privateRoutes';
 import { createTheme, useMediaQuery } from '@mui/material';
 import { useLocation } from '@tanstack/react-router';
@@ -12,6 +12,7 @@ import { ContextProps } from './index.types';
 
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
   const [isDarkModeOn, setIsDarkModeOn] = useState<boolean>(() => {
     const storedTheme = getLocalStorage('theme');
     if (storedTheme) {
@@ -61,6 +62,8 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     theme,
     isPrivateRoute,
     normalizedPath,
+    registeringUser,
+    setRegisteringUser,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
