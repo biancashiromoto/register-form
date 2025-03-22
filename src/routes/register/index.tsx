@@ -5,13 +5,11 @@ import DatePicker from '@/components/DatePicker';
 import InputPassword from '@/components/InputPassword';
 import InputText from '@/components/InputText';
 import LoadingLayer from '@/components/LoadingLayer';
-import { CustomSnackbar } from '@/components/Snackbar';
-import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
-import { SnackbarStateType, UserType } from '@/types';
+import { UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
@@ -24,7 +22,7 @@ import {
   IState,
   State,
 } from 'country-state-city';
-import { useContext, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/register/')({
@@ -52,7 +50,6 @@ function RouteComponent() {
     defaultValues: INITIAL_USER_STATE,
   });
 
-  const { snackbarState, setSnackbarState } = useContext(Context);
   const {
     mutate: registerUser,
     isPending,
@@ -81,13 +78,6 @@ function RouteComponent() {
     setRegisteringUser({ ...data, address: getValues('address') });
     registerUser({ ...data, address: getValues('address') });
   };
-
-  useEffect(() => {
-    setSnackbarState((prevState: SnackbarStateType) => ({
-      ...prevState,
-      open: false,
-    }));
-  }, []);
 
   if (currentSession) return <AlreadySignedIn />;
 
@@ -196,7 +186,6 @@ function RouteComponent() {
           Clear form
         </CustomButton>
       </Box>
-      {snackbarState && <CustomSnackbar />}
     </Container>
   );
 }
