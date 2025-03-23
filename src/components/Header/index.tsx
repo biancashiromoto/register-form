@@ -10,7 +10,7 @@ import { useNavigate } from '@tanstack/react-router';
 const Header = () => {
   const { toggleTheme, isDarkModeOn } = useContext(Context);
   const { avatarUrl, isLoading: isLoadingAvatar } = useUploadAvatar();
-  const { session } = useAuth();
+  const { currentSession } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -20,7 +20,7 @@ const Header = () => {
         style={{ display: 'flex', alignItems: 'center', height: '3em' }}
       >
         <ToggleThemeSwitch onChange={toggleTheme} checked={isDarkModeOn} />
-        {session && (
+        {currentSession && (
           <Box
             style={{
               display: 'flex',
@@ -48,7 +48,7 @@ const Header = () => {
               <Skeleton variant="circular" width={20} height={20} />
             )}
             <Typography variant="caption" color="textSecondary">
-              {session?.user?.email}
+              {currentSession?.user?.email}
             </Typography>
           </Box>
         )}
