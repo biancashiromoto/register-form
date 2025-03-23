@@ -1,9 +1,22 @@
+import { Context } from '@/context';
 import useUploadAvatar from '@/hooks/useUploadAvatar';
 import { Avatar, Box, IconButton, Skeleton, Typography } from '@mui/material';
+import { useContext, useEffect } from 'react';
 import { IoMdCamera } from 'react-icons/io';
 
 export const AvatarUploader = () => {
-  const { avatarUrl, uploadAvatar, isLoading } = useUploadAvatar();
+  const { avatarUrl, uploadAvatar, isLoading, error } = useUploadAvatar();
+  const { setSnackbarState } = useContext(Context);
+
+  useEffect(() => {
+    if (error) {
+      setSnackbarState({
+        open: true,
+        message: error,
+        severity: 'error',
+      });
+    }
+  }, [error]);
 
   return (
     <Box
