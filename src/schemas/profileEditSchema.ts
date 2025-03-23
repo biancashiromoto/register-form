@@ -2,6 +2,7 @@ import { isUserAdult } from '@/helpers';
 import { z } from 'zod';
 
 export const profileEditSchema = z.object({
+  avatar: z.string().optional(),
   firstName: z
     .string({
       required_error: 'First name is required',

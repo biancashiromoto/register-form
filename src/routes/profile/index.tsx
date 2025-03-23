@@ -1,5 +1,7 @@
+import { AvatarUploader } from '@/components/AvatarUploader';
 import CustomButton from '@/components/Button';
 import DatePicker from '@/components/DatePicker';
+import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
@@ -8,7 +10,7 @@ import { profileEditSchema } from '@/schemas/profileEditSchema';
 import { SnackbarStateType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, TextField } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -18,8 +20,9 @@ export const Route = createFileRoute('/profile/')({
 
 function RouteComponent() {
   const { user } = useAuth();
-  const { mutate: updateUser } = useUpdateUser();
+  const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser();
   const { snackbarState, setSnackbarState } = useContext(Context);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -41,6 +44,10 @@ function RouteComponent() {
     }));
   }, []);
 
+  if (!user) navigate({ to: '/unauthenticated' });
+
+  if (isUpdatingUser) <LoadingLayer />;
+
   return (
     <Container maxWidth="sm">
       <Box
@@ -55,6 +62,8 @@ function RouteComponent() {
         justifyContent="center"
         gap={2}
       >
+        <AvatarUploader />
+
         <TextField
           id="standard-basic"
           label="First name"
