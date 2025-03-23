@@ -10,7 +10,7 @@ const useUploadAvatar = () => {
   const { user } = useAuth();
   const { setSnackbarState } = useContext(Context);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const downloadImage = async (path: string) => {
     setIsLoading(true);
@@ -20,11 +20,9 @@ const useUploadAvatar = () => {
         .download(path);
       if (error) throw error;
       const url = URL.createObjectURL(data);
-      console.log('ihuuu');
       setAvatarUrl(url);
       setIsLoading(false);
     } catch (error) {
-      console.error('Error downloading image:', error);
       setSnackbarState({
         open: true,
         message: 'Error downloading image',
@@ -68,7 +66,6 @@ const useUploadAvatar = () => {
 
       downloadImage(filePath);
     } catch (error: any) {
-      console.error('Error uploading avatar:', error.message);
       setSnackbarState({
         open: true,
         message: 'Error uploading avatar',
