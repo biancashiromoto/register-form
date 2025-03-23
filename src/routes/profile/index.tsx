@@ -19,7 +19,7 @@ export const Route = createFileRoute('/profile/')({
 });
 
 function RouteComponent() {
-  const { user } = useAuth();
+  const { currentSession } = useAuth();
   const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser();
   const { snackbarState, setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ function RouteComponent() {
     }));
   }, []);
 
-  if (!user) navigate({ to: '/unauthenticated' });
+  if (!currentSession) navigate({ to: '/unauthenticated' });
 
   if (isUpdatingUser) <LoadingLayer />;
 
@@ -68,7 +68,7 @@ function RouteComponent() {
           id="standard-basic"
           label="First name"
           variant="standard"
-          defaultValue={user?.user_metadata['first_name']}
+          defaultValue={currentSession?.user?.user_metadata['first_name']}
           fullWidth
           {...register('firstName')}
           required
@@ -79,7 +79,7 @@ function RouteComponent() {
           id="standard-basic"
           label="Last name"
           variant="standard"
-          defaultValue={user?.user_metadata['last_name']}
+          defaultValue={currentSession?.user?.user_metadata['last_name']}
           fullWidth
           {...register('lastName')}
           required
@@ -88,7 +88,7 @@ function RouteComponent() {
 
         <DatePicker
           defaultValue={
-            new Date(user?.user_metadata['birth_date'])
+            new Date(currentSession?.user?.user_metadata['birth_date'])
               .toISOString()
               .split('T')[0]
           }
@@ -101,7 +101,7 @@ function RouteComponent() {
           id="standard-basic"
           label="Email"
           variant="standard"
-          defaultValue={user?.user_metadata.email}
+          defaultValue={currentSession?.user?.user_metadata.email}
           fullWidth
           {...register('email')}
           required
