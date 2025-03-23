@@ -5,7 +5,7 @@ import { describe, it, expect } from 'vitest';
 describe('DatePicker', () => {
   const mockRegister = vi.fn();
   const mockProps = {
-    shouldShow: true,
+    hidden: false,
     register: mockRegister,
     errors: {},
   };
@@ -15,13 +15,13 @@ describe('DatePicker', () => {
       <DatePicker
         register={props.register}
         errors={props.errors}
-        shouldShow={props.shouldShow}
+        hidden={props.hidden}
       />,
     );
   };
 
-  it('does not render when shouldShow is false', () => {
-    renderComponent({ ...mockProps, shouldShow: false });
+  it('does not render when hidden is false', () => {
+    renderComponent({ ...mockProps, hidden: true });
     expect(screen.queryByLabelText('Birth Date')).not.toBeInTheDocument();
   });
 
