@@ -4,7 +4,7 @@ import { supabase } from '@/services/supabase';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 
 const AVATAR_BUCKET = 'avatars';
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
 const useUploadAvatar = () => {
   const { user } = useAuth();
