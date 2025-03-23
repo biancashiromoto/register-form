@@ -9,8 +9,8 @@ import { useNavigate } from '@tanstack/react-router';
 
 const Header = () => {
   const { toggleTheme, isDarkModeOn } = useContext(Context);
-  const { avatarUrl } = useUploadAvatar();
-  const { user } = useAuth();
+  const { avatarUrl, isLoading: isLoadingAvatar } = useUploadAvatar();
+  const { session } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -20,7 +20,7 @@ const Header = () => {
         style={{ display: 'flex', alignItems: 'center', height: '3em' }}
       >
         <ToggleThemeSwitch onChange={toggleTheme} checked={isDarkModeOn} />
-        {user && (
+        {session && (
           <Box
             style={{
               display: 'flex',
@@ -34,9 +34,9 @@ const Header = () => {
             }}
             onClick={() => navigate({ to: '/profile' })}
           >
-            {avatarUrl ? (
+            {!isLoadingAvatar ? (
               <Avatar
-                src={avatarUrl || ''}
+                src={avatarUrl || undefined}
                 sx={{
                   width: 20,
                   height: 20,
@@ -48,7 +48,7 @@ const Header = () => {
               <Skeleton variant="circular" width={20} height={20} />
             )}
             <Typography variant="caption" color="textSecondary">
-              {user?.email}
+              {session?.user?.email}
             </Typography>
           </Box>
         )}
