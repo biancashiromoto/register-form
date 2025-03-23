@@ -7,10 +7,10 @@ export const Route = createFileRoute('/home/')({
 });
 
 function RouteComponent() {
-  const { user } = useAuth();
+  const { currentSession } = useAuth();
 
   return (
-    user && (
+    currentSession && (
       <Container maxWidth="sm">
         <Typography variant="body2">
           You have successfully logged in!
