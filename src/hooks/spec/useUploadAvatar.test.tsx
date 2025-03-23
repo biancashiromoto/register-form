@@ -1,11 +1,10 @@
 // src/hooks/spec/useUploadAvatar.test.tsx
-import useUploadAvatar from '../useUploadAvatar';
-import { vi } from 'vitest';
-import { ReactNode, ChangeEvent } from 'react';
-import { AuthProvider } from '@/context/authContext';
-import { act, renderHook, waitFor } from '@testing-library/react';
 import { Context } from '@/context';
 import { ContextProps } from '@/context/index.types';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { ChangeEvent, ReactNode } from 'react';
+import { vi } from 'vitest';
+import useUploadAvatar from '../useUploadAvatar';
 
 global.URL.createObjectURL = vi.fn(() => 'blob:fake-url');
 
@@ -31,22 +30,11 @@ vi.mock('@/context/authContext', () => {
 });
 
 const wrapper = ({ children }: { children: ReactNode }) => (
-  <AuthProvider
-    value={{
-      user: fakeUser,
-      setUser: () => {},
-      currentSession: null,
-      setCurrentSession: () => {},
-      initializing: false,
-      userRef: { current: fakeUser },
-    }}
+  <Context.Provider
+    value={{ setSnackbarState: vi.fn() } as unknown as ContextProps}
   >
-    <Context.Provider
-      value={{ setSnackbarState: vi.fn() } as unknown as ContextProps}
-    >
-      {children}
-    </Context.Provider>
-  </AuthProvider>
+    {children}
+  </Context.Provider>
 );
 
 vi.mock('@/services/supabase', () => {
