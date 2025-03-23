@@ -6,7 +6,7 @@ import { AddressType, SnackbarStateType, UserType } from '@/types';
 import { privateRoutes } from '@/utils/commons/privateRoutes';
 import { createTheme, useMediaQuery } from '@mui/material';
 import { useLocation } from '@tanstack/react-router';
-import { FC, ReactNode, useMemo, useState } from 'react';
+import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
 import { Context } from '.';
 import { ContextProps } from './index.types';
 
@@ -37,6 +37,16 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       return newMode;
     });
   };
+
+  useEffect(
+    () =>
+      setSnackbarState({
+        open: false,
+        message: '',
+        severity: undefined,
+      }),
+    [normalizedPath],
+  );
 
   const theme = useMemo(
     () =>
