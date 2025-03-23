@@ -9,6 +9,7 @@ const useUploadAvatar = () => {
   const { user } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const downloadImage = useCallback(
     async (path: string) => {
@@ -20,13 +21,13 @@ const useUploadAvatar = () => {
         if (error) throw error;
         const url = URL.createObjectURL(data);
         setAvatarUrl(url);
-      } catch (error) {
-        console.error('Error downloading image');
+      } catch (error: any) {
+        setError(error.message);
       } finally {
         setIsLoading(false);
       }
     },
-    [setIsLoading, setAvatarUrl],
+    [setIsLoading, setAvatarUrl, setError],
   );
 
   const uploadAvatar = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -34,17 +35,17 @@ const useUploadAvatar = () => {
       setIsLoading(true);
 
       if (!event.target.files || event.target.files.length === 0) {
-        console.error('You must select an image to upload.');
+        setError('You must select an image to upload.');
       }
 
       const files = event.target.files;
       if (!files) {
-        console.error('No files selected.');
+        setError('No files selected.');
         return;
       }
       const file = files[0];
       if (file.size > MAX_FILE_SIZE) {
-        console.error('File size must be less than 2MB');
+        setError('File size must be less than 2MB');
       }
 
       const fileExt = file.name.split('.').pop();
@@ -64,7 +65,7 @@ const useUploadAvatar = () => {
 
       downloadImage(filePath);
     } catch (error: any) {
-      console.error('Error uploading avatar', error);
+      setError(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -80,6 +81,7 @@ const useUploadAvatar = () => {
     avatarUrl,
     isLoading,
     uploadAvatar,
+    error,
   };
 };
 
