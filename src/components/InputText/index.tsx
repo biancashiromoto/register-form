@@ -24,7 +24,7 @@ const InputText = ({
   hidden,
   ...rest
 }: InputTextProps) => {
-  const { user } = useAuth();
+  const { session } = useAuth();
   const theme = useTheme();
 
   if (hidden) {
@@ -43,7 +43,7 @@ const InputText = ({
       helperText={errors[name]?.message?.toString()}
       required={required}
       autoComplete={autoComplete}
-      defaultValue={user?.user_metadata[name]}
+      defaultValue={session?.user?.user_metadata[name]}
       fullWidth
       {...rest}
     />
