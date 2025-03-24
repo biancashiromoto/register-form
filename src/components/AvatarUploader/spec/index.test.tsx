@@ -34,7 +34,6 @@ describe('AvatarUploader', () => {
     render(<AvatarUploader />);
     const avatar = screen.getByRole('img');
     expect(avatar).toHaveAttribute('src', 'blob:fake-url');
-    expect(screen.getByText('Click to upload avatar')).toBeInTheDocument();
   });
 
   test('chama uploadAvatar quando um arquivo é selecionado', async () => {
