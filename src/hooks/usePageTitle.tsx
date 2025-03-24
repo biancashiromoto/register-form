@@ -1,5 +1,5 @@
 import { useLocation } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 const locations = {
   home: {
@@ -22,20 +22,13 @@ const locations = {
 
 const usePageTitle = () => {
   const { pathname } = useLocation();
-  const normalizedPath = location.pathname.replace(/\/+$/, '');
-  const [page, setPage] = useState(
-    Object.values(locations).find((route) =>
-      route.route.includes(normalizedPath),
-    ),
-  );
+  const normalizedPath = pathname.replace(/\/+$/, '');
 
-  useEffect(() => {
-    const currentPage = Object.values(locations).find(
-      (route) => route.route === pathname,
+  const page = useMemo(() => {
+    return Object.values(locations).find(
+      (route) => route.route === normalizedPath,
     );
-
-    currentPage && setPage(currentPage);
-  }, [pathname]);
+  }, [normalizedPath]);
 
   return { page };
 };

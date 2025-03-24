@@ -6,7 +6,7 @@ const AVATAR_BUCKET = 'avatars';
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
 const useUploadAvatar = () => {
-  const { user } = useAuth();
+  const { currentSession } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +49,7 @@ const useUploadAvatar = () => {
       }
 
       const fileExt = file.name.split('.').pop();
-      const filePath = `${user?.id}/${user?.id}.${fileExt}`;
+      const filePath = `${currentSession?.user?.id}/${currentSession?.user?.id}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from(AVATAR_BUCKET)
@@ -72,10 +72,10 @@ const useUploadAvatar = () => {
   };
 
   useEffect(() => {
-    if (user?.user_metadata.avatar_url) {
-      downloadImage(user.user_metadata.avatar_url);
+    if (currentSession?.user?.user_metadata.avatar_url) {
+      downloadImage(currentSession?.user.user_metadata.avatar_url);
     }
-  }, [user]);
+  }, [currentSession]);
 
   return {
     avatarUrl,

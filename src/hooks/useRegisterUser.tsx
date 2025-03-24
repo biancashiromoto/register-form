@@ -8,7 +8,7 @@ import { useContext } from 'react';
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const useRegisterUser = () => {
-  const { setSnackbarState, setRegisteringUser } = useContext(Context);
+  const { setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({

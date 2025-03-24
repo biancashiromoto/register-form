@@ -8,13 +8,20 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import { useNavigate } from '@tanstack/react-router';
-import { useContext, useRef, useState } from 'react';
+import { memo, useContext, useEffect, useRef, useState } from 'react';
 
-export default function CustomBottomNavigation() {
+export default memo(function CustomBottomNavigation() {
   const { normalizedPath } = useContext(Context);
   const [value, setValue] = useState(privateRoutes.indexOf(normalizedPath));
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const index = privateRoutes.indexOf(normalizedPath);
+    if (index !== value) {
+      setValue(index);
+    }
+  }, [normalizedPath]);
 
   return (
     <Box sx={{ pb: 7 }} ref={ref}>
@@ -45,4 +52,4 @@ export default function CustomBottomNavigation() {
       </Paper>
     </Box>
   );
-}
+});
