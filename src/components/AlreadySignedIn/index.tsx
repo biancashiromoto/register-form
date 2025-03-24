@@ -7,7 +7,7 @@ import LoadingLayer from '../LoadingLayer';
 
 const AlreadySignedIn = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const { setUser, session } = useAuth();
+  const { setUser, currentSession } = useAuth();
   const theme = useTheme();
 
   const style = useMemo(() => {
@@ -17,7 +17,7 @@ const AlreadySignedIn = () => {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     setUser(null);
-    session && (await supabase.auth.signOut());
+    currentSession && (await supabase.auth.signOut());
     setIsLoggingOut(false);
   };
 
