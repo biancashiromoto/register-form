@@ -1,18 +1,20 @@
 import { Context } from '@/context';
+import { useAvatarUrl } from '@/hooks/useAvatarUrl';
 import useUploadAvatar from '@/hooks/useUploadAvatar';
 import { Avatar, Box, IconButton, Skeleton, Typography } from '@mui/material';
 import { useContext, useEffect } from 'react';
 import { IoMdCamera } from 'react-icons/io';
 
 export const AvatarUploader = () => {
-  const { avatarUrl, uploadAvatar, isLoading, error } = useUploadAvatar();
+  const { data: avatarUrl, isLoading: isLoadingAvatar, error } = useAvatarUrl();
+  const { uploadAvatar } = useUploadAvatar();
   const { setSnackbarState } = useContext(Context);
 
   useEffect(() => {
     if (error) {
       setSnackbarState({
         open: true,
-        message: error,
+        message: error.message,
         severity: 'error',
       });
     }
@@ -28,7 +30,7 @@ export const AvatarUploader = () => {
         mb: 3,
       }}
     >
-      {isLoading ? (
+      {isLoadingAvatar ? (
         <Skeleton variant="circular" width={175} height={175} />
       ) : (
         <Box sx={{ position: 'relative' }}>
@@ -54,21 +56,21 @@ export const AvatarUploader = () => {
               width: 60,
               height: 60,
             }}
-            disabled={isLoading}
+            disabled={isLoadingAvatar}
           >
             <input
               type="file"
               hidden
               accept="image/*"
               onChange={uploadAvatar}
-              disabled={isLoading}
+              disabled={isLoadingAvatar}
             />
             <IoMdCamera color="white" />
           </IconButton>
         </Box>
       )}
       <Typography variant="caption" color="textSecondary">
-        {isLoading ? 'Loading...' : ''}
+        {isLoadingAvatar ? 'Loading...' : ''}
       </Typography>
     </Box>
   );
