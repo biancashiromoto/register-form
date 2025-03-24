@@ -29,14 +29,14 @@ export const AvatarUploader = () => {
       }}
     >
       {isLoading ? (
-        <Skeleton variant="circular" width={100} height={100} />
+        <Skeleton variant="circular" width={175} height={175} />
       ) : (
         <Box sx={{ position: 'relative' }}>
           <Avatar
             src={avatarUrl || undefined}
             sx={{
-              width: 100,
-              height: 100,
+              width: 175,
+              height: 175,
               border: '2px solid',
               borderColor: 'primary.main',
             }}
@@ -51,6 +51,8 @@ export const AvatarUploader = () => {
               '&:hover': {
                 backgroundColor: 'primary.dark',
               },
+              width: 60,
+              height: 60,
             }}
             disabled={isLoading}
           >
@@ -66,7 +68,7 @@ export const AvatarUploader = () => {
         </Box>
       )}
       <Typography variant="caption" color="textSecondary">
-        {isLoading ? 'Loading...' : 'Click to upload avatar'}
+        {isLoading ? 'Loading...' : ''}
       </Typography>
     </Box>
   );

@@ -13,12 +13,16 @@ const fakeUser = {
   user_metadata: { avatar_url: 'test-avatar.png' },
 };
 
+const fakeSession = {
+  user: fakeUser,
+};
+
 vi.mock('@/context/authContext', () => {
   return {
     useAuth: () => ({
       user: fakeUser,
       setUser: vi.fn(),
-      currentSession: null,
+      currentSession: fakeSession,
       setCurrentSession: vi.fn(),
       initializing: false,
       userRef: { current: fakeUser },
@@ -78,6 +82,7 @@ describe('useUploadAvatar', () => {
     const { result } = renderHook(() => useUploadAvatar(), {
       wrapper,
     });
+
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
       expect(result.current.avatarUrl).toBe('blob:fake-url');

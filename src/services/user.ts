@@ -28,7 +28,9 @@ export const signUpUser = async (user: UserType) => {
   return { data };
 };
 
-export const loginUser = async (userInfo: any) => {
+export const loginUser = async (
+  userInfo: Pick<UserType, 'email' | 'password'>,
+) => {
   const { email, password } = userInfo;
 
   if (!email || !password) return;
@@ -43,7 +45,9 @@ export const loginUser = async (userInfo: any) => {
   return { data };
 };
 
-export const updateUser = async (user: any) => {
+export const updateUser = async (
+  user: Pick<UserType, 'email' | 'firstName' | 'lastName'>,
+) => {
   const { email, firstName, lastName } = user;
   const { data, error } = await supabase.auth.updateUser({
     email,

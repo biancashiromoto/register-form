@@ -27,7 +27,7 @@ describe('usePageTitle', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.page.title).toBe('Home');
+      expect(result.current.page?.title).toBe('Home');
     });
   });
 });

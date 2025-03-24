@@ -6,7 +6,14 @@ import { AddressType, SnackbarStateType, UserType } from '@/types';
 import { privateRoutes } from '@/utils/commons/privateRoutes';
 import { createTheme, useMediaQuery } from '@mui/material';
 import { useLocation } from '@tanstack/react-router';
-import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
+import {
+  FC,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Context } from '.';
 import { ContextProps } from './index.types';
 
@@ -27,16 +34,11 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
   const [selectedLocation, setSelectedLocation] = useState({} as AddressType);
   const location = useLocation();
-  const normalizedPath = location.pathname.replace(/\/+$/, '');
+  const normalizedPath = useMemo(
+    () => location.pathname.replace(/\/$/, ''),
+    [location.pathname],
+  );
   const isPrivateRoute = privateRoutes.includes(normalizedPath);
-
-  const toggleTheme = () => {
-    setIsDarkModeOn((prevMode: boolean) => {
-      const newMode = !prevMode;
-      setLocalStorage('theme', newMode ? 'dark' : 'light');
-      return newMode;
-    });
-  };
 
   useEffect(
     () =>
@@ -64,20 +66,39 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     [isDarkModeOn],
   );
 
-  const value: ContextProps = {
-    snackbarState,
-    setSnackbarState,
-    registeringUser,
-    setRegisteringUser,
-    selectedLocation,
-    setSelectedLocation,
-    isDarkModeOn,
-    setIsDarkModeOn,
-    toggleTheme,
-    theme,
-    isPrivateRoute,
-    normalizedPath,
-  };
+  const toggleTheme = useCallback(() => {
+    setIsDarkModeOn((prevMode: boolean) => {
+      const newMode = !prevMode;
+      setLocalStorage('theme', newMode ? 'dark' : 'light');
+      return newMode;
+    });
+  }, [setIsDarkModeOn]);
+
+  const value = useMemo<ContextProps>(
+    () => ({
+      snackbarState,
+      setSnackbarState,
+      registeringUser,
+      setRegisteringUser,
+      selectedLocation,
+      setSelectedLocation,
+      isDarkModeOn,
+      setIsDarkModeOn,
+      toggleTheme,
+      theme,
+      isPrivateRoute,
+      normalizedPath,
+    }),
+    [
+      snackbarState,
+      registeringUser,
+      selectedLocation,
+      isDarkModeOn,
+      theme,
+      isPrivateRoute,
+      normalizedPath,
+    ],
+  );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
