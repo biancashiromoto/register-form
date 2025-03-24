@@ -1,17 +1,17 @@
+import { Context } from '@/context';
+import { useAuth } from '@/context/authContext';
+import { useAvatarUrl } from '@/hooks/useAvatarUrl';
+import { Avatar, Box, Container, Skeleton, Typography } from '@mui/material';
+import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 import Navbar from '../Navbar';
 import { ToggleThemeSwitch } from '../ToggleThemeSwitch';
-import { Context } from '@/context';
-import { Avatar, Box, Container, Skeleton, Typography } from '@mui/material';
-import useUploadAvatar from '@/hooks/useUploadAvatar';
-import { useAuth } from '@/context/authContext';
-import { useNavigate } from '@tanstack/react-router';
 
 const Header = () => {
   const { toggleTheme, isDarkModeOn } = useContext(Context);
-  const { avatarUrl, isLoading: isLoadingAvatar } = useUploadAvatar();
   const { currentSession } = useAuth();
   const navigate = useNavigate();
+  const { data: avatarUrl, isLoading: isLoadingAvatar } = useAvatarUrl();
 
   return (
     <Container>
