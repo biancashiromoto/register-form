@@ -1,5 +1,6 @@
 import { supabase } from '@/services/supabase';
 import { Session, User } from '@supabase/supabase-js';
+import { useQuery } from '@tanstack/react-query';
 import { ReactNode } from '@tanstack/react-router';
 import {
   createContext,
@@ -22,7 +23,8 @@ interface AuthContextType {
 const AuthContext = createContext({} as AuthContextType);
 
 const fetchSession = async () => {
-  return await supabase.auth.getSession();
+  const { data, error } = await supabase.auth.getSession();
+  return { data, error };
 };
 
 export const AuthProvider = ({ children }: ReactNode) => {
@@ -35,19 +37,20 @@ export const AuthProvider = ({ children }: ReactNode) => {
     userRef.current = user;
   }, [user]);
 
+  const { data } = useQuery({
+    queryKey: ['session'],
+    queryFn: fetchSession,
+    enabled: !initializing,
+  });
+
   useEffect(() => {
-    const fetchUserSession = async () => {
-      const {
-        data: { session },
-      } = await fetchSession();
+    if (data?.data) {
+      setUser(data.data.session?.user ?? null);
+      setCurrentSession(data.data.session);
+    }
+  }, [data]);
 
-      if (session) {
-        setCurrentSession(session);
-        setUser(session.user);
-      }
-      setInitializing(false);
-    };
-
+  useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
@@ -55,7 +58,6 @@ export const AuthProvider = ({ children }: ReactNode) => {
         setInitializing(false);
       },
     );
-    fetchUserSession();
 
     return () => {
       authListener.subscription.unsubscribe();
