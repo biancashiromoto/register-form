@@ -1,87 +1,52 @@
 import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { ChangeEvent, useCallback } from 'react';
+
+export const fetchAvatarUrl = async (path: string): Promise<string> => {
+  const { data, error } = await supabase.storage.from('avatars').download(path);
+
+  if (error || !data) {
+    throw new Error(error?.message ?? 'Erro ao baixar avatar');
+  }
+
+  return URL.createObjectURL(data);
+};
 
 const AVATAR_BUCKET = 'avatars';
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
 const useUploadAvatar = () => {
   const { currentSession } = useAuth();
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const downloadImage = useCallback(
-    async (path: string) => {
-      setIsLoading(true);
-      try {
-        const { data, error } = await supabase.storage
-          .from(AVATAR_BUCKET)
-          .download(path);
-        if (error) throw error;
-        const url = URL.createObjectURL(data);
-        setAvatarUrl(url);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [setIsLoading, setAvatarUrl, setError],
-  );
-
-  const uploadAvatar = async (event: ChangeEvent<HTMLInputElement>) => {
-    try {
-      setIsLoading(true);
-
-      if (!event.target.files || event.target.files.length === 0) {
-        setError('You must select an image to upload.');
-      }
-
+  const uploadAvatar = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
-      if (!files) {
-        setError('No files selected.');
-        return;
-      }
-      const file = files[0];
-      if (file.size > MAX_FILE_SIZE) {
-        setError('File size must be less than 2MB');
-      }
+      if (!files || files.length === 0)
+        throw new Error('Selecione uma imagem.');
 
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${currentSession?.user?.id}/${currentSession?.user?.id}.${fileExt}`;
+      const file = files[0];
+      if (file.size > MAX_FILE_SIZE) throw new Error('Imagem maior que 8MB.');
+
+      const ext = file.name.split('.').pop();
+      const path = `${currentSession?.user?.id}/${currentSession?.user?.id}.${ext}`;
 
       const { error: uploadError } = await supabase.storage
         .from(AVATAR_BUCKET)
-        .upload(filePath, file, { upsert: true });
+        .upload(path, file, { upsert: true });
 
-      if (uploadError) {
-        throw uploadError;
-      }
+      if (uploadError) throw uploadError;
 
-      await supabase.auth.updateUser({
-        data: { avatar_url: filePath },
-      });
+      await supabase.auth.updateUser({ data: { avatar_url: path } });
 
-      downloadImage(filePath);
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (currentSession?.user?.user_metadata.avatar_url) {
-      downloadImage(currentSession?.user.user_metadata.avatar_url);
-    }
-  }, [currentSession]);
+      queryClient.invalidateQueries({ queryKey: ['avatar'] });
+    },
+    [currentSession, queryClient],
+  );
 
   return {
-    avatarUrl,
-    isLoading,
     uploadAvatar,
-    error,
   };
 };
 
