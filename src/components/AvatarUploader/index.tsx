@@ -69,9 +69,11 @@ export const AvatarUploader = () => {
           </IconButton>
         </Box>
       )}
-      <Typography variant="caption" color="textSecondary">
-        {isLoadingAvatar ? 'Loading...' : ''}
-      </Typography>
+      {isLoadingAvatar && (
+        <Typography variant="caption" color="textSecondary">
+          Loading...
+        </Typography>
+      )}
     </Box>
   );
 };
