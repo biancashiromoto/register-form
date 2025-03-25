@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode } from '@tanstack/react-router';
 import { useAuth } from '@/context/authContext';
 
-// Mocks
 vi.mock('@/services/supabase', () => ({
   supabase: {
     storage: {
@@ -40,7 +39,7 @@ describe('useUploadAvatar', () => {
     file = new File(['dummy'], 'avatar.png', { type: 'image/png' });
   });
 
-  it('deve realizar o upload de um avatar com sucesso', async () => {
+  it('should successfully upload avatar', async () => {
     const { result } = renderHook(() => useUploadAvatar(), {
       wrapper,
     });
@@ -54,7 +53,7 @@ describe('useUploadAvatar', () => {
     await expect(result.current.uploadAvatar(input)).resolves.toBeUndefined();
   });
 
-  it('deve lançar erro se nenhum arquivo for selecionado', async () => {
+  it('should throw an error if no file is selected', async () => {
     const { result } = renderHook(() => useUploadAvatar(), { wrapper });
 
     const input = {
@@ -64,11 +63,11 @@ describe('useUploadAvatar', () => {
     } as unknown as ChangeEvent<HTMLInputElement>;
 
     await expect(result.current.uploadAvatar(input)).rejects.toThrow(
-      'Selecione uma imagem.',
+      'Select an image.',
     );
   });
 
-  it('deve lançar erro se o arquivo for maior que 8MB', async () => {
+  it('should throw an error if file is larger than 8MB', async () => {
     const largeFile = new File(['large'], 'big.png', { type: 'image/png' });
     Object.defineProperty(largeFile, 'size', { value: 9 * 1024 * 1024 }); // 9MB
 
@@ -81,7 +80,7 @@ describe('useUploadAvatar', () => {
     } as unknown as ChangeEvent<HTMLInputElement>;
 
     await expect(result.current.uploadAvatar(input)).rejects.toThrow(
-      'Imagem maior que 8MB.',
+      'Image larger than 8MB.',
     );
   });
 });
