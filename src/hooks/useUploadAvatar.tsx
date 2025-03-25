@@ -23,11 +23,10 @@ const useUploadAvatar = () => {
   const uploadAvatar = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
-      if (!files || files.length === 0)
-        throw new Error('Selecione uma imagem.');
+      if (!files || files.length === 0) throw new Error('Select an image.');
 
       const file = files[0];
-      if (file.size > MAX_FILE_SIZE) throw new Error('Imagem maior que 8MB.');
+      if (file.size > MAX_FILE_SIZE) throw new Error('Image larger than 8MB.');
 
       const ext = file.name.split('.').pop();
       const path = `${currentSession?.user?.id}/${currentSession?.user?.id}.${ext}`;
