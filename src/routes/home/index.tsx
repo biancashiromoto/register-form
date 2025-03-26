@@ -1,5 +1,5 @@
 import { useAuth } from '@/context/authContext';
-import { Box, Container, Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/home/')({
