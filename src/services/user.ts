@@ -45,15 +45,14 @@ export const loginUser = async (
   return { data };
 };
 
-export const updateUser = async (
-  user: Pick<UserType, 'email' | 'firstName' | 'lastName'>,
-) => {
-  const { email, firstName, lastName } = user;
+export const updateUser = async (user: UserType) => {
+  const { email, firstName, lastName, birthDate } = user;
   const { data, error } = await supabase.auth.updateUser({
     email,
     data: {
       first_name: firstName,
       last_name: lastName,
+      birth_date: birthDate,
     },
   });
 
