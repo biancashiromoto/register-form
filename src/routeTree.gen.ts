@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as UnauthenticatedIndexImport } from './routes/unauthenticated/index'
+import { Route as ResetPasswordIndexImport } from './routes/reset-password/index'
 import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as LoginIndexImport } from './routes/login/index'
@@ -30,6 +31,12 @@ const IndexRoute = IndexImport.update({
 const UnauthenticatedIndexRoute = UnauthenticatedIndexImport.update({
   id: '/unauthenticated/',
   path: '/unauthenticated/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ResetPasswordIndexRoute = ResetPasswordIndexImport.update({
+  id: '/reset-password/',
+  path: '/reset-password/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterIndexImport
       parentRoute: typeof rootRoute
     }
+    '/reset-password/': {
+      id: '/reset-password/'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/unauthenticated/': {
       id: '/unauthenticated/'
       path: '/unauthenticated'
@@ -127,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/register': typeof RegisterIndexRoute
+  '/reset-password': typeof ResetPasswordIndexRoute
   '/unauthenticated': typeof UnauthenticatedIndexRoute
   '/register/success': typeof RegisterSuccessIndexRoute
 }
@@ -137,6 +152,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/register': typeof RegisterIndexRoute
+  '/reset-password': typeof ResetPasswordIndexRoute
   '/unauthenticated': typeof UnauthenticatedIndexRoute
   '/register/success': typeof RegisterSuccessIndexRoute
 }
@@ -148,6 +164,7 @@ export interface FileRoutesById {
   '/login/': typeof LoginIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/register/': typeof RegisterIndexRoute
+  '/reset-password/': typeof ResetPasswordIndexRoute
   '/unauthenticated/': typeof UnauthenticatedIndexRoute
   '/register/success/': typeof RegisterSuccessIndexRoute
 }
@@ -160,6 +177,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/register'
+    | '/reset-password'
     | '/unauthenticated'
     | '/register/success'
   fileRoutesByTo: FileRoutesByTo
@@ -169,6 +187,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/register'
+    | '/reset-password'
     | '/unauthenticated'
     | '/register/success'
   id:
@@ -178,6 +197,7 @@ export interface FileRouteTypes {
     | '/login/'
     | '/profile/'
     | '/register/'
+    | '/reset-password/'
     | '/unauthenticated/'
     | '/register/success/'
   fileRoutesById: FileRoutesById
@@ -189,6 +209,7 @@ export interface RootRouteChildren {
   LoginIndexRoute: typeof LoginIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
+  ResetPasswordIndexRoute: typeof ResetPasswordIndexRoute
   UnauthenticatedIndexRoute: typeof UnauthenticatedIndexRoute
   RegisterSuccessIndexRoute: typeof RegisterSuccessIndexRoute
 }
@@ -199,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginIndexRoute: LoginIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
   RegisterIndexRoute: RegisterIndexRoute,
+  ResetPasswordIndexRoute: ResetPasswordIndexRoute,
   UnauthenticatedIndexRoute: UnauthenticatedIndexRoute,
   RegisterSuccessIndexRoute: RegisterSuccessIndexRoute,
 }
@@ -218,6 +240,7 @@ export const routeTree = rootRoute
         "/login/",
         "/profile/",
         "/register/",
+        "/reset-password/",
         "/unauthenticated/",
         "/register/success/"
       ]
@@ -236,6 +259,9 @@ export const routeTree = rootRoute
     },
     "/register/": {
       "filePath": "register/index.tsx"
+    },
+    "/reset-password/": {
+      "filePath": "reset-password/index.tsx"
     },
     "/unauthenticated/": {
       "filePath": "unauthenticated/index.tsx"
