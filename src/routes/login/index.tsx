@@ -7,6 +7,7 @@ import { useAuth } from '@/context/authContext';
 import useLoginUser from '@/hooks/useLoginUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { loginSchema } from '@/schemas/loginSchema';
+import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
 import { SignInWithPasswordCredentials } from '@supabase/supabase-js';
@@ -40,6 +41,17 @@ function RouteComponent() {
   const { mutate: login, isPending } = useLoginUser(setError);
   const { currentSession } = useAuth();
 
+  const sendResetPasswordEmail = async () => {
+    const redirectUrl = `${window.location.origin}/reset-password`;
+    await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+
+    await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+  };
+
   const onSubmit = (data: SignInWithPasswordCredentials) => {
     login(data);
   };
@@ -70,7 +82,7 @@ function RouteComponent() {
         />
 
         <InputPassword
-          hidden={!!errors.email}
+          hidden={!errors || !!errors.email}
           errors={errors}
           register={register}
           isExistingPassword
@@ -78,6 +90,13 @@ function RouteComponent() {
 
         <CustomButton variant="contained" color="primary" type="submit">
           Log in
+        </CustomButton>
+        <CustomButton
+          variant="outlined"
+          color="primary"
+          onClick={sendResetPasswordEmail}
+        >
+          Forgot your password?
         </CustomButton>
       </Box>
     </Container>
