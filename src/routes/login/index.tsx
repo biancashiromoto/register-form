@@ -3,6 +3,8 @@ import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import InputText from '@/components/InputText';
 import LoadingLayer from '@/components/LoadingLayer';
+import { CustomSnackbar } from '@/components/Snackbar';
+import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import useLoginUser from '@/hooks/useLoginUser';
 import { useResetForm } from '@/hooks/useResetForm';
@@ -11,7 +13,8 @@ import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
 import { SignInWithPasswordCredentials } from '@supabase/supabase-js';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/login/')({
@@ -40,16 +43,22 @@ function RouteComponent() {
   useResetForm(email, resetField, 'password');
   const { mutate: login, isPending } = useLoginUser(setError);
   const { currentSession } = useAuth();
+  const navigate = useNavigate();
+  const { snackbarState, setSnackbarState } = useContext(Context);
 
   const sendResetPasswordEmail = async () => {
     const redirectUrl = `${window.location.origin}/reset-password`;
-    await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
     });
-
-    await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
+    setSnackbarState({
+      open: true,
+      message: error
+        ? error.message
+        : 'A password recovery email has been sent successfully. Please check your inbox for instructions.',
+      severity: error ? 'error' : 'success',
     });
+    navigate({ to: '/login' });
   };
 
   const onSubmit = (data: SignInWithPasswordCredentials) => {
@@ -99,6 +108,7 @@ function RouteComponent() {
           Forgot your password?
         </CustomButton>
       </Box>
+      {snackbarState && <CustomSnackbar />}
     </Container>
   );
 }
