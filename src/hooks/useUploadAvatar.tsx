@@ -7,7 +7,7 @@ export const fetchAvatarUrl = async (path: string): Promise<string> => {
   const { data, error } = await supabase.storage.from('avatars').download(path);
 
   if (error || !data) {
-    throw new Error(error?.message ?? 'Erro ao baixar avatar');
+    throw new Error(error?.message ?? 'Error downloading avatar');
   }
 
   return URL.createObjectURL(data);

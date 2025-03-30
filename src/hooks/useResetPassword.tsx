@@ -1,25 +1,25 @@
 import { Context } from '@/context';
 import { delay } from '@/helpers';
-import { signUpUser } from '@/services/user';
-import { UserType } from '@/types';
+import { resetPassword } from '@/services/user';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 
-const useRegisterUser = () => {
+const useResetPassword = () => {
   const { setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ['registerUser'],
-    mutationFn: (data: UserType) => signUpUser(data),
+    mutationKey: ['resetPassword'],
+    mutationFn: (data: any) => resetPassword(data),
     onSuccess: async () => {
       await delay();
-      navigate({
-        to: '/register/success',
-        replace: true,
-        viewTransition: true,
+      setSnackbarState({
+        open: true,
+        message: 'Password successfully updated!',
+        severity: 'success',
       });
+      navigate({ to: '/login' });
     },
     onError: (error) => {
       setSnackbarState({
@@ -33,4 +33,4 @@ const useRegisterUser = () => {
   return { mutate, isPending };
 };
 
-export default useRegisterUser;
+export default useResetPassword;

@@ -1,11 +1,11 @@
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
-import { useAvatarUrl } from '@/hooks/useAvatarUrl';
 import { Avatar, Box, Container, Skeleton, Typography } from '@mui/material';
 import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 import Navbar from '../Navbar';
 import { ToggleThemeSwitch } from '../ToggleThemeSwitch';
+import useAvatarUrl from '@/hooks/useAvatarUrl';
 
 const Header = () => {
   const { toggleTheme, isDarkModeOn } = useContext(Context);
