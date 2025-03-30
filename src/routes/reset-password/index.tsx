@@ -2,14 +2,12 @@ import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
-import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
+import useResetPassword from '@/hooks/useResetPassword';
+import useValidateResetLink from '@/hooks/useValidateResetLink';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
-import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useContext, useEffect, useState } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/reset-password/')({
@@ -17,33 +15,50 @@ export const Route = createFileRoute('/reset-password/')({
 });
 
 function RouteComponent() {
-  const [isLoading, setIsLoading] = useState(false);
-  const { setSnackbarState } = useContext(Context);
-  const navigate = useNavigate();
-  const { user } = useAuth();
-
-  const onSubmit = async (data: any) => {
-    await supabase.auth.updateUser({
-      password: data.new_password,
-    });
-  };
+  const { isLoadingValidateResetLink, isValidResetLink } =
+    useValidateResetLink();
+  const { mutate: resetPassword, isPending: isPendingResetPassword } =
+    useResetPassword();
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(resetPasswordSchema),
     mode: 'all',
   });
+  const password = watch('password');
 
-  if (isLoading) return <LoadingLayer />;
+  const onSubmit = async () => {
+    resetPassword(password);
+  };
+
+  if (isLoadingValidateResetLink || isPendingResetPassword)
+    return <LoadingLayer />;
+
+  if (!isValidResetLink) {
+    return (
+      <Container maxWidth="sm">
+        <Typography variant="h5" align="center" gutterBottom>
+          Invalid Reset Link
+        </Typography>
+        <Typography variant="body1" align="center" gutterBottom>
+          This password reset link is invalid or has expired. Please request a
+          new password reset.
+        </Typography>
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+          <CustomButton href="/login" openInNewTab={false}>
+            Return to Login
+          </CustomButton>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="sm">
-      <Typography variant="h5" align="center" gutterBottom>
-        Reset Password
-      </Typography>
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
