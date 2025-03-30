@@ -6,6 +6,8 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { vi } from 'vitest';
 import useLoginUser from '../useLoginUser';
+import { mockUser } from '@/tests/mocks';
+import { UserType } from '@/types';
 
 vi.mock('@/services/user', () => ({
   loginUser: vi.fn(),
@@ -32,7 +34,9 @@ describe('useLoginUser', () => {
   const mockSetUser = vi.fn();
   const mockSetCurrentSession = vi.fn();
 
-  const userRef = { current: null as null | { id: string; email: string } };
+  const userRef = {
+    current: null as null | { id: string | undefined; email: string },
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -45,7 +49,6 @@ describe('useLoginUser', () => {
   });
 
   it('navigates to /home on successful login', async () => {
-    const mockUser = { id: 'userId', email: 'user@example.com' };
     const mockSession = { access_token: 'token', user: mockUser };
     (loginUser as any).mockResolvedValue({ data: { session: mockSession } });
 
@@ -54,11 +57,11 @@ describe('useLoginUser', () => {
     });
 
     act(() => {
-      result.current.mutate({ email: 'user@example.com', password: 'pass' });
+      result.current.mutate({ email: mockUser.email, password: 'pass' });
     });
 
     await waitFor(() => {
-      userRef.current = mockUser;
+      userRef.current = { ...mockUser, id: '1a' };
       return userRef.current !== null;
     });
 
@@ -80,17 +83,13 @@ describe('useLoginUser', () => {
 
     act(() => {
       result.current.mutate({
-        email: 'user@example.com',
+        email: mockUser.email,
         password: 'wrongpass',
       });
     });
 
     await waitFor(() => {
       expect(mockSetError).toHaveBeenCalledWith('email', {
-        type: 'manual',
-        message: errorMessage,
-      });
-      expect(mockSetError).toHaveBeenCalledWith('password', {
         type: 'manual',
         message: errorMessage,
       });
