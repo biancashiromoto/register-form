@@ -1,6 +1,6 @@
 import { useAuth } from '@/context/authContext';
 import { loginUser } from '@/services/user';
-import { SignInWithPasswordCredentials } from '@supabase/supabase-js';
+import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { UseFormSetError } from 'react-hook-form';
@@ -24,7 +24,7 @@ const useLoginUser = (setError: SetErrorFunction) => {
 
   const { isError, mutate, isPending } = useMutation({
     mutationKey: ['loginUser'],
-    mutationFn: async (credentials: SignInWithPasswordCredentials) => {
+    mutationFn: async (credentials: Pick<UserType, 'email' | 'password'>) => {
       const response = await loginUser(credentials);
       if (!response || !response.data?.session) {
         throw new Error('Invalid login credentials');
