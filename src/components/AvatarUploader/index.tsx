@@ -1,5 +1,5 @@
 import { Context } from '@/context';
-import { useAvatarUrl } from '@/hooks/useAvatarUrl';
+import useAvatarUrl from '@/hooks/useAvatarUrl';
 import useUploadAvatar from '@/hooks/useUploadAvatar';
 import { Avatar, Box, IconButton, Skeleton, Typography } from '@mui/material';
 import { useContext, useEffect } from 'react';
