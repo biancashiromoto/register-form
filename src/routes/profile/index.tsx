@@ -5,6 +5,7 @@ import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
+import useResetPassword from '@/hooks/useResetPassword';
 import useUpdateUser from '@/hooks/useUpdateUser';
 import { profileEditSchema } from '@/schemas/profileEditSchema';
 import { SnackbarStateType } from '@/types';
@@ -23,6 +24,7 @@ function RouteComponent() {
   const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser();
   const { snackbarState, setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
+  const { sendResetPasswordEmail } = useResetPassword();
 
   const {
     register,
@@ -111,6 +113,13 @@ function RouteComponent() {
 
         <CustomButton disabled={!isValid} type="submit">
           Save
+        </CustomButton>
+        <CustomButton
+          variant="outlined"
+          color="primary"
+          onClick={() => sendResetPasswordEmail(currentSession?.user.email)}
+        >
+          Reset password
         </CustomButton>
       </Box>
       {snackbarState && <CustomSnackbar />}
