@@ -2,7 +2,7 @@ import { supabase } from '@/services/supabase';
 import { useAuth } from '@/context/authContext';
 import { useQuery } from '@tanstack/react-query';
 
-export const useAvatarUrl = () => {
+const useAvatarUrl = () => {
   const { currentSession } = useAuth();
   const avatarPath = currentSession?.user?.user_metadata?.avatar_url;
 
@@ -17,3 +17,5 @@ export const useAvatarUrl = () => {
     },
   });
 };
+
+export default useAvatarUrl;
