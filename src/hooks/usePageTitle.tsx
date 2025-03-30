@@ -18,6 +18,10 @@ const locations = {
     route: '/profile',
     title: 'Profile',
   },
+  resetPassword: {
+    route: '/reset-password',
+    title: 'Reset password',
+  },
 };
 
 const usePageTitle = () => {
