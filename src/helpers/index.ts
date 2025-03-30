@@ -43,3 +43,6 @@ export const passwordValidation = new RegExp(
 export const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'instant' });
 };
+
+export const delay = (ms: number = 50) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
