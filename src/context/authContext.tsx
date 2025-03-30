@@ -23,11 +23,24 @@ interface AuthContextType {
 const AuthContext = createContext({} as AuthContextType);
 
 const fetchSession = async () => {
-  const { data, error } = await supabase.auth.getSession();
-  return { data, error };
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    if (error?.message === 'Invalid Refresh Token: Refresh Token Not Found') {
+      localStorage.clear();
+      window.location.href = '/login';
+      return { data: null, error: null };
+    }
+    return { data, error };
+  } catch (error: any) {
+    if (error?.message === 'Invalid Refresh Token: Refresh Token Not Found') {
+      localStorage.clear();
+      window.location.href = '/login';
+    }
+    return { data: null, error };
+  }
 };
 
-export const AuthProvider = ({ children }: ReactNode) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [initializing, setInitializing] = useState(true);
@@ -41,6 +54,7 @@ export const AuthProvider = ({ children }: ReactNode) => {
     queryKey: ['session'],
     queryFn: fetchSession,
     enabled: !initializing,
+    retry: false,
   });
 
   useEffect(() => {
@@ -52,10 +66,24 @@ export const AuthProvider = ({ children }: ReactNode) => {
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
-        setCurrentSession(session);
-        setInitializing(false);
+      async (event, session) => {
+        try {
+          if (event === 'TOKEN_REFRESHED' && !session) {
+            localStorage.clear();
+            window.location.href = '/login';
+            return;
+          }
+          setUser(session?.user ?? null);
+          setCurrentSession(session);
+          setInitializing(false);
+        } catch (error: any) {
+          if (
+            error?.message === 'Invalid Refresh Token: Refresh Token Not Found'
+          ) {
+            localStorage.clear();
+            window.location.href = '/login';
+          }
+        }
       },
     );
 
