@@ -8,12 +8,12 @@ import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import useLoginUser from '@/hooks/useLoginUser';
 import { useResetForm } from '@/hooks/useResetForm';
-import useResetPassword from '@/hooks/useResetPassword';
 import { loginSchema } from '@/schemas/loginSchema';
-import { UserType } from '@/types';
+import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { SignInWithPasswordCredentials } from '@supabase/supabase-js';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -39,14 +39,29 @@ function RouteComponent() {
   });
 
   const email = watch('email');
+  const password = watch('password');
   useResetForm(email, resetField, 'password');
-
   const { mutate: login, isPending } = useLoginUser(setError);
   const { currentSession } = useAuth();
-  const { snackbarState } = useContext(Context);
-  const { sendResetPasswordEmail } = useResetPassword();
+  const navigate = useNavigate();
+  const { snackbarState, setSnackbarState } = useContext(Context);
 
-  const onSubmit = (data: Pick<UserType, 'email' | 'password'>) => {
+  const sendResetPasswordEmail = async () => {
+    const redirectUrl = `${window.location.origin}/reset-password`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+    setSnackbarState({
+      open: true,
+      message: error
+        ? error.message
+        : 'A password recovery email has been sent successfully. Please check your inbox for instructions.',
+      severity: error ? 'error' : 'success',
+    });
+    navigate({ to: '/login' });
+  };
+
+  const onSubmit = (data: SignInWithPasswordCredentials) => {
     login(data);
   };
 
@@ -88,7 +103,7 @@ function RouteComponent() {
         <CustomButton
           variant="outlined"
           color="primary"
-          onClick={() => sendResetPasswordEmail(email)}
+          onClick={sendResetPasswordEmail}
         >
           Forgot your password?
         </CustomButton>
