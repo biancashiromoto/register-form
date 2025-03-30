@@ -2,21 +2,17 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import { AvatarUploader } from '..';
-import { useAvatarUrl } from '@/hooks/useAvatarUrl';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import useUploadAvatar from '@/hooks/useUploadAvatar';
+import useAvatarUrl from '@/hooks/useAvatarUrl';
 
 vi.mock('@/hooks/useUploadAvatar', () => ({
   default: vi.fn(),
 }));
 
-vi.mock(import('@/hooks/useAvatarUrl'), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    useAvatarUrl: vi.fn(),
-  };
-});
+vi.mock('@/hooks/useAvatarUrl', () => ({
+  default: vi.fn(),
+}));
 
 describe('AvatarUploader', () => {
   const queryClient = new QueryClient();
