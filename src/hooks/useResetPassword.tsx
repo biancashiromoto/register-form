@@ -6,8 +6,27 @@ import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 
 const useResetPassword = () => {
-  const { setSnackbarState } = useContext(Context);
+  const { setSnackbarState, isPrivateRoute } = useContext(Context);
   const navigate = useNavigate();
+
+  const sendResetPasswordEmail = async (
+    email: UserType['email'] | undefined,
+  ) => {
+    if (!email) return;
+
+    const redirectUrl = `${window.location.origin}/reset-password`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+    setSnackbarState({
+      open: true,
+      message: error
+        ? error.message
+        : 'A password recovery email has been sent successfully. Please check your inbox for instructions.',
+      severity: error ? 'error' : 'success',
+    });
+    !isPrivateRoute && navigate({ to: '/login' });
+  };
 
   const { mutate, isPending } = useMutation({
     mutationKey: ['resetPassword'],
