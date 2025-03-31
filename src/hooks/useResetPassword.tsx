@@ -4,13 +4,12 @@ import { supabase } from '@/services/supabase';
 import { resetPassword } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
-import { useLocation, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 
 const useResetPassword = () => {
-  const { setSnackbarState } = useContext(Context);
+  const { setSnackbarState, isPrivateRoute } = useContext(Context);
   const navigate = useNavigate();
-  const { isPrivateRoute } = useContext(Context);
 
   const sendResetPasswordEmail = async (
     email: UserType['email'] | undefined,
