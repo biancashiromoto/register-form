@@ -1,6 +1,8 @@
 import { Context } from '@/context';
 import { delay } from '@/helpers';
+import { supabase } from '@/services/supabase';
 import { resetPassword } from '@/services/user';
+import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
@@ -49,7 +51,7 @@ const useResetPassword = () => {
     },
   });
 
-  return { mutate, isPending };
+  return { mutate, isPending, sendResetPasswordEmail };
 };
 
 export default useResetPassword;
