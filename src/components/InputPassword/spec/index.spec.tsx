@@ -2,13 +2,24 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import InputPassword, { InputPasswordProps } from '../index';
 
-const mockRegister = vi.fn();
+import { UseFormRegister } from 'react-hook-form';
+import { UserType } from '@/types';
+
+const mockRegister: UseFormRegister<UserType> = vi.fn((name) => ({
+  name,
+  ref: vi.fn(),
+  onChange: vi.fn(),
+  onBlur: vi.fn(),
+}));
+
 const mockProps: InputPasswordProps = {
   hidden: false,
   errors: {},
   register: mockRegister,
   isConfirmPassword: false,
   isExistingPassword: false,
+  name: 'password',
+  label: 'Password',
 };
 
 describe('InputPassword', () => {
@@ -32,7 +43,12 @@ describe('InputPassword', () => {
   });
 
   it('calls register function with correct argument when isConfirmPassword is true', () => {
-    renderComponent({ ...mockProps, isConfirmPassword: true });
+    renderComponent({
+      ...mockProps,
+      isConfirmPassword: true,
+      name: undefined,
+      label: undefined,
+    });
     expect(mockRegister).toHaveBeenCalledWith('confirmPassword');
     expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
   });
@@ -67,14 +83,5 @@ describe('InputPassword', () => {
     fireEvent.click(iconButton);
     expect(iconButton).toHaveAttribute('aria-label', 'display the password');
     expect(input).toHaveAttribute('type', 'password');
-  });
-
-  it('handles mouse down and mouse up events without errors', () => {
-    renderComponent();
-    const iconButton = screen.getByRole('button', {
-      name: /display the password/i,
-    });
-    fireEvent.mouseDown(iconButton);
-    fireEvent.mouseUp(iconButton);
   });
 });

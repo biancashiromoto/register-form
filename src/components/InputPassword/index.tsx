@@ -100,7 +100,7 @@ const InputPassword = memo(
           ] && (
             <FormHelperText error>
               {
-                !!errors[
+                errors[
                   passwordInputIdentification as keyof FieldErrors<UserType>
                 ]?.message
               }
