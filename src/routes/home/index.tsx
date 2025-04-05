@@ -1,6 +1,6 @@
 import { useAuth } from '@/context/authContext';
 import { Container, Typography } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/home/')({
   component: RouteComponent,
@@ -8,14 +8,13 @@ export const Route = createFileRoute('/home/')({
 
 function RouteComponent() {
   const { currentSession } = useAuth();
+  const navigate = useNavigate();
+
+  if (!currentSession) navigate({ to: '/unauthenticated' });
 
   return (
-    currentSession && (
-      <Container maxWidth="sm">
-        <Typography variant="body2">
-          You have successfully logged in!
-        </Typography>
-      </Container>
-    )
+    <Container maxWidth="sm">
+      <Typography variant="body2">You have successfully logged in!</Typography>
+    </Container>
   );
 }
