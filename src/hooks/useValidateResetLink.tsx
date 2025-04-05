@@ -18,12 +18,13 @@ const useValidateResetLink = () => {
         const accessToken = hashParams.get('access_token');
 
         if (type !== 'recovery' || !accessToken) {
-          setSnackbarState({
-            open: true,
-            message: 'Invalid password reset link',
-            severity: 'error',
-          });
-          navigate({ to: '/login' });
+          // setSnackbarState({
+          //   open: true,
+          //   message: 'Invalid password reset link',
+          //   severity: 'error',
+          // });
+          // navigate({ to: '/login' });
+          console.log('passou aqui');
           return;
         }
 
