@@ -1,4 +1,5 @@
 import { Context } from '@/context';
+import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
 import { useNavigate } from '@tanstack/react-router';
 import { useContext, useEffect, useState } from 'react';
@@ -9,6 +10,7 @@ const useValidateResetLink = () => {
     useState(true);
   const { setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
+  const { currentSession } = useAuth();
 
   useEffect(() => {
     const validateResetLink = async () => {
@@ -17,14 +19,7 @@ const useValidateResetLink = () => {
         const type = hashParams.get('type');
         const accessToken = hashParams.get('access_token');
 
-        if (type !== 'recovery' || !accessToken) {
-          // setSnackbarState({
-          //   open: true,
-          //   message: 'Invalid password reset link',
-          //   severity: 'error',
-          // });
-          // navigate({ to: '/login' });
-          console.log('passou aqui');
+        if (type !== 'recovery' || !accessToken || !currentSession) {
           console.log('type: ', type);
           console.log('accessToken: ', accessToken);
           return;
