@@ -2,12 +2,15 @@ import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
+import { Context } from '@/context';
+import { useAuth } from '@/context/authContext';
 import useResetPassword from '@/hooks/useResetPassword';
 import useValidateResetLink from '@/hooks/useValidateResetLink';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/reset-password/')({
@@ -17,26 +20,55 @@ export const Route = createFileRoute('/reset-password/')({
 function RouteComponent() {
   const { isLoadingValidateResetLink, isValidResetLink } =
     useValidateResetLink();
-  const { mutate: resetPassword, isPending: isPendingResetPassword } =
-    useResetPassword();
+  const {
+    mutate: resetPassword,
+    isPending: isPendingResetPassword,
+    sendResetPasswordEmail,
+  } = useResetPassword();
+  const { currentSession } = useAuth();
+  const { snackbarState } = useContext(Context);
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm({
+  } = useForm<{
+    currentPassword?: string | undefined;
+    password: string;
+    confirmPassword: string;
+  }>({
     resolver: zodResolver(resetPasswordSchema),
-    mode: 'all',
+    mode: 'onSubmit',
+    defaultValues: {
+      currentPassword: undefined,
+      password: '',
+      confirmPassword: '',
+    },
   });
-  const password = watch('password');
 
-  const onSubmit = async () => {
-    resetPassword(password);
+  const onSubmit = async (data: {
+    currentPassword?: string | undefined;
+    password: string;
+    confirmPassword: string;
+  }) => {
+    resetPassword({
+      newPassword: data.password,
+      currentPassword: data.currentPassword,
+    });
   };
 
-  if (isLoadingValidateResetLink || isPendingResetPassword)
-    return <LoadingLayer />;
+  useEffect(() => {
+    if (snackbarState.severity === 'success' && !snackbarState.open) {
+      navigate({ to: `${currentSession ? '/profile' : '/login'}` });
+    }
+  }, [snackbarState]);
+
+  useEffect(() => {
+    console.log(currentSession);
+  }, [currentSession]);
+
+  if (isLoadingValidateResetLink) return <LoadingLayer />;
 
   if (!isValidResetLink) {
     return (
@@ -69,11 +101,29 @@ function RouteComponent() {
           mt: 4,
         }}
       >
+        {currentSession && (
+          <InputPassword
+            errors={errors}
+            register={register}
+            name="currentPassword"
+            label="Current password"
+          />
+        )}
         <InputPassword errors={errors} register={register} />
         <InputPassword errors={errors} register={register} isConfirmPassword />
-        <CustomButton type="submit">Update Password</CustomButton>
+        <CustomButton type="submit" disabled={isPendingResetPassword}>
+          Update Password
+        </CustomButton>
+        <CustomButton
+          variant="outlined"
+          color="primary"
+          onClick={() => sendResetPasswordEmail(currentSession?.user?.email)}
+          disabled={isPendingResetPassword}
+        >
+          Forgot your password?
+        </CustomButton>
       </Box>
-      <CustomSnackbar />
+      {snackbarState && <CustomSnackbar />}
     </Container>
   );
 }
