@@ -18,16 +18,20 @@ const useValidateResetLink = () => {
         const accessToken = hashParams.get('access_token');
 
         if (type !== 'recovery' || !accessToken) {
-          setSnackbarState({
-            open: true,
-            message: 'Invalid password reset link',
-            severity: 'error',
-          });
-          navigate({ to: '/login' });
+          // setSnackbarState({
+          //   open: true,
+          //   message: 'Invalid password reset link',
+          //   severity: 'error',
+          // });
+          // navigate({ to: '/login' });
+          console.log('passou aqui');
+          console.log('type: ', type);
+          console.log('accessToken: ', accessToken);
           return;
         }
 
         const { error } = await supabase.auth.getUser(accessToken);
+        console.log('error: ', error);
         if (error) throw error;
 
         setIsValidResetLink(true);
