@@ -64,8 +64,10 @@ export const useAuthState = (): AuthState => {
           setUser(session?.user ?? null);
           setCurrentSession(session);
           setInitializing(false);
+          console.log('Auth state changed:', event, session);
         } catch (error: any) {
           if (validateError(error)) {
+            console.log('Auth state error:', error);
             localStorage.clear();
             window.location.href = '/login';
           }
