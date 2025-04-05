@@ -1,25 +1,32 @@
 import { Context } from '@/context';
-import { delay } from '@/helpers';
 import { supabase } from '@/services/supabase';
 import { resetPassword } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 
 const useResetPassword = () => {
-  const { setSnackbarState, isPrivateRoute } = useContext(Context);
-  const navigate = useNavigate();
+  const { setSnackbarState } = useContext(Context);
+  const isSignedInRef = useRef(false);
 
   const sendResetPasswordEmail = async (
     email: UserType['email'] | undefined,
   ) => {
-    if (!email) return;
-
     const redirectUrl = `${window.location.origin}/reset-password`;
+
+    if (!email) {
+      setSnackbarState({
+        open: true,
+        message: 'Please enter a valid email',
+        severity: 'error',
+      });
+      return;
+    }
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
     });
+
     setSnackbarState({
       open: true,
       message: error
@@ -27,20 +34,26 @@ const useResetPassword = () => {
         : 'A password recovery email has been sent successfully. Please check your inbox for instructions.',
       severity: error ? 'error' : 'success',
     });
-    !isPrivateRoute && navigate({ to: '/login' });
   };
 
   const { mutate, isPending } = useMutation({
     mutationKey: ['resetPassword'],
-    mutationFn: (data: any) => resetPassword(data),
+    mutationFn: async ({
+      newPassword,
+      currentPassword,
+    }: {
+      newPassword: string;
+      currentPassword?: string | undefined;
+    }) => {
+      isSignedInRef.current = !!currentPassword;
+      await resetPassword(newPassword, currentPassword, isSignedInRef.current);
+    },
     onSuccess: async () => {
-      await delay();
       setSnackbarState({
         open: true,
         message: 'Password successfully updated!',
         severity: 'success',
       });
-      navigate({ to: '/login' });
     },
     onError: (error) => {
       setSnackbarState({

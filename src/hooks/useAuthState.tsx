@@ -11,6 +11,14 @@ export interface AuthState {
   userRef: React.MutableRefObject<User | null>;
 }
 
+const validateError = (error: Error) => {
+  return (
+    error?.message?.toLowerCase().includes('invalid refresh token') ||
+    error?.message?.toLowerCase().includes('refresh token not found') ||
+    error?.message === 'Session from session_id claim in JWT does not exist'
+  );
+};
+
 export const useAuthState = (): AuthState => {
   const [user, setUser] = useState<User | null>(null);
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
@@ -25,9 +33,7 @@ export const useAuthState = (): AuthState => {
     const fetchSession = async () => {
       try {
         const { data, error } = await supabase.auth.getSession();
-        if (
-          error?.message === 'Invalid Refresh Token: Refresh Token Not Found'
-        ) {
+        if (error && validateError(error)) {
           localStorage.clear();
           window.location.href = '/login';
           return;
@@ -35,9 +41,7 @@ export const useAuthState = (): AuthState => {
         setUser(data.session?.user ?? null);
         setCurrentSession(data.session);
       } catch (error: any) {
-        if (
-          error?.message === 'Invalid Refresh Token: Refresh Token Not Found'
-        ) {
+        if (validateError(error)) {
           localStorage.clear();
           window.location.href = '/login';
         }
@@ -45,7 +49,6 @@ export const useAuthState = (): AuthState => {
         setInitializing(false);
       }
     };
-
     fetchSession();
   }, []);
 
@@ -62,9 +65,7 @@ export const useAuthState = (): AuthState => {
           setCurrentSession(session);
           setInitializing(false);
         } catch (error: any) {
-          if (
-            error?.message === 'Invalid Refresh Token: Refresh Token Not Found'
-          ) {
+          if (validateError(error)) {
             localStorage.clear();
             window.location.href = '/login';
           }

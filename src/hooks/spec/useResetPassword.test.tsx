@@ -64,7 +64,6 @@ describe('useResetPassword', () => {
         message: 'Password successfully updated!',
         severity: 'success',
       });
-      expect(navigateMock).toHaveBeenCalledWith({ to: '/login' });
     });
   });
 
