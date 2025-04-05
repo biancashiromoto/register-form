@@ -25,10 +25,13 @@ const useValidateResetLink = () => {
           // });
           // navigate({ to: '/login' });
           console.log('passou aqui');
+          console.log('type: ', type);
+          console.log('accessToken: ', accessToken);
           return;
         }
 
         const { error } = await supabase.auth.getUser(accessToken);
+        console.log('error: ', error);
         if (error) throw error;
 
         setIsValidResetLink(true);
