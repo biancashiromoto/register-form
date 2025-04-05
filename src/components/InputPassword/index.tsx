@@ -7,7 +7,7 @@ import {
   InputLabel,
   OutlinedInput,
 } from '@mui/material';
-import { ComponentProps, memo, useCallback, useState } from 'react';
+import { ComponentProps, memo, MouseEvent, useCallback, useState } from 'react';
 import { FieldErrors } from 'react-hook-form';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 
@@ -16,6 +16,8 @@ export interface InputPasswordProps extends ComponentProps<'input'> {
   errors: FieldErrors<UserType>;
   isConfirmPassword?: boolean;
   isExistingPassword?: boolean;
+  label?: string;
+  name?: string;
 }
 
 const InputPassword = memo(
@@ -25,11 +27,15 @@ const InputPassword = memo(
     register,
     isConfirmPassword = false,
     isExistingPassword = false,
+    label,
+    name,
   }: InputPasswordProps) => {
     const [showPassword, setShowPassword] = useState(false);
-    const passwordInputIdentification = isConfirmPassword
-      ? 'confirmPassword'
-      : 'password';
+    const passwordInputIdentification =
+      name || (isConfirmPassword ? 'confirmPassword' : 'password');
+
+    const passwordInputLabel =
+      label || (isConfirmPassword ? 'Confirm password' : 'Password');
 
     const handleClickShowPassword = useCallback(
       () => setShowPassword((show) => !show),
@@ -37,14 +43,14 @@ const InputPassword = memo(
     );
 
     const handleMouseDownPassword = useCallback(
-      (event: React.MouseEvent<HTMLButtonElement>) => {
+      (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
       },
       [],
     );
 
     const handleMouseUpPassword = useCallback(
-      (event: React.MouseEvent<HTMLButtonElement>) => {
+      (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
       },
       [],
@@ -55,19 +61,22 @@ const InputPassword = memo(
         <FormControl
           variant="outlined"
           id={passwordInputIdentification}
-          error={!!errors.password}
+          error={
+            !!errors[passwordInputIdentification as keyof FieldErrors<UserType>]
+          }
           fullWidth
         >
           <InputLabel htmlFor={passwordInputIdentification}>
-            {isConfirmPassword ? 'Confirm password' : 'Password'}
+            {passwordInputLabel}
           </InputLabel>
           <OutlinedInput
-            aria-label={isConfirmPassword ? 'confirm password' : 'password'}
+            aria-label={passwordInputLabel}
             autoComplete={isExistingPassword ? 'off' : 'new-password'}
             required
             {...register(`${passwordInputIdentification}`)}
             id={passwordInputIdentification}
-            data-testid={isConfirmPassword ? 'confirm-password' : 'password'}
+            name={passwordInputIdentification}
+            data-testid={passwordInputIdentification}
             type={showPassword ? 'text' : 'password'}
             endAdornment={
               <InputAdornment position="end">
@@ -86,9 +95,15 @@ const InputPassword = memo(
             }
             label={isConfirmPassword ? 'Confirm password' : 'Password'}
           />
-          {errors[passwordInputIdentification] && (
+          {!!errors[
+            passwordInputIdentification as keyof FieldErrors<UserType>
+          ] && (
             <FormHelperText error>
-              {errors[passwordInputIdentification]?.message}
+              {
+                !!errors[
+                  passwordInputIdentification as keyof FieldErrors<UserType>
+                ]?.message
+              }
             </FormHelperText>
           )}
         </FormControl>
