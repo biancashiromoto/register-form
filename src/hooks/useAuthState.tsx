@@ -83,7 +83,6 @@ export const useAuthState = (): AuthState => {
 
   useEffect(() => {
     supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state change event teste:', event, session);
       if (event == 'PASSWORD_RECOVERY') {
         console.log('event == "PASSWORD_RECOVERY":', event, session);
         const hashParams = new URLSearchParams();

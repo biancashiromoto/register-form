@@ -13,7 +13,6 @@ const useResetPassword = () => {
     email: UserType['email'] | undefined,
   ) => {
     const redirectUrl = `${window.location.origin}/reset-password`;
-    console.log('redirectUrl', redirectUrl);
 
     if (!email) {
       setSnackbarState({
