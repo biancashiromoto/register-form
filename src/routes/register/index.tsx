@@ -55,7 +55,7 @@ function RouteComponent() {
   const { snackbarState, setSnackbarState, setRegisteringUser } =
     useContext(Context);
   const { mutate: registerUser, isPending } = useRegisterUser();
-  const { currentSession } = useAuth();
+  const { sessionRef } = useAuth();
 
   const firstName = watch('firstName');
   const lastName = watch('lastName');
@@ -86,7 +86,7 @@ function RouteComponent() {
     }));
   }, []);
 
-  if (currentSession) return <AlreadySignedIn />;
+  if (sessionRef) return <AlreadySignedIn />;
 
   if (isPending) return <LoadingLayer />;
 

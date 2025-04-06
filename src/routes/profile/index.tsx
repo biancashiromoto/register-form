@@ -19,7 +19,7 @@ export const Route = createFileRoute('/profile/')({
 });
 
 function RouteComponent() {
-  const { currentSession } = useAuth();
+  const { sessionRef } = useAuth();
   const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser();
   const { snackbarState, setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
@@ -38,12 +38,12 @@ function RouteComponent() {
   };
 
   const handleResetPassword = () => {
-    if (!currentSession) return;
+    if (!sessionRef) return;
 
     const hashParams = new URLSearchParams();
     hashParams.set('event', 'PASSWORD_RECOVERY');
     hashParams.set('type', 'recovery');
-    hashParams.set('access_token', currentSession.access_token);
+    hashParams.set('access_token', sessionRef.access_token);
 
     navigate({
       to: '/reset-password',
@@ -59,7 +59,7 @@ function RouteComponent() {
     }));
   }, []);
 
-  if (!currentSession) navigate({ to: '/unauthenticated' });
+  if (!sessionRef) navigate({ to: '/unauthenticated' });
 
   if (isUpdatingUser) <LoadingLayer />;
 
@@ -83,7 +83,7 @@ function RouteComponent() {
           id="standard-basic"
           label="First name"
           variant="standard"
-          defaultValue={currentSession?.user?.user_metadata['first_name']}
+          defaultValue={sessionRef?.user?.user_metadata['first_name']}
           fullWidth
           {...register('firstName')}
           required
@@ -94,7 +94,7 @@ function RouteComponent() {
           id="standard-basic"
           label="Last name"
           variant="standard"
-          defaultValue={currentSession?.user?.user_metadata['last_name']}
+          defaultValue={sessionRef?.user?.user_metadata['last_name']}
           fullWidth
           {...register('lastName')}
           required
@@ -103,7 +103,7 @@ function RouteComponent() {
 
         <DatePicker
           defaultValue={
-            new Date(currentSession?.user?.user_metadata['birth_date'])
+            new Date(sessionRef?.user?.user_metadata['birth_date'])
               .toISOString()
               .split('T')[0]
           }
@@ -116,7 +116,7 @@ function RouteComponent() {
           id="standard-basic"
           label="Email"
           variant="standard"
-          defaultValue={currentSession?.user?.user_metadata.email}
+          defaultValue={sessionRef?.user?.user_metadata.email}
           fullWidth
           {...register('email')}
           required

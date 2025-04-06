@@ -9,7 +9,7 @@ import useAvatarUrl from '@/hooks/useAvatarUrl';
 
 const Header = () => {
   const { toggleTheme, isDarkModeOn } = useContext(Context);
-  const { currentSession } = useAuth();
+  const { sessionRef } = useAuth();
   const navigate = useNavigate();
   const { data: avatarUrl, isLoading: isLoadingAvatar } = useAvatarUrl();
 
@@ -20,7 +20,7 @@ const Header = () => {
         style={{ display: 'flex', alignItems: 'center', height: '3em' }}
       >
         <ToggleThemeSwitch onChange={toggleTheme} checked={isDarkModeOn} />
-        {currentSession && (
+        {sessionRef && (
           <Box
             style={{
               display: 'flex',
@@ -48,7 +48,7 @@ const Header = () => {
               <Skeleton variant="circular" width={20} height={20} />
             )}
             <Typography variant="caption" color="textSecondary">
-              {currentSession?.user?.email}
+              {sessionRef?.user?.email}
             </Typography>
           </Box>
         )}

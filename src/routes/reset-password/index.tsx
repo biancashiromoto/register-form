@@ -23,19 +23,14 @@ function RouteComponent() {
     isPending: isPendingResetPassword,
     sendResetPasswordEmail,
   } = useResetPassword();
-  const { currentSession } = useAuth();
+  const { sessionRef } = useAuth();
   const { snackbarState, setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
   const [shouldNavigate, setShouldNavigate] = useState(false);
-  const [
-    shouldDisplayCurrentPasswordInput,
-    setShouldDisplayCurrentPasswordInput,
-  ] = useState(false);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange(async (event, session) => {
       if (event !== 'PASSWORD_RECOVERY') {
-        setShouldDisplayCurrentPasswordInput(true);
         if (!session) setShouldNavigate(true);
         return;
       }
@@ -43,17 +38,10 @@ function RouteComponent() {
   }, []);
 
   useEffect(() => {
-    console.log(
-      'shouldDisplayCurrentPasswordInput',
-      shouldDisplayCurrentPasswordInput,
-    );
-  }, [shouldDisplayCurrentPasswordInput]);
-
-  useEffect(() => {
     if (shouldNavigate) {
-      navigate({ to: `${currentSession ? '/profile' : '/login'}` });
+      navigate({ to: `${sessionRef ? '/profile' : '/login'}` });
     }
-  }, [shouldNavigate, currentSession]);
+  }, [shouldNavigate, sessionRef]);
 
   const {
     register,
@@ -86,9 +74,9 @@ function RouteComponent() {
 
   useEffect(() => {
     if (snackbarState.severity === 'success' && !snackbarState.open) {
-      navigate({ to: `${currentSession ? '/profile' : '/login'}` });
+      navigate({ to: `${sessionRef ? '/profile' : '/login'}` });
     }
-  }, [snackbarState, currentSession, navigate]);
+  }, [snackbarState, sessionRef, navigate]);
 
   if (shouldNavigate) {
     return (
@@ -134,14 +122,6 @@ function RouteComponent() {
         />
         <CustomButton type="submit" disabled={isPendingResetPassword}>
           Update Password
-        </CustomButton>
-        <CustomButton
-          variant="outlined"
-          color="primary"
-          onClick={() => sendResetPasswordEmail(currentSession?.user?.email)}
-          disabled={isPendingResetPassword}
-        >
-          Forgot your password?
         </CustomButton>
       </Box>
       {snackbarState && <CustomSnackbar />}

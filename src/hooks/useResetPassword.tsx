@@ -34,6 +34,10 @@ const useResetPassword = () => {
         : 'A password recovery email has been sent successfully. Please check your inbox for instructions.',
       severity: error ? 'error' : 'success',
     });
+
+    console.log('signing out...');
+
+    await supabase.auth.signOut();
   };
 
   const { mutate, isPending } = useMutation({

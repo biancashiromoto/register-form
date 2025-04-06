@@ -41,7 +41,7 @@ function RouteComponent() {
   const email = watch('email');
   useResetForm(email, resetField, 'password');
   const { mutate: login, isPending } = useLoginUser(setError);
-  const { currentSession } = useAuth();
+  const { sessionRef } = useAuth();
   const { snackbarState } = useContext(Context);
   const { sendResetPasswordEmail } = useResetPassword();
 
@@ -49,7 +49,7 @@ function RouteComponent() {
     login(data);
   };
 
-  if (currentSession) return <AlreadySignedIn />;
+  if (sessionRef) return <AlreadySignedIn />;
 
   if (isPending) return <LoadingLayer />;
 
