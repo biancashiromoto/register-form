@@ -1,20 +1,18 @@
 import { useAuth } from '@/context/authContext';
-import { supabase } from '@/services/supabase';
 import { Container, Typography, useTheme } from '@mui/material';
 import { Link } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import LoadingLayer from '../LoadingLayer';
 
 const AlreadySignedIn = () => {
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const { setUser } = useAuth();
   const theme = useTheme();
+  const { handleSignOut, isLoadingSignOut } = useAuth();
 
   const style = useMemo(() => {
     return { color: theme.palette.text.secondary };
   }, [theme]);
 
-  if (isLoggingOut) return <LoadingLayer />;
+  if (isLoadingSignOut) return <LoadingLayer />;
 
   return (
     <Container maxWidth="sm">
@@ -24,11 +22,7 @@ const AlreadySignedIn = () => {
           home page
         </Link>{' '}
         or{' '}
-        <Link
-          to="/login"
-          onClick={async () => await supabase.auth.signOut()}
-          style={style}
-        >
+        <Link to="/login" onClick={handleSignOut} style={style}>
           sign out
         </Link>
       </Typography>

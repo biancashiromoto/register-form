@@ -18,6 +18,7 @@ vi.mock('@/services/supabase', () => ({
     },
     auth: {
       updateUser: vi.fn().mockResolvedValue({}),
+      signOut: vi.fn().mockResolvedValue({}),
     },
   },
 }));
@@ -30,20 +31,17 @@ describe('useUploadAvatar', () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
-  let file: File;
-  const mockSetCurrentSession = vi.fn();
 
   const wrapper: FC<{ children: ReactNode }> = ({ children }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 
+  let file: File;
+
   beforeEach(() => {
     vi.clearAllMocks();
     (useAuth as any).mockReturnValue({
-      currentSession: {
-        user: { id: 'userId' },
-      },
-      setCurrentSession: mockSetCurrentSession,
+      sessionRef: { user: { id: 'userId' } },
     });
     file = new File(['dummy'], 'avatar.png', { type: 'image/png' });
     mockUpload.mockResolvedValue({ error: null });

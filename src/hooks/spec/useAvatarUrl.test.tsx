@@ -35,7 +35,7 @@ describe('useAvatarUrl', () => {
       defaultOptions: { queries: { retry: false } },
     });
     (useAuth as any).mockReturnValue({
-      currentSession: {
+      sessionRef: {
         access_token: 'token',
         user: {
           id: 'userId',

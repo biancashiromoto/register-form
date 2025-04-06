@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef, MutableRefObject } from 'react';
 import { supabase } from '@/services/supabase';
 import { User, Session } from '@supabase/supabase-js';
-import { useAuth } from '@/context/authContext';
 import { useQuery } from '@tanstack/react-query';
 
 export interface AuthState {
@@ -11,6 +10,8 @@ export interface AuthState {
   initializing: boolean;
   userRef: MutableRefObject<User | null>;
   sessionRef: Session | null;
+  handleSignOut: () => void;
+  isLoadingSignOut: boolean;
 }
 
 const validateError = (error: Error) => {
@@ -24,6 +25,7 @@ const validateError = (error: Error) => {
 export const useAuthState = (): AuthState => {
   const [user, setUser] = useState<User | null>(null);
   const [initializing, setInitializing] = useState<boolean>(true);
+  const [isLoadingSignOut, setIsLoadingSignOut] = useState<boolean>(false);
   const userRef = useRef<User | null>(user);
   const sessionRef = useRef<Session | null>();
 
@@ -31,6 +33,18 @@ export const useAuthState = (): AuthState => {
     queryKey: ['fetchSession'],
     queryFn: async () => supabase.auth.getSession(),
   });
+
+  const handleSignOut = async () => {
+    setIsLoadingSignOut(true);
+
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      throw new Error();
+    } finally {
+      setIsLoadingSignOut(false);
+    }
+  };
 
   useEffect(() => {
     userRef.current = user;
@@ -45,8 +59,10 @@ export const useAuthState = (): AuthState => {
       async (event, session) => {
         try {
           if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_OUT') {
+            setIsLoadingSignOut(true);
             localStorage.clear();
             window.location.href = '/login';
+            setIsLoadingSignOut(false);
             return;
           }
 
@@ -77,5 +93,7 @@ export const useAuthState = (): AuthState => {
     initializing,
     userRef,
     sessionRef: sessionRef.current || null,
+    handleSignOut,
+    isLoadingSignOut,
   };
 };
