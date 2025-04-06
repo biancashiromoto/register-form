@@ -20,12 +20,7 @@ const useResetPassword = () => {
       return;
     }
 
-    const params = new URLSearchParams();
-    params.set('event', 'PASSWORD_RECOVERY');
-    params.set('type', 'recovery');
-
-    const redirectUrl = `${window.location.origin}/reset-password?${params.toString()}`;
-    console.log(redirectUrl);
+    const redirectUrl = `${window.location.origin}/reset-password`;
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
@@ -38,10 +33,6 @@ const useResetPassword = () => {
         : 'A password recovery email has been sent successfully. Please check your inbox for instructions.',
       severity: error ? 'error' : 'success',
     });
-
-    console.log('signing out...');
-
-    await supabase.auth.signOut();
   };
 
   const { mutate, isPending } = useMutation({
