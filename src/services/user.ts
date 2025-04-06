@@ -61,28 +61,13 @@ export const updateUser = async (user: UserType) => {
   return { data };
 };
 
-export const resetPassword = async (
-  newPassword: string,
-  currentPassword?: string | undefined,
-  isCurrentPaswordRequired: boolean = false,
-) => {
+export const resetPassword = async (newPassword: string) => {
   try {
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: (await supabase.auth.getUser()).data.user?.email || '',
-      password: currentPassword || '',
-    });
-
-    if (signInError || (isCurrentPaswordRequired && !currentPassword)) {
-      throw new Error('Current password is incorrect');
-    }
-
-    const { data, error } = await supabase.auth.updateUser({
+    const { error } = await supabase.auth.updateUser({
       password: newPassword,
     });
 
     if (error) throw error;
-
-    return { data };
   } catch (error: any) {
     throw new Error(error.message);
   }
