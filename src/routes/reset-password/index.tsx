@@ -38,7 +38,6 @@ function RouteComponent() {
     resolver: zodResolver(resetPasswordSchema),
     mode: 'onSubmit',
     defaultValues: {
-      currentPassword: undefined,
       password: '',
       confirmPassword: '',
     },
@@ -54,11 +53,7 @@ function RouteComponent() {
     });
   };
 
-  useEffect(() => {
-    if (snackbarState.severity === 'success' && !snackbarState.open) {
-      navigate({ to: `${sessionRef ? '/profile' : '/login'}` });
-    }
-  }, [snackbarState, sessionRef, navigate]);
+  if (isLoadingValidateResetLink) return <LoadingLayer />;
 
   if (!isValidResetLink) {
     return (
@@ -71,8 +66,11 @@ function RouteComponent() {
           new password reset.
         </Typography>
         <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-          <CustomButton href="/login" openInNewTab={false}>
-            Return to Login
+          <CustomButton
+            href={!sessionRef ? '/login' : '/home'}
+            openInNewTab={false}
+          >
+            {!sessionRef ? 'Return to Login' : 'Return to Home'}
           </CustomButton>
         </Box>
       </Container>
