@@ -6,11 +6,10 @@ import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import useResetPassword from '@/hooks/useResetPassword';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
-import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/reset-password/')({
@@ -20,20 +19,12 @@ export const Route = createFileRoute('/reset-password/')({
 function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
-  const { sessionRef } = useAuth();
+  const { sessionRef, isValidResetLink, isLoadingValidateResetLink } =
+    useAuth();
   const { snackbarState } = useContext(Context);
-  const [isValidResetLink, setIsValidResetLink] = useState(false);
-  const [isLoadingValidateResetLink, setIsLoadingValidateResetLink] =
-    useState(true);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setIsValidResetLink(true);
-      }
-      setIsLoadingValidateResetLink(false);
-    });
-  }, []);
+  if (isLoadingValidateResetLink) return <LoadingLayer />;
 
   const {
     register,
@@ -47,6 +38,7 @@ function RouteComponent() {
     resolver: zodResolver(resetPasswordSchema),
     mode: 'onSubmit',
     defaultValues: {
+      currentPassword: undefined,
       password: '',
       confirmPassword: '',
     },
@@ -62,7 +54,11 @@ function RouteComponent() {
     });
   };
 
-  if (isLoadingValidateResetLink) return <LoadingLayer />;
+  useEffect(() => {
+    if (snackbarState.severity === 'success' && !snackbarState.open) {
+      navigate({ to: `${sessionRef ? '/profile' : '/login'}` });
+    }
+  }, [snackbarState, sessionRef, navigate]);
 
   if (!isValidResetLink) {
     return (
@@ -75,11 +71,8 @@ function RouteComponent() {
           new password reset.
         </Typography>
         <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-          <CustomButton
-            href={!sessionRef ? '/login' : '/home'}
-            openInNewTab={false}
-          >
-            {!sessionRef ? 'Return to Login' : 'Return to Home'}
+          <CustomButton href="/login" openInNewTab={false}>
+            Return to Login
           </CustomButton>
         </Box>
       </Container>
