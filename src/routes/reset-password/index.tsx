@@ -121,16 +121,17 @@ function RouteComponent() {
           mt: 4,
         }}
       >
-        {shouldDisplayCurrentPasswordInput && (
-          <InputPassword
-            errors={errors}
-            register={register}
-            name="currentPassword"
-            label="Current password"
-          />
-        )}
-        <InputPassword errors={errors} register={register} />
-        <InputPassword errors={errors} register={register} isConfirmPassword />
+        <InputPassword
+          errors={errors}
+          register={register}
+          label="New password"
+        />
+        <InputPassword
+          errors={errors}
+          register={register}
+          isConfirmPassword
+          label="Confirm new password"
+        />
         <CustomButton type="submit" disabled={isPendingResetPassword}>
           Update Password
         </CustomButton>
