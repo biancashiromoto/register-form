@@ -3,18 +3,14 @@ import { supabase } from '@/services/supabase';
 import { resetPassword } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
-import { useContext, useRef } from 'react';
+import { useContext } from 'react';
 
 const useResetPassword = () => {
   const { setSnackbarState } = useContext(Context);
-  const isSignedInRef = useRef(false);
 
   const sendResetPasswordEmail = async (
     email: UserType['email'] | undefined,
   ) => {
-    const redirectUrl = `${window.location.origin}/reset-password`;
-    console.log('redirectUrl', redirectUrl);
-
     if (!email) {
       setSnackbarState({
         open: true,
@@ -23,6 +19,13 @@ const useResetPassword = () => {
       });
       return;
     }
+
+    const params = new URLSearchParams();
+    params.set('event', 'PASSWORD_RECOVERY');
+    params.set('type', 'recovery');
+
+    const redirectUrl = `${window.location.origin}/reset-password?${params.toString()}`;
+    console.log(redirectUrl);
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
@@ -35,19 +38,16 @@ const useResetPassword = () => {
         : 'A password recovery email has been sent successfully. Please check your inbox for instructions.',
       severity: error ? 'error' : 'success',
     });
+
+    console.log('signing out...');
+
+    await supabase.auth.signOut();
   };
 
   const { mutate, isPending } = useMutation({
     mutationKey: ['resetPassword'],
-    mutationFn: async ({
-      newPassword,
-      currentPassword,
-    }: {
-      newPassword: string;
-      currentPassword?: string | undefined;
-    }) => {
-      isSignedInRef.current = !!currentPassword;
-      await resetPassword(newPassword, currentPassword, isSignedInRef.current);
+    mutationFn: async ({ newPassword }: { newPassword: string }) => {
+      await resetPassword(newPassword);
     },
     onSuccess: async () => {
       setSnackbarState({

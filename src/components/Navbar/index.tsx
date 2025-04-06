@@ -9,7 +9,7 @@ import LoadingLayer from '../LoadingLayer';
 const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
 
-  const { setUser, currentSession } = useAuth();
+  const { setUser, sessionRef } = useAuth();
   const theme = useTheme();
   const { pathname } = useLocation();
   const { isPrivateRoute } = useContext(Context);
@@ -21,7 +21,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
 
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
-      {!pathname.includes('/register') && !currentSession && (
+      {!pathname.includes('/register') && !sessionRef && (
         <Typography variant="body2">
           Not registered yet?{' '}
           <Link
@@ -36,7 +36,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
         </Typography>
       )}
 
-      {!pathname.includes('/login') && !currentSession && (
+      {!pathname.includes('/login') && !sessionRef && (
         <Typography variant="body2">
           Already registered?{' '}
           <Link
@@ -51,16 +51,11 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
         </Typography>
       )}
 
-      {isPrivateRoute && currentSession && (
+      {isPrivateRoute && sessionRef && (
         <Typography variant="body2">
           <Link
             to="/login"
-            onClick={async () => {
-              setIsLoggingOut(true);
-              await supabase.auth.signOut();
-              setUser(null);
-              setIsLoggingOut(false);
-            }}
+            onClick={async () => await supabase.auth.signOut()}
             style={{
               color: theme.palette.text.secondary,
             }}

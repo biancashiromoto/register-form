@@ -7,10 +7,10 @@ export const Route = createFileRoute('/home/')({
 });
 
 function RouteComponent() {
-  const { currentSession } = useAuth();
+  const { sessionRef } = useAuth();
   const navigate = useNavigate();
 
-  if (!currentSession) navigate({ to: '/unauthenticated' });
+  if (!sessionRef) navigate({ to: '/unauthenticated' });
 
   return (
     <Container maxWidth="sm">

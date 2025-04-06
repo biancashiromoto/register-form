@@ -18,7 +18,7 @@ import { useContext } from 'react';
 const RootLayout = () => {
   const { theme, isPrivateRoute } = useContext(Context);
   const { page } = usePageTitle();
-  const { currentSession } = useAuth();
+  const { sessionRef } = useAuth();
 
   return (
     <ThemeProvider theme={theme}>
@@ -26,15 +26,15 @@ const RootLayout = () => {
       <Header />
       <hr />
       <Container maxWidth="sm" sx={{ marginTop: '16px' }}>
-        {((isPrivateRoute && currentSession) ||
-          (!isPrivateRoute && !currentSession)) && (
+        {((isPrivateRoute && sessionRef) ||
+          (!isPrivateRoute && !sessionRef)) && (
           <Typography variant="h5" align="left" gutterBottom>
             {page?.title}
           </Typography>
         )}
       </Container>
       <Outlet />
-      {isPrivateRoute && currentSession && <CustomBottomNavigation />}
+      {isPrivateRoute && sessionRef && <CustomBottomNavigation />}
       <Footer />
     </ThemeProvider>
   );

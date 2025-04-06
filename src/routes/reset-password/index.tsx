@@ -5,12 +5,12 @@ import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import useResetPassword from '@/hooks/useResetPassword';
-import useValidateResetLink from '@/hooks/useValidateResetLink';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
+import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/reset-password/')({
@@ -18,16 +18,30 @@ export const Route = createFileRoute('/reset-password/')({
 });
 
 function RouteComponent() {
-  const { isLoadingValidateResetLink, isValidResetLink } =
-    useValidateResetLink();
   const {
     mutate: resetPassword,
     isPending: isPendingResetPassword,
     sendResetPasswordEmail,
   } = useResetPassword();
-  const { currentSession } = useAuth();
-  const { snackbarState } = useContext(Context);
+  const { sessionRef } = useAuth();
+  const { snackbarState, setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
+  const [shouldNavigate, setShouldNavigate] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event !== 'PASSWORD_RECOVERY') {
+        if (!session) setShouldNavigate(true);
+        return;
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (shouldNavigate) {
+      navigate({ to: `${sessionRef ? '/profile' : '/login'}` });
+    }
+  }, [shouldNavigate, sessionRef]);
 
   const {
     register,
@@ -60,17 +74,11 @@ function RouteComponent() {
 
   useEffect(() => {
     if (snackbarState.severity === 'success' && !snackbarState.open) {
-      navigate({ to: `${currentSession ? '/profile' : '/login'}` });
+      navigate({ to: `${sessionRef ? '/profile' : '/login'}` });
     }
-  }, [snackbarState]);
+  }, [snackbarState, sessionRef, navigate]);
 
-  useEffect(() => {
-    console.log(currentSession);
-  }, [currentSession]);
-
-  if (isLoadingValidateResetLink) return <LoadingLayer />;
-
-  if (!isValidResetLink) {
+  if (shouldNavigate) {
     return (
       <Container maxWidth="sm">
         <Typography variant="h5" align="center" gutterBottom>
@@ -101,26 +109,19 @@ function RouteComponent() {
           mt: 4,
         }}
       >
-        {currentSession && (
-          <InputPassword
-            errors={errors}
-            register={register}
-            name="currentPassword"
-            label="Current password"
-          />
-        )}
-        <InputPassword errors={errors} register={register} />
-        <InputPassword errors={errors} register={register} isConfirmPassword />
+        <InputPassword
+          errors={errors}
+          register={register}
+          label="New password"
+        />
+        <InputPassword
+          errors={errors}
+          register={register}
+          isConfirmPassword
+          label="Confirm new password"
+        />
         <CustomButton type="submit" disabled={isPendingResetPassword}>
           Update Password
-        </CustomButton>
-        <CustomButton
-          variant="outlined"
-          color="primary"
-          onClick={() => sendResetPasswordEmail(currentSession?.user?.email)}
-          disabled={isPendingResetPassword}
-        >
-          Forgot your password?
         </CustomButton>
       </Box>
       {snackbarState && <CustomSnackbar />}

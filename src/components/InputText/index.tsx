@@ -25,7 +25,7 @@ const InputText = memo(
     hidden,
     ...rest
   }: InputTextProps) => {
-    const { currentSession } = useAuth();
+    const { sessionRef } = useAuth();
     const theme = useTheme();
 
     const backgroundColor = useMemo(
@@ -49,7 +49,7 @@ const InputText = memo(
         helperText={errors[name]?.message?.toString()}
         required={required}
         autoComplete={autoComplete}
-        defaultValue={currentSession?.user?.user_metadata[name]}
+        defaultValue={sessionRef?.user?.user_metadata[name]}
         fullWidth
         {...rest}
       />

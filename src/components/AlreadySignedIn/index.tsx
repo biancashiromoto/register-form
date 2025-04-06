@@ -7,19 +7,12 @@ import LoadingLayer from '../LoadingLayer';
 
 const AlreadySignedIn = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const { setUser, currentSession } = useAuth();
+  const { setUser } = useAuth();
   const theme = useTheme();
 
   const style = useMemo(() => {
     return { color: theme.palette.text.secondary };
   }, [theme]);
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    setUser(null);
-    currentSession && (await supabase.auth.signOut());
-    setIsLoggingOut(false);
-  };
 
   if (isLoggingOut) return <LoadingLayer />;
 
@@ -31,7 +24,11 @@ const AlreadySignedIn = () => {
           home page
         </Link>{' '}
         or{' '}
-        <Link to="/login" onClick={handleLogout} style={style}>
+        <Link
+          to="/login"
+          onClick={async () => await supabase.auth.signOut()}
+          style={style}
+        >
           sign out
         </Link>
       </Typography>

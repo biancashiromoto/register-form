@@ -1,5 +1,4 @@
 import { Context } from '@/context';
-import { delay } from '@/helpers';
 import { signUpUser } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
@@ -14,7 +13,6 @@ const useRegisterUser = () => {
     mutationKey: ['registerUser'],
     mutationFn: (data: UserType) => signUpUser(data),
     onSuccess: async () => {
-      await delay();
       navigate({
         to: '/register/success',
         replace: true,
