@@ -46,7 +46,6 @@ function RouteComponent() {
       hash: hashParams.toString(),
       viewTransition: true,
       params: {
-        type: 'signed_in',
         access_token: currentSession.access_token,
         event: 'PASSWORD_RECOVERY',
       },

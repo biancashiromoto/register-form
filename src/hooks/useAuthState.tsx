@@ -64,7 +64,7 @@ export const useAuthState = (): AuthState => {
           }
 
           if (event === 'PASSWORD_RECOVERY') {
-            setCurrentSession(session);
+            console.log('passou aqui');
             return;
           }
 
