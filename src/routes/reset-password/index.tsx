@@ -5,13 +5,12 @@ import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import useResetPassword from '@/hooks/useResetPassword';
-import useValidateResetLink from '@/hooks/useValidateResetLink';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/reset-password/')({
@@ -19,35 +18,32 @@ export const Route = createFileRoute('/reset-password/')({
 });
 
 function RouteComponent() {
-  const { isLoadingValidateResetLink, isValidResetLink } =
-    useValidateResetLink();
   const {
     mutate: resetPassword,
     isPending: isPendingResetPassword,
     sendResetPasswordEmail,
   } = useResetPassword();
   const { currentSession } = useAuth();
-  const { snackbarState } = useContext(Context);
+  const { snackbarState, setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
-  const hashParams = new URLSearchParams(window.location.hash.slice(1));
-  const type = hashParams.get('type');
-  const accessToken = hashParams.get('access_token');
+  const [shouldNavigate, setShouldNavigate] = useState(false);
 
   useEffect(() => {
+    const hashParams = new URLSearchParams();
+    const type = hashParams.get('type');
     supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event == 'PASSWORD_RECOVERY') {
-        const newPassword = prompt(
-          'What would you like your new password to be?',
-        );
-        if (!newPassword) return;
-        const { data, error } = await supabase.auth.updateUser({
-          password: newPassword,
-        });
-        if (data) alert('Password updated successfully!');
-        if (error) alert('There was an error updating your password.');
+      console.log('session', session);
+      if (event !== 'PASSWORD_RECOVERY' && !session) {
+        setShouldNavigate(true);
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (shouldNavigate) {
+      navigate({ to: `${currentSession ? '/profile' : '/login'}` });
+    }
+  }, [shouldNavigate, currentSession]);
 
   const {
     register,
@@ -84,26 +80,24 @@ function RouteComponent() {
     }
   }, [snackbarState, currentSession, navigate]);
 
-  if (isLoadingValidateResetLink) return <LoadingLayer />;
-
-  // if (!isValidResetLink) {
-  //   return (
-  //     <Container maxWidth="sm">
-  //       <Typography variant="h5" align="center" gutterBottom>
-  //         Invalid Reset Link
-  //       </Typography>
-  //       <Typography variant="body1" align="center" gutterBottom>
-  //         This password reset link is invalid or has expired. Please request a
-  //         new password reset.
-  //       </Typography>
-  //       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-  //         <CustomButton href="/login" openInNewTab={false}>
-  //           Return to Login
-  //         </CustomButton>
-  //       </Box>
-  //     </Container>
-  //   );
-  // }
+  if (shouldNavigate) {
+    return (
+      <Container maxWidth="sm">
+        <Typography variant="h5" align="center" gutterBottom>
+          Invalid Reset Link
+        </Typography>
+        <Typography variant="body1" align="center" gutterBottom>
+          This password reset link is invalid or has expired. Please request a
+          new password reset.
+        </Typography>
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+          <CustomButton href="/login" openInNewTab={false}>
+            Return to Login
+          </CustomButton>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="sm">

@@ -64,9 +64,7 @@ export const useAuthState = (): AuthState => {
           }
 
           if (event === 'PASSWORD_RECOVERY') {
-            const hashParams = new URLSearchParams();
-            console.log('event == "PASSWORD_RECOVERY":', event, session);
-            console.log('hashParams":', hashParams);
+            setCurrentSession(session);
             return;
           }
 
