@@ -1,6 +1,6 @@
 import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
-import LoadingLayr from '@/components/LoadingLayer';
+import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
@@ -22,22 +22,18 @@ function RouteComponent() {
     useResetPassword();
   const { sessionRef } = useAuth();
   const { snackbarState } = useContext(Context);
-  const navigate = useNavigate();
-  const [shouldNavigate, setShouldNavigate] = useState(false);
+  const [isValidResetLink, setIsValidResetLink] = useState(false);
+  const [isLoadingValidateResetLink, setIsLoadingValidateResetLink] =
+    useState(true);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event !== 'PASSWORD_RECOVERY') {
-        setShouldNavigate(true);
+    supabase.auth.onAuthStateChange(async (event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsValidResetLink(true);
       }
+      setIsLoadingValidateResetLink(false);
     });
   }, []);
-
-  useEffect(() => {
-    if (shouldNavigate) {
-      navigate({ to: `${sessionRef ? '/profile' : '/login'}` });
-    }
-  }, [shouldNavigate, sessionRef]);
 
   const {
     register,
@@ -51,7 +47,6 @@ function RouteComponent() {
     resolver: zodResolver(resetPasswordSchema),
     mode: 'onSubmit',
     defaultValues: {
-      currentPassword: undefined,
       password: '',
       confirmPassword: '',
     },
@@ -67,13 +62,9 @@ function RouteComponent() {
     });
   };
 
-  useEffect(() => {
-    if (snackbarState.severity === 'success' && !snackbarState.open) {
-      navigate({ to: `${sessionRef ? '/profile' : '/login'}` });
-    }
-  }, [snackbarState, sessionRef, navigate]);
+  if (isLoadingValidateResetLink) return <LoadingLayer />;
 
-  if (shouldNavigate) {
+  if (!isValidResetLink) {
     return (
       <Container maxWidth="sm">
         <Typography variant="h5" align="center" gutterBottom>
@@ -84,8 +75,11 @@ function RouteComponent() {
           new password reset.
         </Typography>
         <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-          <CustomButton href="/login" openInNewTab={false}>
-            Return to Login
+          <CustomButton
+            href={!sessionRef ? '/login' : '/home'}
+            openInNewTab={false}
+          >
+            {!sessionRef ? 'Return to Login' : 'Return to Home'}
           </CustomButton>
         </Box>
       </Container>
