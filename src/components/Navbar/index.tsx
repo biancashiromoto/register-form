@@ -55,12 +55,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
         <Typography variant="body2">
           <Link
             to="/login"
-            onClick={async () => {
-              setIsLoggingOut(true);
-              await supabase.auth.signOut();
-              setUser(null);
-              setIsLoggingOut(false);
-            }}
+            onClick={async () => await supabase.auth.signOut()}
             style={{
               color: theme.palette.text.secondary,
             }}
