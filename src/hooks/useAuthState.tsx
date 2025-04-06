@@ -1,7 +1,14 @@
-import { useEffect, useState, useRef, MutableRefObject } from 'react';
+import {
+  useEffect,
+  useState,
+  useRef,
+  MutableRefObject,
+  useContext,
+} from 'react';
 import { supabase } from '@/services/supabase';
 import { User, Session } from '@supabase/supabase-js';
 import { useQuery } from '@tanstack/react-query';
+import { Context } from '@/context';
 
 export interface AuthState {
   user: User | null;
@@ -12,6 +19,8 @@ export interface AuthState {
   sessionRef: Session | null;
   handleSignOut: () => void;
   isLoadingSignOut: boolean;
+  isLoadingValidateResetLink: boolean;
+  isValidResetLink: boolean;
 }
 
 const validateError = (error: Error) => {
@@ -28,6 +37,10 @@ export const useAuthState = (): AuthState => {
   const [isLoadingSignOut, setIsLoadingSignOut] = useState<boolean>(false);
   const userRef = useRef<User | null>(user);
   const sessionRef = useRef<Session | null>();
+  const [isValidResetLink, setIsValidResetLink] = useState(false);
+  const [isLoadingValidateResetLink, setIsLoadingValidateResetLink] =
+    useState(false);
+  const { normalizedPath } = useContext(Context);
 
   const { data: currentSession } = useQuery({
     queryKey: ['fetchSession'],
@@ -66,6 +79,15 @@ export const useAuthState = (): AuthState => {
             return;
           }
 
+          if (
+            event === 'PASSWORD_RECOVERY' &&
+            normalizedPath === '/reset-password'
+          ) {
+            setIsValidResetLink(true);
+            setIsLoadingValidateResetLink(false);
+            return;
+          }
+
           setUser(session?.user ?? null);
           setInitializing(false);
           sessionRef.current = session;
@@ -95,5 +117,7 @@ export const useAuthState = (): AuthState => {
     sessionRef: sessionRef.current || null,
     handleSignOut,
     isLoadingSignOut,
+    isValidResetLink,
+    isLoadingValidateResetLink,
   };
 };
