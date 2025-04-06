@@ -5,6 +5,7 @@ import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
+import useResetPassword from '@/hooks/useResetPassword';
 import useUpdateUser from '@/hooks/useUpdateUser';
 import { profileEditSchema } from '@/schemas/profileEditSchema';
 import { SnackbarStateType } from '@/types';
@@ -23,6 +24,7 @@ function RouteComponent() {
   const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser();
   const { snackbarState, setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
+  const { sendResetPasswordEmail } = useResetPassword();
 
   const {
     register,
@@ -35,21 +37,6 @@ function RouteComponent() {
 
   const onSubmit = async (data: any) => {
     updateUser(data);
-  };
-
-  const handleResetPassword = () => {
-    if (!sessionRef) return;
-
-    const hashParams = new URLSearchParams();
-    hashParams.set('event', 'PASSWORD_RECOVERY');
-    hashParams.set('type', 'recovery');
-    hashParams.set('access_token', sessionRef.access_token);
-
-    navigate({
-      to: '/reset-password',
-      hash: hashParams.toString(),
-      viewTransition: true,
-    });
   };
 
   useEffect(() => {
@@ -130,7 +117,7 @@ function RouteComponent() {
         <CustomButton
           variant="outlined"
           color="primary"
-          onClick={handleResetPassword}
+          onClick={() => sendResetPasswordEmail(sessionRef?.user.email)}
         >
           Reset password
         </CustomButton>
