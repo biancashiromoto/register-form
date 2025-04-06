@@ -84,7 +84,7 @@ export const useAuthState = (): AuthState => {
     supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state change event teste:', event, session);
       if (event == 'PASSWORD_RECOVERY') {
-        window.location.href = '/password-reset';
+        window.location.href = '/reset-password';
       }
     });
   }, []);
