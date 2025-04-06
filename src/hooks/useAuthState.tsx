@@ -57,11 +57,19 @@ export const useAuthState = (): AuthState => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         try {
-          if (event === 'TOKEN_REFRESHED' && !session) {
+          if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_OUT') {
             localStorage.clear();
             window.location.href = '/login';
             return;
           }
+
+          if (event === 'PASSWORD_RECOVERY') {
+            const hashParams = new URLSearchParams();
+            console.log('event == "PASSWORD_RECOVERY":', event, session);
+            console.log('hashParams":', hashParams);
+            return;
+          }
+
           setUser(session?.user ?? null);
           setCurrentSession(session);
           setInitializing(false);
