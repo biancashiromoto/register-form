@@ -31,6 +31,7 @@ const useValidateResetLink = () => {
 
         setIsValidResetLink(true);
       } catch (error: any) {
+        console.log('error: ', error);
         setSnackbarState({
           open: true,
           message: error.message || 'Invalid password reset link',

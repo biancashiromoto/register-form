@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/services/supabase';
 import { User, Session } from '@supabase/supabase-js';
+import { useAuth } from '@/context/authContext';
 
 export interface AuthState {
   user: User | null;
@@ -84,6 +85,11 @@ export const useAuthState = (): AuthState => {
     supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state change event teste:', event, session);
       if (event == 'PASSWORD_RECOVERY') {
+        console.log('event == "PASSWORD_RECOVERY":', event, session);
+        const hashParams = new URLSearchParams();
+        hashParams.set('type', 'recovery');
+        currentSession &&
+          hashParams.set('access_token', currentSession.access_token);
         window.location.href = '/reset-password';
       }
     });
