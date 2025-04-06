@@ -40,17 +40,20 @@ vi.mock('@/services/supabase', () => ({
 }));
 
 describe('Navbar Component', () => {
-  const mockSetUser = vi.fn();
+  const mockHandleSignOut = vi.fn();
   beforeEach(() => vi.resetAllMocks());
 
   const renderComponent = (
     location: Location,
-    currentSession: Session | undefined = undefined,
+    sessionRef: Session | null = null,
     isPrivateRoute: boolean = false,
   ) => {
     const navigateMock = vi.fn();
 
-    (useAuth as any).mockReturnValue({ setUser: mockSetUser, currentSession });
+    (useAuth as any).mockReturnValue({
+      handleSignOut: mockHandleSignOut,
+      sessionRef,
+    });
     (useLocation as any).mockReturnValue(location);
     (useNavigate as any).mockReturnValue(navigateMock);
 
@@ -102,8 +105,7 @@ describe('Navbar Component', () => {
     fireEvent.click(logoutLink);
 
     await waitFor(() => {
-      expect(supabase.auth.signOut).toHaveBeenCalled();
-      expect(mockSetUser).toHaveBeenCalledWith(null);
+      expect(mockHandleSignOut).toHaveBeenCalled();
     });
   });
 });
