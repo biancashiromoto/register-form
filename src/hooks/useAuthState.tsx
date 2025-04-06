@@ -27,7 +27,7 @@ export const useAuthState = (): AuthState => {
   const userRef = useRef<User | null>(user);
   const sessionRef = useRef<Session | null>();
 
-  const { data: currentSession, error } = useQuery({
+  const { data: currentSession } = useQuery({
     queryKey: ['fetchSession'],
     queryFn: async () => supabase.auth.getSession(),
   });
@@ -50,14 +50,6 @@ export const useAuthState = (): AuthState => {
             return;
           }
 
-          if (event === 'PASSWORD_RECOVERY') {
-            console.log(
-              'event === "PASSWORD_RECOVERY": ',
-              event === 'PASSWORD_RECOVERY',
-            );
-            return;
-          }
-
           setUser(session?.user ?? null);
           setInitializing(false);
           sessionRef.current = session;
@@ -76,22 +68,6 @@ export const useAuthState = (): AuthState => {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, []);
-
-  useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event == 'PASSWORD_RECOVERY') {
-        console.log('event == "PASSWORD_RECOVERY":', event, session);
-        const hashParams = new URLSearchParams();
-        hashParams.set('type', 'recovery');
-        sessionRef &&
-          hashParams.set(
-            'access_token',
-            sessionRef.current?.access_token || '',
-          );
-        window.location.href = '/reset-password';
-      }
-    });
   }, []);
 
   return {

@@ -1,6 +1,6 @@
 import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
-import LoadingLayer from '@/components/LoadingLayer';
+import LoadingLayr from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
@@ -18,21 +18,17 @@ export const Route = createFileRoute('/reset-password/')({
 });
 
 function RouteComponent() {
-  const {
-    mutate: resetPassword,
-    isPending: isPendingResetPassword,
-    sendResetPasswordEmail,
-  } = useResetPassword();
+  const { mutate: resetPassword, isPending: isPendingResetPassword } =
+    useResetPassword();
   const { sessionRef } = useAuth();
-  const { snackbarState, setSnackbarState } = useContext(Context);
+  const { snackbarState } = useContext(Context);
   const navigate = useNavigate();
   const [shouldNavigate, setShouldNavigate] = useState(false);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange(async (event, session) => {
       if (event !== 'PASSWORD_RECOVERY') {
-        if (!session) setShouldNavigate(true);
-        return;
+        setShouldNavigate(true);
       }
     });
   }, []);
@@ -68,7 +64,6 @@ function RouteComponent() {
   }) => {
     resetPassword({
       newPassword: data.password,
-      currentPassword: data.currentPassword,
     });
   };
 
