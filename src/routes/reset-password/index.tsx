@@ -7,6 +7,7 @@ import { useAuth } from '@/context/authContext';
 import useResetPassword from '@/hooks/useResetPassword';
 import useValidateResetLink from '@/hooks/useValidateResetLink';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
+import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -31,6 +32,22 @@ function RouteComponent() {
   const hashParams = new URLSearchParams(window.location.hash.slice(1));
   const type = hashParams.get('type');
   const accessToken = hashParams.get('access_token');
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event == 'PASSWORD_RECOVERY') {
+        const newPassword = prompt(
+          'What would you like your new password to be?',
+        );
+        if (!newPassword) return;
+        const { data, error } = await supabase.auth.updateUser({
+          password: newPassword,
+        });
+        if (data) alert('Password updated successfully!');
+        if (error) alert('There was an error updating your password.');
+      }
+    });
+  }, []);
 
   const {
     register,
