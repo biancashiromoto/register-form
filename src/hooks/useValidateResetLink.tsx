@@ -19,11 +19,18 @@ const useValidateResetLink = () => {
         const type = hashParams.get('type');
         const accessToken = hashParams.get('access_token');
 
-        if (type !== 'recovery' || !accessToken || !currentSession) {
+        if (type !== 'recovery' && !accessToken) {
           console.log('type: ', type);
           console.log('accessToken: ', accessToken);
+          console.log(
+            'type !== "recovery" && !accessToken: ',
+            type !== 'recovery' && !accessToken,
+          );
           return;
         }
+
+        if (!accessToken) return;
+        console.log('ACCESS TOKEN:', accessToken);
 
         const { error } = await supabase.auth.getUser(accessToken);
         console.log('error: ', error);
