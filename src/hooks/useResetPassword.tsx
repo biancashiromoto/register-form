@@ -3,7 +3,7 @@ import { supabase } from '@/services/supabase';
 import { resetPassword } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
-import { useContext, useRef } from 'react';
+import { useContext } from 'react';
 
 const useResetPassword = () => {
   const { setSnackbarState } = useContext(Context);
@@ -11,8 +11,6 @@ const useResetPassword = () => {
   const sendResetPasswordEmail = async (
     email: UserType['email'] | undefined,
   ) => {
-    const redirectUrl = `${window.location.origin}/reset-password`;
-
     if (!email) {
       setSnackbarState({
         open: true,
@@ -21,6 +19,13 @@ const useResetPassword = () => {
       });
       return;
     }
+
+    const params = new URLSearchParams();
+    params.set('event', 'PASSWORD_RECOVERY');
+    params.set('type', 'recovery');
+
+    const redirectUrl = `${window.location.origin}/reset-password?${params.toString()}`;
+    console.log(redirectUrl);
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
