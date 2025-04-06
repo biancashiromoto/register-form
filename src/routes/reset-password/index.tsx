@@ -86,24 +86,24 @@ function RouteComponent() {
 
   if (isLoadingValidateResetLink) return <LoadingLayer />;
 
-  if (!isValidResetLink) {
-    return (
-      <Container maxWidth="sm">
-        <Typography variant="h5" align="center" gutterBottom>
-          Invalid Reset Link
-        </Typography>
-        <Typography variant="body1" align="center" gutterBottom>
-          This password reset link is invalid or has expired. Please request a
-          new password reset.
-        </Typography>
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-          <CustomButton href="/login" openInNewTab={false}>
-            Return to Login
-          </CustomButton>
-        </Box>
-      </Container>
-    );
-  }
+  // if (!isValidResetLink) {
+  //   return (
+  //     <Container maxWidth="sm">
+  //       <Typography variant="h5" align="center" gutterBottom>
+  //         Invalid Reset Link
+  //       </Typography>
+  //       <Typography variant="body1" align="center" gutterBottom>
+  //         This password reset link is invalid or has expired. Please request a
+  //         new password reset.
+  //       </Typography>
+  //       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+  //         <CustomButton href="/login" openInNewTab={false}>
+  //           Return to Login
+  //         </CustomButton>
+  //       </Box>
+  //     </Container>
+  //   );
+  // }
 
   return (
     <Container maxWidth="sm">
