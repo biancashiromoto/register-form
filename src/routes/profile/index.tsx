@@ -38,16 +38,18 @@ function RouteComponent() {
   };
 
   const handleResetPassword = () => {
-    if (!currentSession?.access_token) return;
+    if (!currentSession) return;
 
     const hashParams = new URLSearchParams();
-    hashParams.set('type', 'recovery');
-    hashParams.set('access_token', currentSession.access_token);
-
     navigate({
       to: '/reset-password',
       hash: hashParams.toString(),
       viewTransition: true,
+      params: {
+        type: 'recovery',
+        access_token: currentSession.access_token,
+        event: 'PASSWORD_RECOVERY',
+      },
     });
   };
 
