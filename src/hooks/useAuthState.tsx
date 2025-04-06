@@ -79,10 +79,7 @@ export const useAuthState = (): AuthState => {
             return;
           }
 
-          if (
-            event === 'PASSWORD_RECOVERY' &&
-            normalizedPath === '/reset-password'
-          ) {
+          if (event === 'PASSWORD_RECOVERY') {
             setIsValidResetLink(true);
             setIsLoadingValidateResetLink(false);
             return;
