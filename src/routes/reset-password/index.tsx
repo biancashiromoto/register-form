@@ -27,7 +27,7 @@ function RouteComponent() {
 
   useEffect(() => {
     supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event !== 'PASSWORD_RECOVERY' && !session) {
+      if (event !== 'PASSWORD_RECOVERY') {
         setShouldNavigate(true);
       }
     });
