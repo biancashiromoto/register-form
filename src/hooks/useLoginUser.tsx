@@ -9,7 +9,7 @@ type SetErrorFunction = UseFormSetError<{ email: string; password: string }>;
 
 const useLoginUser = (setError: SetErrorFunction) => {
   const navigate = useNavigate();
-  const { setUser, setCurrentSession, userRef } = useAuth();
+  const { setUser, userRef } = useAuth();
 
   const waitForUserUpdate = (): Promise<void> => {
     return new Promise((resolve) => {
@@ -30,7 +30,6 @@ const useLoginUser = (setError: SetErrorFunction) => {
         throw new Error('Invalid login credentials');
       }
       setUser(response.data.user);
-      setCurrentSession(response.data.session);
     },
     onSuccess: async () => {
       await waitForUserUpdate();

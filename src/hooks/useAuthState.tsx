@@ -2,12 +2,12 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/services/supabase';
 import { User, Session } from '@supabase/supabase-js';
 import { useAuth } from '@/context/authContext';
+import { useQuery } from '@tanstack/react-query';
 
 export interface AuthState {
   user: User | null;
   setUser: (user: User | null) => void;
   currentSession: Session | null;
-  setCurrentSession: (session: Session | null) => void;
   initializing: boolean;
   userRef: React.MutableRefObject<User | null>;
 }
@@ -22,7 +22,6 @@ const validateError = (error: Error) => {
 
 export const useAuthState = (): AuthState => {
   const [user, setUser] = useState<User | null>(null);
-  const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [initializing, setInitializing] = useState<boolean>(true);
   const userRef = useRef<User | null>(user);
 
@@ -30,28 +29,35 @@ export const useAuthState = (): AuthState => {
     userRef.current = user;
   }, [user]);
 
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error && validateError(error)) {
-          localStorage.clear();
-          window.location.href = '/login';
-          return;
-        }
-        setUser(data.session?.user ?? null);
-        setCurrentSession(data.session);
-      } catch (error: any) {
-        if (validateError(error)) {
-          localStorage.clear();
-          window.location.href = '/login';
-        }
-      } finally {
-        setInitializing(false);
-      }
-    };
-    fetchSession();
-  }, []);
+  const { data: currentSession, error } = useQuery({
+    queryKey: ['fetchSession'],
+    queryFn: async () => supabase.auth.getSession(),
+  });
+
+  console.log(currentSession, error);
+
+  // useEffect(() => {
+  //   const fetchSession = async () => {
+  //     try {
+  //       const { data, error } = await supabase.auth.getSession();
+  //       if (error && validateError(error)) {
+  //         localStorage.clear();
+  //         window.location.href = '/login';
+  //         return;
+  //       }
+  //       setUser(data.session?.user ?? null);
+  //       setCurrentSession(data.session);
+  //     } catch (error: any) {
+  //       if (validateError(error)) {
+  //         localStorage.clear();
+  //         window.location.href = '/login';
+  //       }
+  //     } finally {
+  //       setInitializing(false);
+  //     }
+  //   };
+  //   fetchSession();
+  // }, []);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
@@ -69,7 +75,6 @@ export const useAuthState = (): AuthState => {
           }
 
           setUser(session?.user ?? null);
-          setCurrentSession(session);
           setInitializing(false);
           console.log('Auth state changed:', event, session);
         } catch (error: any) {
@@ -94,7 +99,10 @@ export const useAuthState = (): AuthState => {
         const hashParams = new URLSearchParams();
         hashParams.set('type', 'recovery');
         currentSession &&
-          hashParams.set('access_token', currentSession.access_token);
+          hashParams.set(
+            'access_token',
+            currentSession.data.session?.access_token || '',
+          );
         window.location.href = '/reset-password';
       }
     });
@@ -103,8 +111,7 @@ export const useAuthState = (): AuthState => {
   return {
     user,
     setUser,
-    currentSession,
-    setCurrentSession,
+    currentSession: currentSession?.data.session || null,
     initializing,
     userRef,
   };

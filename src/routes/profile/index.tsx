@@ -41,14 +41,14 @@ function RouteComponent() {
     if (!currentSession) return;
 
     const hashParams = new URLSearchParams();
+    hashParams.set('event', 'PASSWORD_RECOVERY');
+    hashParams.set('type', 'recovery');
+    hashParams.set('access_token', currentSession.access_token);
+
     navigate({
       to: '/reset-password',
       hash: hashParams.toString(),
       viewTransition: true,
-      params: {
-        access_token: currentSession.access_token,
-        event: 'PASSWORD_RECOVERY',
-      },
     });
   };
 
