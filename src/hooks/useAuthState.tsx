@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, MutableRefObject } from 'react';
 import { supabase } from '@/services/supabase';
 import { User, Session } from '@supabase/supabase-js';
 import { useAuth } from '@/context/authContext';
@@ -9,7 +9,8 @@ export interface AuthState {
   setUser: (user: User | null) => void;
   currentSession: Session | null;
   initializing: boolean;
-  userRef: React.MutableRefObject<User | null>;
+  userRef: MutableRefObject<User | null>;
+  sessionRef: Session | null;
 }
 
 const validateError = (error: Error) => {
@@ -24,40 +25,20 @@ export const useAuthState = (): AuthState => {
   const [user, setUser] = useState<User | null>(null);
   const [initializing, setInitializing] = useState<boolean>(true);
   const userRef = useRef<User | null>(user);
-
-  useEffect(() => {
-    userRef.current = user;
-  }, [user]);
+  const sessionRef = useRef<Session | null>();
 
   const { data: currentSession, error } = useQuery({
     queryKey: ['fetchSession'],
     queryFn: async () => supabase.auth.getSession(),
   });
 
-  console.log(currentSession, error);
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
 
-  // useEffect(() => {
-  //   const fetchSession = async () => {
-  //     try {
-  //       const { data, error } = await supabase.auth.getSession();
-  //       if (error && validateError(error)) {
-  //         localStorage.clear();
-  //         window.location.href = '/login';
-  //         return;
-  //       }
-  //       setUser(data.session?.user ?? null);
-  //       setCurrentSession(data.session);
-  //     } catch (error: any) {
-  //       if (validateError(error)) {
-  //         localStorage.clear();
-  //         window.location.href = '/login';
-  //       }
-  //     } finally {
-  //       setInitializing(false);
-  //     }
-  //   };
-  //   fetchSession();
-  // }, []);
+  useEffect(() => {
+    sessionRef.current = currentSession?.data.session;
+  }, [currentSession]);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
@@ -70,12 +51,17 @@ export const useAuthState = (): AuthState => {
           }
 
           if (event === 'PASSWORD_RECOVERY') {
-            console.log('passou aqui');
+            console.log(
+              'event === "PASSWORD_RECOVERY": ',
+              event === 'PASSWORD_RECOVERY',
+            );
             return;
           }
 
           setUser(session?.user ?? null);
           setInitializing(false);
+          sessionRef.current = session;
+
           console.log('Auth state changed:', event, session);
         } catch (error: any) {
           if (validateError(error)) {
@@ -98,10 +84,10 @@ export const useAuthState = (): AuthState => {
         console.log('event == "PASSWORD_RECOVERY":', event, session);
         const hashParams = new URLSearchParams();
         hashParams.set('type', 'recovery');
-        currentSession &&
+        sessionRef &&
           hashParams.set(
             'access_token',
-            currentSession.data.session?.access_token || '',
+            sessionRef.current?.access_token || '',
           );
         window.location.href = '/reset-password';
       }
@@ -114,5 +100,6 @@ export const useAuthState = (): AuthState => {
     currentSession: currentSession?.data.session || null,
     initializing,
     userRef,
+    sessionRef: sessionRef.current || null,
   };
 };

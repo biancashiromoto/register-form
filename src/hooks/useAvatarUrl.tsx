@@ -3,8 +3,8 @@ import { useAuth } from '@/context/authContext';
 import { useQuery } from '@tanstack/react-query';
 
 const useAvatarUrl = () => {
-  const { currentSession } = useAuth();
-  const avatarPath = currentSession?.user?.user_metadata?.avatar_url;
+  const { sessionRef } = useAuth();
+  const avatarPath = sessionRef?.user?.user_metadata?.avatar_url;
 
   return useQuery({
     queryKey: ['avatar-url', avatarPath],

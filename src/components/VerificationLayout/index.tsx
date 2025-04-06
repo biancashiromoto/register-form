@@ -11,7 +11,7 @@ import LoadingLayer from '../LoadingLayer';
 const VerificationLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { currentSession, initializing } = useAuth();
+  const { sessionRef, initializing } = useAuth();
   const { isPrivateRoute } = useContext(Context);
 
   useLayoutEffect(() => {
@@ -21,10 +21,10 @@ const VerificationLayout: FC<{ children: ReactNode }> = ({ children }) => {
       location.pathname === '/register'
     )
       return;
-    if (!currentSession && isPrivateRoute) {
+    if (!sessionRef && isPrivateRoute) {
       navigate({ to: '/unauthenticated', viewTransition: true });
     }
-  }, [location.pathname, currentSession, initializing, isPrivateRoute]);
+  }, [location.pathname, sessionRef, initializing, isPrivateRoute]);
 
   if (initializing) return <LoadingLayer />;
 
