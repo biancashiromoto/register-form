@@ -3,19 +3,16 @@ import { useAuth } from '@/context/authContext';
 import { Typography, useTheme } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { ComponentProps, FC, useContext } from 'react';
-import LoadingLayer from '../LoadingLayer';
 
 const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
 
-  const { sessionRef, handleSignOut, isLoadingSignOut } = useAuth();
+  const { sessionRef, handleSignOut } = useAuth();
   const theme = useTheme();
   const { pathname } = useLocation();
   const { isPrivateRoute } = useContext(Context);
 
   if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
-
-  if (isLoadingSignOut) return <LoadingLayer />;
 
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
