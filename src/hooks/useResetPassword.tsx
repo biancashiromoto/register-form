@@ -20,16 +20,10 @@ const useResetPassword = () => {
       return;
     }
 
-    const params = new URLSearchParams();
-    params.set('event', 'PASSWORD_RECOVERY');
-    params.set('type', 'recovery');
-
-    const redirectUrl = `${window.location.origin}/reset-password?${params.toString()}`;
+    const redirectUrl = `${window.location.origin}/reset-password`;
     console.log(redirectUrl);
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
-    });
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
 
     setSnackbarState({
       open: true,
