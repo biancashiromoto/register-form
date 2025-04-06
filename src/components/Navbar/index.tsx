@@ -1,23 +1,21 @@
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
-import { supabase } from '@/services/supabase';
 import { Typography, useTheme } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
-import { ComponentProps, FC, useContext, useState } from 'react';
+import { ComponentProps, FC, useContext } from 'react';
 import LoadingLayer from '../LoadingLayer';
 
 const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
 
-  const { setUser, sessionRef } = useAuth();
+  const { sessionRef, handleSignOut, isLoadingSignOut } = useAuth();
   const theme = useTheme();
   const { pathname } = useLocation();
   const { isPrivateRoute } = useContext(Context);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
 
-  if (isLoggingOut) return <LoadingLayer />;
+  if (isLoadingSignOut) return <LoadingLayer />;
 
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
@@ -55,7 +53,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
         <Typography variant="body2">
           <Link
             to="/login"
-            onClick={async () => await supabase.auth.signOut()}
+            onClick={handleSignOut}
             style={{
               color: theme.palette.text.secondary,
             }}
