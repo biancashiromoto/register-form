@@ -27,17 +27,27 @@ function RouteComponent() {
   const { snackbarState, setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
   const [shouldNavigate, setShouldNavigate] = useState(false);
+  const [
+    shouldDisplayCurrentPasswordInput,
+    setShouldDisplayCurrentPasswordInput,
+  ] = useState(false);
 
   useEffect(() => {
-    const hashParams = new URLSearchParams();
-    const type = hashParams.get('type');
     supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('session', session);
-      if (event !== 'PASSWORD_RECOVERY' && !session) {
-        setShouldNavigate(true);
+      if (event !== 'PASSWORD_RECOVERY') {
+        setShouldDisplayCurrentPasswordInput(true);
+        if (!session) setShouldNavigate(true);
+        return;
       }
     });
   }, []);
+
+  useEffect(() => {
+    console.log(
+      'shouldDisplayCurrentPasswordInput',
+      shouldDisplayCurrentPasswordInput,
+    );
+  }, [shouldDisplayCurrentPasswordInput]);
 
   useEffect(() => {
     if (shouldNavigate) {
@@ -111,7 +121,7 @@ function RouteComponent() {
           mt: 4,
         }}
       >
-        {currentSession && (
+        {shouldDisplayCurrentPasswordInput && (
           <InputPassword
             errors={errors}
             register={register}
