@@ -28,6 +28,9 @@ function RouteComponent() {
   const { currentSession } = useAuth();
   const { snackbarState } = useContext(Context);
   const navigate = useNavigate();
+  const hashParams = new URLSearchParams(window.location.hash.slice(1));
+  const type = hashParams.get('type');
+  const accessToken = hashParams.get('access_token');
 
   const {
     register,
@@ -62,11 +65,7 @@ function RouteComponent() {
     if (snackbarState.severity === 'success' && !snackbarState.open) {
       navigate({ to: `${currentSession ? '/profile' : '/login'}` });
     }
-  }, [snackbarState]);
-
-  useEffect(() => {
-    console.log(currentSession);
-  }, [currentSession]);
+  }, [snackbarState, currentSession, navigate]);
 
   if (isLoadingValidateResetLink) return <LoadingLayer />;
 
