@@ -14,10 +14,9 @@ import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Container } from '@mui/material';
+import { Box, Checkbox, Container, FormControlLabel } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import { Country } from 'country-state-city';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/register/')({
@@ -25,6 +24,8 @@ export const Route = createFileRoute('/register/')({
 });
 
 function RouteComponent() {
+  const [showLocation, setShowLocation] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -61,11 +62,18 @@ function RouteComponent() {
   const clearForm = () => {
     reset(INITIAL_USER_STATE);
     clearErrors();
+    setShowLocation(false);
   };
 
   const onSubmit = async (data: UserType) => {
     setRegisteringUser({ ...data, address: getValues('address') });
     registerUser({ ...data, address: getValues('address') });
+  };
+
+  const shouldShowPasswordFields = () => {
+    if (!email || errors.email) return false;
+    if (!showLocation) return true;
+    return !!(getValues('address.city') && !errors?.address?.city);
   };
 
   useEffect(() => {
@@ -126,6 +134,18 @@ function RouteComponent() {
         />
 
         {!!email && !errors.email && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showLocation}
+                onChange={(e) => setShowLocation(e.target.checked)}
+              />
+            }
+            label="Add location information"
+          />
+        )}
+
+        {showLocation && (
           <UserLocation
             errors={errors}
             getValues={getValues}
@@ -133,7 +153,7 @@ function RouteComponent() {
           />
         )}
 
-        {!!getValues('address.city') && !errors?.address?.city && (
+        {shouldShowPasswordFields() && (
           <Box width={'100%'} display="flex" flexDirection="column" gap={2}>
             <InputPassword errors={errors} register={register} />
             <InputPassword
