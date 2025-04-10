@@ -1,11 +1,11 @@
 import AlreadySignedIn from '@/components/AlreadySignedIn';
-import CustomAutocomplete from '@/components/Autocomplete';
 import CustomButton from '@/components/Button';
 import DatePicker from '@/components/DatePicker';
 import InputPassword from '@/components/InputPassword';
 import InputText from '@/components/InputText';
 import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
+import UserLocation from '@/components/UserLocation';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import useRegisterUser from '@/hooks/useRegisterUser';
@@ -16,15 +16,8 @@ import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import {
-  City,
-  Country,
-  ICity,
-  ICountry,
-  IState,
-  State,
-} from 'country-state-city';
-import { useContext, useEffect, useState } from 'react';
+import { Country } from 'country-state-city';
+import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/register/')({
@@ -32,10 +25,6 @@ export const Route = createFileRoute('/register/')({
 });
 
 function RouteComponent() {
-  const [selectedCountry, setSelectedCountry] = useState({} as ICountry);
-  const [selectedState, setSelectedState] = useState({} as IState);
-  const [selectedCity, setSelectedCity] = useState({} as ICity);
-
   const {
     register,
     handleSubmit,
@@ -136,41 +125,13 @@ function RouteComponent() {
           autoComplete="username email"
         />
 
-        <CustomAutocomplete
-          errors={errors}
-          field="address.country"
-          getValues={getValues}
-          label="Country"
-          options={Country.getAllCountries()}
-          previousField="email"
-          setValue={setValue}
-          setterCallback={setSelectedCountry}
-        />
-
-        <CustomAutocomplete
-          errors={errors}
-          field="address.state"
-          getValues={getValues}
-          label="State"
-          options={State.getStatesOfCountry(selectedCountry.isoCode)}
-          previousField="address.country"
-          setValue={setValue}
-          setterCallback={setSelectedState}
-        />
-
-        <CustomAutocomplete
-          errors={errors}
-          field="address.city"
-          getValues={getValues}
-          label="City"
-          options={City.getCitiesOfState(
-            selectedCountry.isoCode,
-            selectedState.isoCode,
-          )}
-          previousField="address.state"
-          setValue={setValue}
-          setterCallback={setSelectedCity}
-        />
+        {!!email && !errors.email && (
+          <UserLocation
+            errors={errors}
+            getValues={getValues}
+            setValue={setValue}
+          />
+        )}
 
         {!!getValues('address.city') && !errors?.address?.city && (
           <Box width={'100%'} display="flex" flexDirection="column" gap={2}>
