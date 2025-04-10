@@ -1,6 +1,12 @@
 import { RegisterField, UserType } from '@/types';
 import { Autocomplete, TextField } from '@mui/material';
-import { ComponentProps, Dispatch, SetStateAction } from 'react';
+import {
+  ComponentProps,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import {
   FieldErrors,
   UseFormGetValues,
@@ -12,7 +18,10 @@ export interface CustomAutocompleteProps<T> extends ComponentProps<'select'> {
   errors: FieldErrors<UserType>;
   options: T[];
   setValue: UseFormSetValue<UserType>;
-  setterCallback: Dispatch<SetStateAction<T>>;
+  setterCallback:
+    | Dispatch<SetStateAction<T>>
+    | ((value: T | null) => void)
+    | any;
   field: RegisterField;
   previousField: RegisterField;
   label: string;
@@ -28,28 +37,74 @@ const CustomAutocomplete = <T extends { name: string }>({
   previousField,
   label,
 }: CustomAutocompleteProps<T>) => {
+  const [inputValue, setInputValue] = useState('');
+  const [value, setValue_] = useState<T | null>(null);
+
+  useEffect(() => {
+    const currentValue = getValues(field);
+    if (!currentValue) {
+      setValue_(null);
+      setInputValue('');
+      setterCallback(null);
+    }
+  }, [getValues, field, setterCallback]);
+
+  useEffect(() => {
+    const previousValue = getValues(previousField);
+    if (!previousValue) {
+      setValue_(null);
+      setInputValue('');
+      setValue(field, '');
+      setterCallback(null);
+    }
+  }, [getValues, previousField, field, setValue, setterCallback]);
+
+  const hidden =
+    !getValues(previousField) &&
+    !errors[previousField as keyof FieldErrors<UserType>];
+
+  if (hidden) {
+    return null;
+  }
+
   return (
     <Autocomplete
       style={{ width: '100%' }}
-      hidden={
-        !getValues(previousField) &&
-        !errors[previousField as keyof FieldErrors<UserType>]
-      }
       disablePortal
       options={options}
+      value={value}
+      inputValue={inputValue}
+      onInputChange={(_, newInputValue) => {
+        setInputValue(newInputValue);
+        if (!newInputValue) {
+          setValue_(null);
+          setValue(field, '');
+          setterCallback(null);
+        }
+      }}
+      onChange={(_event, newValue) => {
+        setValue_(newValue);
+        setValue(field, newValue?.name || '');
+        setterCallback(newValue);
+      }}
       getOptionLabel={(option: T) => option.name}
       renderInput={(params) => (
         <TextField
           {...params}
-          helperText={errors?.address?.country?.message}
+          error={
+            !!errors?.address?.[
+              field.split('.')[1] as keyof typeof errors.address
+            ]
+          }
+          helperText={
+            errors?.address?.[
+              field.split('.')[1] as keyof typeof errors.address
+            ]?.message
+          }
           label={label}
         />
       )}
-      onChange={(_event, newValue) => {
-        if (!newValue) return;
-        setterCallback(newValue);
-        setValue(field, newValue.name);
-      }}
+      isOptionEqualToValue={(option, value) => option.name === value?.name}
     />
   );
 };
