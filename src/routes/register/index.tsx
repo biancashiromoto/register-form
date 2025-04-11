@@ -85,7 +85,6 @@ function RouteComponent() {
       ? State.getStatesOfCountry(selectedCountry.isoCode)
       : [];
 
-    // If country has no states, only check country
     if (states.length === 0) {
       return !!country && !errors?.address?.country;
     }
@@ -96,12 +95,10 @@ function RouteComponent() {
         ? City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode)
         : [];
 
-    // If state has no cities, only check up to state
     if (cities.length === 0) {
       return !!state && !errors?.address?.state;
     }
 
-    // If cities exist, check all fields
     return !!city && !errors?.address?.city;
   };
 
