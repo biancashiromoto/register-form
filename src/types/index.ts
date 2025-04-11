@@ -22,9 +22,9 @@ export interface UserType {
 }
 
 export type AddressType = {
-  country: ICountry;
-  state: IState;
-  city: ICity;
+  country: ICountry | null;
+  state: IState | null;
+  city: ICity | null;
 };
 
 export type FormStepsType = {
