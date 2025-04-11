@@ -42,12 +42,12 @@ const CustomAutocomplete = <T extends { name: string }>({
 
   useEffect(() => {
     const currentValue = getValues(field);
-    if (!currentValue) {
+    if (!currentValue && value !== null) {
       setValue_(null);
       setInputValue('');
       setterCallback(null);
     }
-  }, [getValues, field, setterCallback]);
+  }, [getValues, field, setterCallback, value]);
 
   useEffect(() => {
     const previousValue = getValues(previousField);
