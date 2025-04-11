@@ -33,6 +33,11 @@ const InputText = memo(
       [theme],
     );
 
+    const showError = useMemo(() => {
+      const value = register(name).value;
+      return value && value.length > 0 && errors[name];
+    }, [errors, name, register]);
+
     if (hidden) {
       return null;
     }
@@ -45,8 +50,8 @@ const InputText = memo(
         id={name}
         label={labels[name]}
         {...register(name)}
-        error={!!errors[name]}
-        helperText={errors[name]?.message?.toString()}
+        error={!!showError}
+        helperText={showError?.message?.toString()}
         required={required}
         autoComplete={autoComplete}
         defaultValue={sessionRef?.user?.user_metadata[name]}
