@@ -1,9 +1,20 @@
 import { Context } from '@/context';
 import { UserType } from '@/types';
 import { Box } from '@mui/material';
-import { City, Country, ICity, ICountry, IState, State } from 'country-state-city';
-import { useContext, useState } from 'react';
-import { FieldErrors, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
+import {
+  City,
+  Country,
+  ICity,
+  ICountry,
+  IState,
+  State,
+} from 'country-state-city';
+import { useContext, useMemo, useState } from 'react';
+import {
+  FieldErrors,
+  UseFormGetValues,
+  UseFormSetValue,
+} from 'react-hook-form';
 import CustomAutocomplete from '../Autocomplete';
 
 interface UserLocationProps {
@@ -13,35 +24,40 @@ interface UserLocationProps {
 }
 
 const UserLocation = ({ errors, getValues, setValue }: UserLocationProps) => {
-  const [selectedCountry, setSelectedCountry] = useState<ICountry | null>(null);
-  const [selectedState, setSelectedState] = useState<IState | null>(null);
-  const [selectedCity, setSelectedCity] = useState<ICity | null>(null);
-  const { setSelectedLocation } = useContext(Context);
+  const countries = useMemo(() => Country.getAllCountries(), []);
+  const { setUserLocation, userLocation } = useContext(Context);
+
+  const states = useMemo(() => {
+    if (!userLocation.country) return [];
+    return State.getStatesOfCountry(userLocation.country.isoCode);
+  }, [userLocation.country]);
+
+  const cities = useMemo(() => {
+    if (!userLocation.country || !userLocation.state) return [];
+    return City.getCitiesOfState(
+      userLocation.country.isoCode,
+      userLocation.state.isoCode,
+    );
+  }, [userLocation.country, userLocation.state, userLocation.city]);
 
   const handleCountryChange = (country: ICountry | null) => {
-    setSelectedCountry(country);
-    setSelectedState(null);
-    setSelectedCity(null);
     setValue('address.state', '');
     setValue('address.city', '');
     if (country) {
-      setSelectedLocation((prev) => ({ ...prev, country }));
+      setUserLocation({ country, state: null, city: null });
     }
   };
 
   const handleStateChange = (state: IState | null) => {
-    setSelectedState(state);
-    setSelectedCity(null);
     setValue('address.city', '');
     if (state) {
-      setSelectedLocation((prev) => ({ ...prev, state }));
+      setUserLocation((prev) => ({ ...prev, state, city: null }));
     }
   };
 
   const handleCityChange = (city: ICity | null) => {
-    setSelectedCity(city);
     if (city) {
-      setSelectedLocation((prev) => ({ ...prev, city }));
+      setUserLocation((prev) => ({ ...prev, city }));
     }
   };
 
@@ -52,36 +68,37 @@ const UserLocation = ({ errors, getValues, setValue }: UserLocationProps) => {
         field="address.country"
         getValues={getValues}
         label="Country"
-        options={Country.getAllCountries()}
+        options={countries}
         previousField="email"
         setValue={setValue}
         setterCallback={handleCountryChange}
       />
 
-      <CustomAutocomplete
-        errors={errors}
-        field="address.state"
-        getValues={getValues}
-        label="State"
-        options={State.getStatesOfCountry(selectedCountry?.isoCode || '')}
-        previousField="address.country"
-        setValue={setValue}
-        setterCallback={handleStateChange}
-      />
+      {states.length > 0 && (
+        <CustomAutocomplete
+          errors={errors}
+          field="address.state"
+          getValues={getValues}
+          label="State"
+          options={states}
+          previousField="address.country"
+          setValue={setValue}
+          setterCallback={handleStateChange}
+        />
+      )}
 
-      <CustomAutocomplete
-        errors={errors}
-        field="address.city"
-        getValues={getValues}
-        label="City"
-        options={City.getCitiesOfState(
-          selectedCountry?.isoCode || '',
-          selectedState?.isoCode || '',
-        )}
-        previousField="address.state"
-        setValue={setValue}
-        setterCallback={handleCityChange}
-      />
+      {cities.length > 0 && (
+        <CustomAutocomplete
+          errors={errors}
+          field="address.city"
+          getValues={getValues}
+          label="City"
+          options={cities}
+          previousField="address.state"
+          setValue={setValue}
+          setterCallback={handleCityChange}
+        />
+      )}
     </Box>
   );
 };
