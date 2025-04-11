@@ -32,7 +32,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     severity: undefined,
   });
   const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState({} as AddressType);
+  const [userLocation, setUserLocation] = useState({} as AddressType);
   const location = useLocation();
   const normalizedPath = useMemo(
     () => location.pathname.replace(/\/$/, ''),
@@ -80,8 +80,8 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       setSnackbarState,
       registeringUser,
       setRegisteringUser,
-      selectedLocation,
-      setSelectedLocation,
+      userLocation,
+      setUserLocation,
       isDarkModeOn,
       setIsDarkModeOn,
       toggleTheme,
@@ -92,7 +92,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     [
       snackbarState,
       registeringUser,
-      selectedLocation,
+      userLocation,
       isDarkModeOn,
       theme,
       isPrivateRoute,
