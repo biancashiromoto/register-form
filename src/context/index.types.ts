@@ -7,8 +7,8 @@ export interface ContextProps {
   setSnackbarState: Dispatch<SetStateAction<SnackbarStateType>>;
   registeringUser: UserType | null;
   setRegisteringUser: Dispatch<SetStateAction<UserType | null>>;
-  selectedLocation: AddressType;
-  setSelectedLocation: Dispatch<SetStateAction<AddressType>>;
+  userLocation: AddressType;
+  setUserLocation: Dispatch<SetStateAction<AddressType>>;
   isDarkModeOn: boolean;
   setIsDarkModeOn: Dispatch<SetStateAction<boolean>>;
   toggleTheme: () => void;
