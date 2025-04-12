@@ -1,4 +1,4 @@
-import { AddressType, SnackbarStateType, UserType } from '@/types';
+import { UserLocationType, SnackbarStateType, UserType } from '@/types';
 import { Theme } from '@mui/material';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -7,8 +7,8 @@ export interface ContextProps {
   setSnackbarState: Dispatch<SetStateAction<SnackbarStateType>>;
   registeringUser: UserType | null;
   setRegisteringUser: Dispatch<SetStateAction<UserType | null>>;
-  userLocation: AddressType;
-  setUserLocation: Dispatch<SetStateAction<AddressType>>;
+  userLocation: UserLocationType;
+  setUserLocation: Dispatch<SetStateAction<UserLocationType>>;
   isDarkModeOn: boolean;
   setIsDarkModeOn: Dispatch<SetStateAction<boolean>>;
   toggleTheme: () => void;
