@@ -49,14 +49,8 @@ export const useAuthState = (): AuthState => {
 
   const handleSignOut = async () => {
     setIsLoadingSignOut(true);
-
-    try {
-      await supabase.auth.signOut();
-    } catch (error) {
-      throw new Error();
-    } finally {
-      setIsLoadingSignOut(false);
-    }
+    await supabase.auth.signOut();
+    setIsLoadingSignOut(false);
   };
 
   useEffect(() => {

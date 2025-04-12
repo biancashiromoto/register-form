@@ -9,7 +9,7 @@ import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/reset-password/')({
