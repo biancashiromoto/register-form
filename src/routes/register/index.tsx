@@ -16,7 +16,8 @@ import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Checkbox, Container, FormControlLabel } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import { useContext, useEffect, useState } from 'react';
+import { City, Country, State } from 'country-state-city';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/register/')({
@@ -52,6 +53,9 @@ function RouteComponent() {
   const birthDate = watch('birthDate');
   const email = watch('email');
   const password = watch('password');
+  const country = watch('address.country');
+  const state = watch('address.state');
+  const city = watch('address.city');
 
   useResetForm(firstName, resetField, 'lastName');
   useResetForm(lastName, resetField, 'birthDate');
@@ -73,8 +77,36 @@ function RouteComponent() {
   const shouldShowPasswordFields = () => {
     if (!email || errors.email) return false;
     if (!showLocation) return true;
-    return !!(getValues('address.city') && !errors?.address?.city);
+
+    const selectedCountry = Country.getAllCountries().find(
+      (c) => c.name === country,
+    );
+    const states = selectedCountry
+      ? State.getStatesOfCountry(selectedCountry.isoCode)
+      : [];
+
+    if (states.length === 0) {
+      return !!country && !errors?.address?.country;
+    }
+
+    const selectedState = states.find((s) => s.name === state);
+    const cities =
+      selectedState && selectedCountry
+        ? City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode)
+        : [];
+
+    if (cities.length === 0) {
+      return !!state && !errors?.address?.state;
+    }
+
+    return !!city && !errors?.address?.city;
   };
+
+  const shouldShowSubmitButton = useMemo(() => {
+    if (!isValid) return false;
+    if (!showLocation) return true;
+    return shouldShowPasswordFields();
+  }, [isValid, showLocation, country, state, city, errors]);
 
   useEffect(() => {
     setSnackbarState((prevState: SnackbarStateType) => ({
@@ -164,7 +196,7 @@ function RouteComponent() {
           </Box>
         )}
 
-        {isValid && (
+        {shouldShowSubmitButton && (
           <CustomButton variant="contained" color="primary" type="submit">
             Sign up
           </CustomButton>
