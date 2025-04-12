@@ -1,5 +1,5 @@
 import { Context } from '@/context';
-import { UserType } from '@/types';
+import { UserLocationType, UserType } from '@/types';
 import { Box } from '@mui/material';
 import {
   City,
@@ -24,40 +24,48 @@ interface UserLocationProps {
 }
 
 const UserLocation = ({ errors, getValues, setValue }: UserLocationProps) => {
-  const countries = useMemo(() => Country.getAllCountries(), []);
-  const { setUserLocation, userLocation } = useContext(Context);
+  const [selectedCountry, setSelectedCountry] = useState<ICountry | null>(null);
+  const [selectedState, setSelectedState] = useState<IState | null>(null);
+  const [selectedCity, setSelectedCity] = useState<ICity | null>(null);
+  const { setUserLocation } = useContext(Context);
 
   const states = useMemo(() => {
-    if (!userLocation.country) return [];
-    return State.getStatesOfCountry(userLocation.country.isoCode);
-  }, [userLocation.country]);
+    if (!selectedCountry) return [];
+    return State.getStatesOfCountry(selectedCountry.isoCode);
+  }, [selectedCountry]);
 
   const cities = useMemo(() => {
-    if (!userLocation.country || !userLocation.state) return [];
+    if (!selectedCountry || !selectedState) return [];
     return City.getCitiesOfState(
-      userLocation.country.isoCode,
-      userLocation.state.isoCode,
+      selectedCountry.isoCode,
+      selectedState.isoCode,
     );
-  }, [userLocation.country, userLocation.state, userLocation.city]);
+  }, [selectedCountry, selectedState]);
 
   const handleCountryChange = (country: ICountry | null) => {
+    setSelectedCountry(country);
+    setSelectedState(null);
+    setSelectedCity(null);
     setValue('address.state', '');
     setValue('address.city', '');
     if (country) {
-      setUserLocation({ country, state: null, city: null });
+      setUserLocation((prev: UserLocationType) => ({ ...prev, country }));
     }
   };
 
   const handleStateChange = (state: IState | null) => {
+    setSelectedState(state);
+    setSelectedCity(null);
     setValue('address.city', '');
     if (state) {
-      setUserLocation((prev) => ({ ...prev, state, city: null }));
+      setUserLocation((prev: UserLocationType) => ({ ...prev, state }));
     }
   };
 
   const handleCityChange = (city: ICity | null) => {
+    setSelectedCity(city);
     if (city) {
-      setUserLocation((prev) => ({ ...prev, city }));
+      setUserLocation((prev: UserLocationType) => ({ ...prev, city }));
     }
   };
 
@@ -68,7 +76,7 @@ const UserLocation = ({ errors, getValues, setValue }: UserLocationProps) => {
         field="address.country"
         getValues={getValues}
         label="Country"
-        options={countries}
+        options={Country.getAllCountries()}
         previousField="email"
         setValue={setValue}
         setterCallback={handleCountryChange}
