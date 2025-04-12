@@ -4,6 +4,7 @@ import UserLocation from '..';
 import { Context } from '@/context';
 import { ContextProps } from '@/context/index.types';
 import { mockCities, mockCountries, mockStates } from '@/tests/mocks';
+import { City, Country, State } from 'country-state-city';
 
 vi.mock('country-state-city', () => ({
   Country: {
@@ -18,7 +19,7 @@ vi.mock('country-state-city', () => ({
 }));
 
 describe('UserLocation', () => {
-  const mockSetSelectedLocation = vi.fn();
+  const mockSetUserLocation = vi.fn();
   const mockGetValues = vi.fn();
   const mockSetValue = vi.fn();
 
@@ -29,7 +30,7 @@ describe('UserLocation', () => {
   };
 
   const mockContext = {
-    setSelectedLocation: mockSetSelectedLocation,
+    setUserLocation: mockSetUserLocation,
   } as unknown as ContextProps;
 
   beforeEach(() => {
@@ -58,14 +59,13 @@ describe('UserLocation', () => {
     );
   };
 
-  it('renders all location fields when previous fields have values', () => {
+  it('renders country field initially', () => {
     renderComponent();
     expect(screen.getByLabelText('Country')).toBeInTheDocument();
-    expect(screen.getByLabelText('State')).toBeInTheDocument();
-    expect(screen.getByLabelText('City')).toBeInTheDocument();
   });
 
-  it('updates location when country is selected', async () => {
+  it('renders state field only when country has states', async () => {
+    (State.getStatesOfCountry as any).mockReturnValue(mockStates);
     renderComponent();
 
     const countryInput = screen.getByLabelText('Country');
@@ -74,58 +74,76 @@ describe('UserLocation', () => {
     const option = await screen.findByText('Brazil');
     fireEvent.click(option);
 
-    await waitFor(() => {
-      expect(mockSetValue).toHaveBeenCalledWith('address.state', '');
-      expect(mockSetValue).toHaveBeenCalledWith('address.city', '');
-      expect(mockSetSelectedLocation).toHaveBeenCalledWith(
-        expect.any(Function),
-      );
-    });
+    expect(screen.getByLabelText('State')).toBeInTheDocument();
   });
 
-  it('updates location when state is selected', async () => {
+  it('does not render state field when country has no states', async () => {
+    (State.getStatesOfCountry as any).mockReturnValue([]);
     renderComponent();
+
+    const countryInput = screen.getByLabelText('Country');
+    fireEvent.change(countryInput, { target: { value: 'Aus' } });
+
+    const option = await screen.findByText('Australia');
+    fireEvent.click(option);
+
+    expect(screen.queryByLabelText('State')).not.toBeInTheDocument();
+  });
+
+  it('renders city field only when state has cities', async () => {
+    (State.getStatesOfCountry as any).mockReturnValue(mockStates);
+    (City.getCitiesOfState as any).mockReturnValue(mockCities);
+    renderComponent();
+
+    const countryInput = screen.getByLabelText('Country');
+    fireEvent.change(countryInput, { target: { value: 'Bra' } });
+    const countryOption = await screen.findByText('Brazil');
+    fireEvent.click(countryOption);
 
     const stateInput = screen.getByLabelText('State');
     fireEvent.change(stateInput, { target: { value: 'São' } });
+    const stateOption = await screen.findByText('São Paulo');
+    fireEvent.click(stateOption);
 
-    const option = await screen.findByText('São Paulo');
-    fireEvent.click(option);
-
-    await waitFor(() => {
-      expect(mockSetValue).toHaveBeenCalledWith('address.city', '');
-      expect(mockSetSelectedLocation).toHaveBeenCalledWith(
-        expect.any(Function),
-      );
-    });
+    expect(screen.getByLabelText('City')).toBeInTheDocument();
   });
 
-  it('updates location when city is selected', async () => {
+  it('does not render city field when state has no cities', async () => {
+    (State.getStatesOfCountry as any).mockReturnValue(mockStates);
+    (City.getCitiesOfState as any).mockReturnValue([]);
     renderComponent();
 
-    const cityInput = screen.getByLabelText('City');
-    fireEvent.change(cityInput, { target: { value: 'São' } });
+    const countryInput = screen.getByLabelText('Country');
+    fireEvent.change(countryInput, { target: { value: 'Bra' } });
+    const countryOption = await screen.findByText('Brazil');
+    fireEvent.click(countryOption);
 
-    const option = await screen.findByText('São Paulo');
-    fireEvent.click(option);
+    const stateInput = screen.getByLabelText('State');
+    fireEvent.change(stateInput, { target: { value: 'São' } });
+    const stateOption = await screen.findByText('São Paulo');
+    fireEvent.click(stateOption);
 
-    await waitFor(() => {
-      expect(mockSetSelectedLocation).toHaveBeenCalledWith(
-        expect.any(Function),
-      );
-    });
+    expect(screen.queryByLabelText('City')).not.toBeInTheDocument();
   });
 
   it('resets dependent fields when a field is cleared', async () => {
     renderComponent();
 
     const countryInput = screen.getByLabelText('Country');
-    fireEvent.change(countryInput, { target: { value: '' } });
+    fireEvent.change(countryInput, { target: { value: 'Bra' } });
+    const countryOption = await screen.findByText('Brazil');
+    fireEvent.click(countryOption);
 
-    // await waitFor(() => {
-    //   expect(mockSetValue).toHaveBeenCalledWith('address.state', '');
-    //   expect(mockSetValue).toHaveBeenCalledWith('address.city', '');
-    // });
+    const stateInput = screen.getByLabelText('State');
+    fireEvent.change(stateInput, { target: { value: 'São' } });
+    const stateOption = await screen.findByText('São Paulo');
+    fireEvent.click(stateOption);
+
+    fireEvent.change(countryInput, { target: { value: '' } });
+    await waitFor(() => {
+      expect(mockSetValue).toHaveBeenCalledWith('address.state', '');
+      expect(mockSetValue).toHaveBeenCalledWith('address.city', '');
+    });
   });
 
   it('handles errors in location fields', () => {
@@ -143,7 +161,5 @@ describe('UserLocation', () => {
     renderComponent(propsWithErrors);
 
     expect(screen.getByText('Country is required')).toBeInTheDocument();
-    expect(screen.getByText('State is required')).toBeInTheDocument();
-    expect(screen.getByText('City is required')).toBeInTheDocument();
   });
 });

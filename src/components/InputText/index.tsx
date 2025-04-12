@@ -3,13 +3,13 @@ import { labels } from '@/helpers/labels';
 import { UserType } from '@/types';
 import { TextField, useTheme } from '@mui/material';
 import { ComponentProps, memo, useMemo } from 'react';
-import { FieldErrors } from 'react-hook-form';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
 type LabelKeys = keyof typeof labels;
 
 export interface InputTextProps extends ComponentProps<'input'> {
   name: LabelKeys;
-  register: any;
+  register: UseFormRegister<UserType>;
   errors: FieldErrors<UserType>;
   required?: boolean;
   autoComplete?: string;
@@ -33,6 +33,9 @@ const InputText = memo(
       [theme],
     );
 
+    const registration = register(name);
+    const showError = useMemo(() => errors[name], [errors, name]);
+
     if (hidden) {
       return null;
     }
@@ -44,9 +47,9 @@ const InputText = memo(
         }}
         id={name}
         label={labels[name]}
-        {...register(name)}
-        error={!!errors[name]}
-        helperText={errors[name]?.message?.toString()}
+        {...registration}
+        error={!!showError}
+        helperText={showError?.message?.toString()}
         required={required}
         autoComplete={autoComplete}
         defaultValue={sessionRef?.user?.user_metadata[name]}
