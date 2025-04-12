@@ -2,7 +2,7 @@ import {
   getLocalStorage,
   setLocalStorage,
 } from '@/helpers/localStorageManagement';
-import { AddressType, SnackbarStateType, UserType } from '@/types';
+import { UserLocationType, SnackbarStateType, UserType } from '@/types';
 import { privateRoutes } from '@/utils/commons/privateRoutes';
 import { createTheme, useMediaQuery } from '@mui/material';
 import { useLocation } from '@tanstack/react-router';
@@ -32,7 +32,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     severity: undefined,
   });
   const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
-  const [userLocation, setUserLocation] = useState({} as AddressType);
+  const [userLocation, setUserLocation] = useState({} as UserLocationType);
   const location = useLocation();
   const normalizedPath = useMemo(
     () => location.pathname.replace(/\/$/, ''),
