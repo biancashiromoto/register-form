@@ -21,7 +21,7 @@ export interface UserType {
   };
 }
 
-export type AddressType = {
+export type UserLocationType = {
   country: ICountry | null;
   state: IState | null;
   city: ICity | null;
