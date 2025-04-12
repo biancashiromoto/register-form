@@ -48,7 +48,7 @@ function RouteComponent() {
 
   if (!sessionRef) navigate({ to: '/unauthenticated' });
 
-  if (isUpdatingUser) <LoadingLayer />;
+  if (isUpdatingUser) return <LoadingLayer />;
 
   return (
     <Container maxWidth="sm">
