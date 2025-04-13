@@ -19,6 +19,7 @@ const Footer = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            width: 'fit-content',
           }}
         >
           <IoLogoGithub size={25} style={{ marginRight: '6px' }} />
