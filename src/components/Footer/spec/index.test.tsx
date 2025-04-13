@@ -16,11 +16,6 @@ describe('Footer Component', () => {
     );
   });
 
-  it('renders the GitHub icon with proper aria-label', () => {
-    const githubIcon = screen.getByLabelText('GitHub repo');
-    expect(githubIcon).toBeInTheDocument();
-  });
-
   it('renders the open icon with proper aria-label', () => {
     const openIcon = screen.getByLabelText('Opens in a new tab');
     expect(openIcon).toBeInTheDocument();

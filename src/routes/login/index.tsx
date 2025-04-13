@@ -21,7 +21,7 @@ export const Route = createFileRoute('/login/')({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
   const {
     register,
     handleSubmit,

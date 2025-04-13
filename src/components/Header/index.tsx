@@ -4,7 +4,7 @@ import { Avatar, Box, Container, Skeleton, Typography } from '@mui/material';
 import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 import Navbar from '../Navbar';
-import { ToggleThemeSwitch } from '../ToggleThemeSwitch';
+import ToggleThemeSwitch from '../ToggleThemeSwitch';
 import useAvatarUrl from '@/hooks/useAvatarUrl';
 
 const Header = () => {
@@ -19,7 +19,11 @@ const Header = () => {
         component="header"
         style={{ display: 'flex', alignItems: 'center', height: '3em' }}
       >
-        <ToggleThemeSwitch onChange={toggleTheme} checked={isDarkModeOn} />
+        <ToggleThemeSwitch
+          aria-label={`${isDarkModeOn ? 'Deactivate' : 'Activate'} dark mode`}
+          onChange={toggleTheme}
+          checked={isDarkModeOn}
+        />
         {sessionRef && (
           <Box
             style={{

@@ -1,16 +1,15 @@
-import { styled, Switch } from '@mui/material';
+import React from 'react';
+import { styled, Switch, SwitchProps } from '@mui/material';
 
-export const ToggleThemeSwitch = styled(Switch)(({ theme }) => ({
+const StyledSwitch = styled(Switch)(({ theme }) => ({
   width: 62,
   height: 34,
   padding: 7,
   transform: 'translateX(-16px)',
-
   [theme.breakpoints.up('md')]: {
     left: '50%',
     transform: 'translateX(-16px)',
   },
-
   '& .MuiSwitch-switchBase': {
     margin: 1,
     padding: 0,
@@ -61,3 +60,11 @@ export const ToggleThemeSwitch = styled(Switch)(({ theme }) => ({
     }),
   },
 }));
+
+interface ToggleThemeSwitchProps extends SwitchProps {}
+
+const ToggleThemeSwitch: React.FC<ToggleThemeSwitchProps> = (props) => {
+  return <StyledSwitch {...props} />;
+};
+
+export default ToggleThemeSwitch;

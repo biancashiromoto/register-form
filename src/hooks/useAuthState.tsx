@@ -40,7 +40,6 @@ export const useAuthState = (): AuthState => {
   const [isValidResetLink, setIsValidResetLink] = useState(false);
   const [isLoadingValidateResetLink, setIsLoadingValidateResetLink] =
     useState(false);
-  const { normalizedPath } = useContext(Context);
 
   const { data: currentSession } = useQuery({
     queryKey: ['fetchSession'],

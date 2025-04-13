@@ -6,7 +6,7 @@ export const Route = createFileRoute('/home/')({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
   const { sessionRef } = useAuth();
   const navigate = useNavigate();
 
