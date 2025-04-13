@@ -38,9 +38,6 @@ export const registerSchema = z
       .refine((val) => isUserAdult(val), {
         message: 'User must be at least 18 years old',
       }),
-    country: z.string(),
-    state: z.string(),
-    city: z.string(),
     email: z
       .string({
         required_error: 'Email is required',

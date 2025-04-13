@@ -10,7 +10,7 @@ import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
-import { firstStepSchema } from '@/schemas/firstStepSchema';
+import { registerSchema } from '@/schemas/registerSchema';
 import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_USER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -37,7 +37,7 @@ function RouteComponent() {
     setValue,
     formState: { errors, isValid },
   } = useForm({
-    resolver: zodResolver(firstStepSchema),
+    resolver: zodResolver(registerSchema),
     mode: 'all',
     defaultValues: INITIAL_USER_STATE,
   });
