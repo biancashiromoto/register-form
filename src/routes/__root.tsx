@@ -15,7 +15,7 @@ import {
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { useContext } from 'react';
 
-const RootLayout = () => {
+export const RootLayout = () => {
   const { theme, isPrivateRoute } = useContext(Context);
   const { page } = usePageTitle();
   const { sessionRef } = useAuth();

@@ -6,7 +6,7 @@ export const Route = createFileRoute('/unauthenticated/')({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
   return (
     <Container maxWidth="sm">
       <Typography variant="h3" fontSize={32} gutterBottom>

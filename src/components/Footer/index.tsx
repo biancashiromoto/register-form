@@ -9,30 +9,25 @@ const Footer = () => {
         sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 2 }}
         elevation={3}
         component="footer"
+        data-testid="footer"
       >
         <CustomButton
           variant="text"
           href="https://github.com/biancashiromoto/register-form"
           fullWidth={false}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 'fit-content',
+          }}
         >
-          <span
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <IoLogoGithub
-              size={25}
-              aria-label="GitHub repo"
-              style={{ marginRight: '6px' }}
-            />
-            GitHub repo{' '}
-            <IoOpenOutline
-              aria-label="Opens in a new tab"
-              style={{ marginLeft: '6px', transform: 'translateY(-2px)' }}
-            />
-          </span>
+          <IoLogoGithub size={25} style={{ marginRight: '6px' }} />
+          GitHub repo{' '}
+          <IoOpenOutline
+            aria-label="Opens in a new tab"
+            style={{ marginLeft: '6px', transform: 'translateY(-2px)' }}
+          />
         </CustomButton>
       </Paper>
     </Container>

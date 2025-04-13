@@ -1,7 +1,7 @@
 import { useAuth } from '@/context/authContext';
 import { Container, Typography, useTheme } from '@mui/material';
 import { Link } from '@tanstack/react-router';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import LoadingLayer from '../LoadingLayer';
 
 const AlreadySignedIn = () => {
