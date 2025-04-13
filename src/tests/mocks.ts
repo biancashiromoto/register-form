@@ -1,5 +1,5 @@
 import { UserType } from '@/types';
-import { Country, ICountry } from 'country-state-city';
+import { Session } from '@supabase/supabase-js';
 
 export const mockUser: UserType = {
   birthDate: '1990-11-11',
@@ -262,3 +262,8 @@ export const mockCities = [
     name: 'São Paulo',
   },
 ];
+
+export const mockSession = {
+  access_token: 'access_token',
+  user: mockUser,
+} as unknown as Session;
