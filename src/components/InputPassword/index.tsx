@@ -60,7 +60,6 @@ const InputPassword = memo(
       !hidden && (
         <FormControl
           variant="outlined"
-          id={passwordInputIdentification}
           error={
             !!errors[passwordInputIdentification as keyof FieldErrors<UserType>]
           }
@@ -70,7 +69,6 @@ const InputPassword = memo(
             {passwordInputLabel}
           </InputLabel>
           <OutlinedInput
-            aria-label={passwordInputLabel}
             autoComplete={isExistingPassword ? 'off' : 'new-password'}
             required
             {...register(`${passwordInputIdentification}`)}
