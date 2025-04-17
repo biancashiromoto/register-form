@@ -82,7 +82,7 @@ export function RouteComponent() {
         />
 
         <CustomButton variant="contained" color="primary" type="submit">
-          Log in
+          Sign in
         </CustomButton>
         <CustomButton
           variant="outlined"
