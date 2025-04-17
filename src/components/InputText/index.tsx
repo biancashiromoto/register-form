@@ -1,16 +1,15 @@
 import { useAuth } from '@/context/authContext';
 import { labels } from '@/helpers/labels';
-import { UserType } from '@/types';
 import { TextField, useTheme } from '@mui/material';
 import { ComponentProps, memo, useMemo } from 'react';
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 
 type LabelKeys = keyof typeof labels;
 
 export interface InputTextProps extends ComponentProps<'input'> {
   name: LabelKeys;
-  register: UseFormRegister<UserType>;
-  errors: FieldErrors<UserType>;
+  register: UseFormRegister<FieldValues>;
+  errors: FieldErrors<FieldValues>;
   required?: boolean;
   autoComplete?: string;
 }
