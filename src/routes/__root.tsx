@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
+import Provider from '@/context/Provider';
 import usePageTitle from '@/hooks/usePageTitle';
 import { Container, Typography } from '@mui/material';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
@@ -30,5 +31,9 @@ export const RootLayout = () => {
 };
 
 export const Route = createRootRoute({
-  component: () => <RootLayout />,
+  component: () => (
+    <Provider>
+      <RootLayout />
+    </Provider>
+  ),
 });
