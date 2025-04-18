@@ -4,7 +4,12 @@ import {
 } from '@/helpers/localStorageManagement';
 import { UserLocationType, SnackbarStateType, UserType } from '@/types';
 import { privateRoutes } from '@/utils/commons/privateRoutes';
-import { createTheme, useMediaQuery } from '@mui/material';
+import {
+  createTheme,
+  ThemeProvider,
+  useMediaQuery,
+  CssBaseline,
+} from '@mui/material';
 import { useLocation } from '@tanstack/react-router';
 import {
   FC,
@@ -57,9 +62,21 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
           mode: isDarkModeOn ? 'dark' : 'light',
           background: {
             default: isDarkModeOn ? '#1D2125' : '#DEE4EA',
+            paper: isDarkModeOn ? '#2D3748' : '#FFFFFF',
           },
           text: {
-            primary: !isDarkModeOn ? '#red' : '#DEE4EA',
+            primary: isDarkModeOn ? '#DEE4EA' : '#1D2125',
+            secondary: isDarkModeOn ? '#A0AEC0' : '#4A5568',
+          },
+        },
+        components: {
+          MuiCssBaseline: {
+            styleOverrides: {
+              body: {
+                backgroundColor: isDarkModeOn ? '#1D2125' : '#DEE4EA',
+                color: isDarkModeOn ? '#DEE4EA' : '#1D2125',
+              },
+            },
           },
         },
       }),
@@ -67,12 +84,12 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   );
 
   const toggleTheme = useCallback(() => {
-    setIsDarkModeOn((prevMode: boolean) => {
+    setIsDarkModeOn((prevMode) => {
       const newMode = !prevMode;
       setLocalStorage('theme', newMode ? 'dark' : 'light');
       return newMode;
     });
-  }, [setIsDarkModeOn]);
+  }, []);
 
   const value = useMemo<ContextProps>(
     () => ({
@@ -97,10 +114,16 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       theme,
       isPrivateRoute,
       normalizedPath,
+      toggleTheme,
     ],
   );
 
-  return <Context.Provider value={value}>{children}</Context.Provider>;
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Context.Provider value={value}>{children}</Context.Provider>
+    </ThemeProvider>
+  );
 };
 
 export default Provider;
