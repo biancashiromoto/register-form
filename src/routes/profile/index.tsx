@@ -8,22 +8,29 @@ import { useAuth } from '@/context/authContext';
 import useResetPassword from '@/hooks/useResetPassword';
 import useUpdateUser from '@/hooks/useUpdateUser';
 import { profileEditSchema } from '@/schemas/profileEditSchema';
+import { isAuthenticated } from '@/services/user';
 import { SnackbarStateType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, TextField } from '@mui/material';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/profile/')({
   component: RouteComponent,
+  beforeLoad: async () => {
+    const auth = await isAuthenticated();
+
+    if (!auth) {
+      throw redirect({ to: '/unauthenticated' });
+    }
+  },
 });
 
 function RouteComponent() {
   const { sessionRef } = useAuth();
   const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser();
   const { snackbarState, setSnackbarState } = useContext(Context);
-  const navigate = useNavigate();
   const { sendResetPasswordEmail } = useResetPassword();
 
   const {
@@ -45,8 +52,6 @@ function RouteComponent() {
       open: false,
     }));
   }, []);
-
-  if (!sessionRef) navigate({ to: '/unauthenticated' });
 
   if (isUpdatingUser) return <LoadingLayer />;
 
