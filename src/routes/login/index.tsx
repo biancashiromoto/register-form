@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/login/')({
   component: RouteComponent,
-  loader: async () => {
+  beforeLoad: async () => {
     const auth = await isAuthenticated();
     if (auth) {
       throw redirect({ to: '/home' });
