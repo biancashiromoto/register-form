@@ -10,15 +10,24 @@ import useLoginUser from '@/hooks/useLoginUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import useResetPassword from '@/hooks/useResetPassword';
 import { loginSchema } from '@/schemas/loginSchema';
+import { isAuthenticated } from '@/services/user';
 import { UserType } from '@/types';
+import { INITIAL_LOGIN_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/login/')({
   component: RouteComponent,
+  loader: async () => {
+    const auth = await isAuthenticated();
+    if (auth) {
+      throw redirect({ to: '/home' });
+    }
+    return null;
+  },
 });
 
 export function RouteComponent() {
@@ -32,13 +41,11 @@ export function RouteComponent() {
   } = useForm({
     resolver: zodResolver(loginSchema),
     mode: 'all',
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: INITIAL_LOGIN_STATE,
   });
 
   const email = watch('email');
+  const password = watch('password');
   useResetForm(email, resetField, 'password');
   const { mutate: login, isPending } = useLoginUser(setError);
   const { sessionRef } = useAuth();
@@ -71,7 +78,7 @@ export function RouteComponent() {
           name="email"
           register={register}
           required
-          autoComplete="email"
+          autoComplete="username email"
         />
 
         <InputPassword
@@ -81,7 +88,12 @@ export function RouteComponent() {
           isExistingPassword
         />
 
-        <CustomButton variant="contained" color="primary" type="submit">
+        <CustomButton
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={!password || !email}
+        >
           Sign in
         </CustomButton>
         <CustomButton
