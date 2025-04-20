@@ -7,7 +7,7 @@ export const INITIAL_ADDRESS_STATE: UserType['address'] = {
   city: '',
 };
 
-export const INITIAL_USER_STATE: UserType = {
+export const INITIAL_REGISTER_STATE: UserType = {
   firstName: '',
   lastName: '',
   birthDate: '',
