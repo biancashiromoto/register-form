@@ -11,10 +11,12 @@ import { useAuth } from '@/context/authContext';
 import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
+import { isAuthenticated } from '@/services/user';
 import { SnackbarStateType, UserType } from '@/types';
-import { INITIAL_USER_STATE } from '@/utils/commons';
+import { INITIAL_REGISTER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Checkbox, Container, FormControlLabel } from '@mui/material';
+import { redirect } from '@tanstack/react-router';
 import { createFileRoute } from '@tanstack/react-router';
 import { City, Country, State } from 'country-state-city';
 import { useContext, useEffect, useMemo, useState } from 'react';
@@ -22,6 +24,13 @@ import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/register/')({
   component: RouteComponent,
+  loader: async () => {
+    const auth = await isAuthenticated();
+    if (auth) {
+      throw redirect({ to: '/home' });
+    }
+    return null;
+  },
 });
 
 function RouteComponent() {
@@ -40,7 +49,7 @@ function RouteComponent() {
   } = useForm({
     resolver: zodResolver(firstStepSchema),
     mode: 'all',
-    defaultValues: INITIAL_USER_STATE,
+    defaultValues: INITIAL_REGISTER_STATE,
   });
 
   const { snackbarState, setSnackbarState, setRegisteringUser } =
@@ -64,7 +73,7 @@ function RouteComponent() {
   useResetForm(password, resetField, 'confirmPassword');
 
   const clearForm = () => {
-    reset(INITIAL_USER_STATE);
+    reset(INITIAL_REGISTER_STATE);
     clearErrors();
     setShowLocation(false);
   };
