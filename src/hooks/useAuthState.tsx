@@ -79,8 +79,8 @@ export const useAuthState = (): AuthState => {
           }
 
           setUser(session?.user ?? null);
-          setInitializing(false);
           sessionRef.current = session;
+          setInitializing(false);
 
           console.log('Auth state changed:', event, session);
         } catch (error: any) {
