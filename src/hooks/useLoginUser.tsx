@@ -1,8 +1,10 @@
+import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import { loginUser } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { useContext } from 'react';
 import { UseFormSetError } from 'react-hook-form';
 
 type SetErrorFunction = UseFormSetError<{ email: string; password: string }>;
@@ -10,6 +12,7 @@ type SetErrorFunction = UseFormSetError<{ email: string; password: string }>;
 const useLoginUser = (setError: SetErrorFunction) => {
   const navigate = useNavigate();
   const { setUser, userRef } = useAuth();
+  const { setSnackbarState } = useContext(Context);
 
   const waitForUserUpdate = (): Promise<void> => {
     return new Promise((resolve) => {
@@ -36,13 +39,10 @@ const useLoginUser = (setError: SetErrorFunction) => {
       navigate({ to: '/home', viewTransition: true });
     },
     onError: (error: any) => {
-      setError('email', {
-        type: 'manual',
-        message: error.message || 'Incorrect email or password',
-      });
-      setError('password', {
-        type: 'manual',
-        message: error.message || 'Incorrect email or password',
+      setSnackbarState({
+        open: true,
+        message: error.message,
+        severity: 'error',
       });
     },
   });
