@@ -45,6 +45,17 @@ export const loginUser = async (
   return { data };
 };
 
+export const isAuthenticated = async (): Promise<boolean> => {
+  const { data, error } = await supabase.auth.getSession();
+
+  if (error) {
+    console.error('Error getting session:', error.message);
+    return false;
+  }
+
+  return !!data.session;
+};
+
 export const updateUser = async (user: UserType) => {
   const { email, firstName, lastName, birthDate } = user;
   const { data, error } = await supabase.auth.updateUser({
