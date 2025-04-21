@@ -1,14 +1,9 @@
 import { supabase } from '@/services/supabase';
-import { Session, User } from '@supabase/supabase-js';
-import { useQuery } from '@tanstack/react-query';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { Session } from '@supabase/supabase-js';
+import { useEffect, useRef, useState } from 'react';
 
 export interface AuthState {
-  user: User | null;
-  setUser: (user: User | null) => void;
-  currentSession: Session | null;
   initializing: boolean;
-  userRef: MutableRefObject<User | null>;
   sessionRef: Session | null;
   handleSignOut: () => void;
   isLoadingSignOut: boolean;
@@ -25,33 +20,16 @@ const validateError = (error: Error) => {
 };
 
 export const useAuthState = (): AuthState => {
-  const [user, setUser] = useState<User | null>(null);
   const [initializing, setInitializing] = useState<boolean>(true);
   const [isLoadingSignOut, setIsLoadingSignOut] = useState<boolean>(false);
-  const userRef = useRef<User | null>(user);
   const sessionRef = useRef<Session | null>();
   const [isValidResetLink, setIsValidResetLink] = useState(false);
   const [isLoadingValidateResetLink, setIsLoadingValidateResetLink] =
     useState(false);
 
-  const { data: currentSession } = useQuery({
-    queryKey: ['fetchSession'],
-    queryFn: async () => supabase.auth.getSession(),
-  });
-
   const handleSignOut = async () => {
-    setIsLoadingSignOut(true);
     await supabase.auth.signOut();
-    setIsLoadingSignOut(false);
   };
-
-  useEffect(() => {
-    userRef.current = user;
-  }, [user]);
-
-  useEffect(() => {
-    sessionRef.current = currentSession?.data.session;
-  }, [currentSession]);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
@@ -71,9 +49,8 @@ export const useAuthState = (): AuthState => {
             return;
           }
 
-          setUser(session?.user ?? null);
-          sessionRef.current = session;
           setInitializing(false);
+          sessionRef.current = session;
 
           console.log('Auth state changed:', event, session);
         } catch (error: any) {
@@ -92,11 +69,7 @@ export const useAuthState = (): AuthState => {
   }, []);
 
   return {
-    user,
-    setUser,
-    currentSession: currentSession?.data.session || null,
     initializing,
-    userRef,
     sessionRef: sessionRef.current || null,
     handleSignOut,
     isLoadingSignOut,
