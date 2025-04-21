@@ -24,12 +24,11 @@ import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/register/')({
   component: RouteComponent,
-  beforeLoad: async () => {
-    const auth = await isAuthenticated();
-    if (auth) {
+  beforeLoad: async ({ context }) => {
+    const { currentSession } = context.authentication;
+    if (currentSession) {
       throw redirect({ to: '/home' });
     }
-    return null;
   },
 });
 
