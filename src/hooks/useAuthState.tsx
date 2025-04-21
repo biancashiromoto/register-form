@@ -1,14 +1,7 @@
-import {
-  useEffect,
-  useState,
-  useRef,
-  MutableRefObject,
-  useContext,
-} from 'react';
 import { supabase } from '@/services/supabase';
-import { User, Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { useQuery } from '@tanstack/react-query';
-import { Context } from '@/context';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 
 export interface AuthState {
   user: User | null;
