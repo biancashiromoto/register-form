@@ -4,10 +4,9 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/home/')({
   component: RouteComponent,
-  beforeLoad: async () => {
-    const auth = await isAuthenticated();
-
-    if (!auth) {
+  beforeLoad: async ({ context }) => {
+    const { currentSession } = context.authentication;
+    if (!currentSession) {
       throw redirect({ to: '/unauthenticated' });
     }
   },
