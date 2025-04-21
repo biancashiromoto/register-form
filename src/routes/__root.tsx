@@ -4,10 +4,19 @@ import Header from '@/components/Header';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import Provider from '@/context/Provider';
+import { AuthState } from '@/hooks/useAuthState';
 import usePageTitle from '@/hooks/usePageTitle';
 import { Container, Typography } from '@mui/material';
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import {
+  createRootRoute,
+  createRootRouteWithContext,
+  Outlet,
+} from '@tanstack/react-router';
 import { useContext } from 'react';
+
+type RouterContext = {
+  authentication: AuthState;
+};
 
 export const RootLayout = () => {
   const { isPrivateRoute } = useContext(Context);
@@ -30,7 +39,7 @@ export const RootLayout = () => {
   );
 };
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <Provider>
       <RootLayout />
