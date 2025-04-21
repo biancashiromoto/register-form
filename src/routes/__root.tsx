@@ -2,19 +2,16 @@ import CustomBottomNavigation from '@/components/BottomNavigation';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
+import { AuthProvider, useAuth } from '@/context/authContext';
 import Provider from '@/context/Provider';
 import { AuthState } from '@/hooks/useAuthState';
 import usePageTitle from '@/hooks/usePageTitle';
+import { supabase } from '@/services/supabase';
 import { Container, Typography } from '@mui/material';
-import {
-  createRootRoute,
-  createRootRouteWithContext,
-  Outlet,
-} from '@tanstack/react-router';
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { useContext } from 'react';
 
-type RouterContext = {
+type AuthContext = {
   authentication: AuthState;
 };
 
@@ -39,10 +36,16 @@ export const RootLayout = () => {
   );
 };
 
-export const Route = createRootRouteWithContext<RouterContext>()({
+export const Route = createRootRouteWithContext<AuthContext>()({
   component: () => (
     <Provider>
-      <RootLayout />
+      <AuthProvider>
+        <RootLayout />
+      </AuthProvider>
     </Provider>
   ),
+  loader: async () => {
+    const { data } = await supabase.auth.getSession();
+    return { session: data.session };
+  },
 });
