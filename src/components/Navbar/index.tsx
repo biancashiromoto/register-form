@@ -2,7 +2,7 @@ import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
 import { Typography, useTheme } from '@mui/material';
 import { Link, useLocation } from '@tanstack/react-router';
-import { ComponentProps, FC, useContext, useMemo } from 'react';
+import { ComponentProps, FC, useContext } from 'react';
 
 const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
@@ -11,27 +11,16 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const theme = useTheme();
   const { pathname } = useLocation();
   const { isPrivateRoute } = useContext(Context);
-
-  const shouldShowRegisterLink = useMemo(
-    () => !pathname.includes('/register') && !sessionRef,
-    [sessionRef, pathname],
-  );
-
-  const shouldShowLoginLink = useMemo(
-    () => !pathname.includes('/login') && !sessionRef,
-    [sessionRef, pathname],
-  );
-
-  const shouldShowLogoutLink = useMemo(
-    () => (isPrivateRoute && sessionRef) || pathname.includes('reset-password'),
-    [sessionRef, pathname],
-  );
+  const isLoggedIn = !!sessionRef;
+  const showRegister = !pathname.includes('/register') && !isPrivateRoute;
+  const showLogin = !pathname.includes('/login') && !isPrivateRoute;
+  const showLogout = isLoggedIn;
 
   if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
 
   return (
     <nav className={`navbar ${className || ''}`} data-testid="navbar" {...rest}>
-      {shouldShowRegisterLink && (
+      {showRegister && (
         <Typography variant="body2">
           Not registered yet?{' '}
           <Link
@@ -46,7 +35,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
         </Typography>
       )}
 
-      {shouldShowLoginLink && (
+      {showLogin && (
         <Typography variant="body2">
           Already registered?{' '}
           <Link
@@ -61,7 +50,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
         </Typography>
       )}
 
-      {shouldShowLogoutLink && (
+      {showLogout && (
         <Typography variant="body2">
           <Link
             to="/login"
