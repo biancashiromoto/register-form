@@ -8,7 +8,6 @@ import { useAuth } from '@/context/authContext';
 import useResetPassword from '@/hooks/useResetPassword';
 import useUpdateUser from '@/hooks/useUpdateUser';
 import { profileEditSchema } from '@/schemas/profileEditSchema';
-import { isAuthenticated } from '@/services/user';
 import { SnackbarStateType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, TextField } from '@mui/material';
@@ -18,10 +17,9 @@ import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/profile/')({
   component: RouteComponent,
-  beforeLoad: async () => {
-    const auth = await isAuthenticated();
-
-    if (!auth) {
+  beforeLoad: async ({ context }) => {
+    const { currentSession } = context.authentication;
+    if (!currentSession) {
       throw redirect({ to: '/unauthenticated' });
     }
   },
