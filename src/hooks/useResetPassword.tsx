@@ -11,7 +11,7 @@ import { useContext } from 'react';
 const useResetPassword = () => {
   const { setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
-  const { sessionRef } = useAuth();
+  const { session } = useAuth();
 
   const sendResetPasswordEmail = async (
     email: UserType['email'] | undefined,
@@ -52,7 +52,7 @@ const useResetPassword = () => {
         severity: 'success',
       });
       delay();
-      navigate({ to: `${sessionRef ? '/profile' : '/login'}` });
+      navigate({ to: `${session ? '/profile' : '/login'}` });
     },
     onError: (error) => {
       setSnackbarState({
