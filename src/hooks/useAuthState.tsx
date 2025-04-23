@@ -1,13 +1,11 @@
 import { supabase } from '@/services/supabase';
 import { Session } from '@supabase/supabase-js';
-import { useEffect, useRef, useState } from 'react';
+import { useLocation } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 
 export interface AuthState {
-  initializing: boolean;
-  sessionRef: Session | null;
+  session: Session | null;
   handleSignOut: () => void;
-  isLoadingSignOut: boolean;
-  isLoadingValidateResetLink: boolean;
   isValidResetLink: boolean;
 }
 
@@ -20,39 +18,42 @@ const validateError = (error: Error) => {
 };
 
 export const useAuthState = (): AuthState => {
-  const [initializing, setInitializing] = useState<boolean>(true);
-  const [isLoadingSignOut, setIsLoadingSignOut] = useState<boolean>(false);
-  const sessionRef = useRef<Session | null>();
+  const [session, setSession] = useState<Session | null>(null);
   const [isValidResetLink, setIsValidResetLink] = useState(false);
-  const [isLoadingValidateResetLink, setIsLoadingValidateResetLink] =
-    useState(false);
+
+  const { pathname } = useLocation();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    setSession(null);
   };
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+    };
+    fetchSession();
+  }, [pathname]);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         try {
           if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_OUT') {
-            setIsLoadingSignOut(true);
             localStorage.clear();
+            setSession(null);
             window.location.href = '/login';
-            setIsLoadingSignOut(false);
             return;
           }
 
           if (event === 'PASSWORD_RECOVERY') {
             setIsValidResetLink(true);
-            setIsLoadingValidateResetLink(false);
             return;
           }
 
-          setInitializing(false);
-          sessionRef.current = session;
-
           console.log('Auth state changed:', event, session);
+          setSession(session);
         } catch (error: any) {
           if (validateError(error)) {
             console.log('Auth state error:', error);
@@ -69,11 +70,8 @@ export const useAuthState = (): AuthState => {
   }, []);
 
   return {
-    initializing,
-    sessionRef: sessionRef.current || null,
+    session,
     handleSignOut,
-    isLoadingSignOut,
     isValidResetLink,
-    isLoadingValidateResetLink,
   };
 };
