@@ -18,7 +18,8 @@ type AuthContext = {
 export const RootLayout = () => {
   const { isPrivateRoute } = useContext(Context);
   const { page } = usePageTitle();
-  const { sessionRef } = useAuth();
+  const { session } = useAuth();
+  const shouldRenderCustomBottomNavigation = isPrivateRoute && session;
 
   return (
     <>
@@ -30,7 +31,7 @@ export const RootLayout = () => {
         </Typography>
         <Outlet />
       </Container>
-      {isPrivateRoute && sessionRef && <CustomBottomNavigation />}
+      {shouldRenderCustomBottomNavigation && <CustomBottomNavigation />}
       <Footer />
     </>
   );
