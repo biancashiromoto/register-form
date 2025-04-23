@@ -6,27 +6,20 @@ import {
   useNavigate,
 } from '@tanstack/react-router';
 import { FC, ReactNode, useContext } from 'react';
-import LoadingLayer from '../LoadingLayer';
 
 const VerificationLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { sessionRef, initializing } = useAuth();
+  const { session } = useAuth();
   const { isPrivateRoute } = useContext(Context);
 
   useLayoutEffect(() => {
-    if (
-      initializing ||
-      location.pathname === '/login' ||
-      location.pathname === '/register'
-    )
+    if (location.pathname === '/login' || location.pathname === '/register')
       return;
-    if (!sessionRef && isPrivateRoute) {
+    if (!session && isPrivateRoute) {
       navigate({ to: '/unauthenticated', viewTransition: true });
     }
-  }, [location.pathname, sessionRef, initializing, isPrivateRoute]);
-
-  if (initializing) return <LoadingLayer />;
+  }, [location.pathname, session, isPrivateRoute]);
 
   return <div>{children}</div>;
 };
