@@ -1,20 +1,26 @@
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
-import { Typography, useTheme } from '@mui/material';
+import useAvatarUrl from '@/hooks/useAvatarUrl';
+import { Avatar, Box, Skeleton, Typography, useTheme } from '@mui/material';
+import { useNavigate } from '@tanstack/react-router';
 import { Link, useLocation } from '@tanstack/react-router';
 import { ComponentProps, FC, useContext } from 'react';
 
 const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
 
-  const { sessionRef, handleSignOut } = useAuth();
+  const { session, handleSignOut } = useAuth();
   const theme = useTheme();
   const { pathname } = useLocation();
   const { isPrivateRoute } = useContext(Context);
-  const isLoggedIn = !!sessionRef;
-  const showRegister = !pathname.includes('/register') && !isPrivateRoute;
-  const showLogin = !pathname.includes('/login') && !isPrivateRoute;
+  const isLoggedIn = !!session;
+  const showRegister =
+    !pathname.includes('/register') && !isPrivateRoute && !isLoggedIn;
+  const showLogin =
+    !pathname.includes('/login') && !isPrivateRoute && !isLoggedIn;
   const showLogout = isLoggedIn;
+  const navigate = useNavigate();
+  const { data: avatarUrl, isLoading: isLoadingAvatar } = useAvatarUrl();
 
   if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
 
@@ -62,6 +68,39 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
             Sign out
           </Link>
         </Typography>
+      )}
+
+      {session && !isPrivateRoute && (
+        <Box
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            position: 'absolute',
+            right: '75px',
+            transform: 'translateY(1px)',
+            cursor: 'pointer',
+          }}
+          onClick={() => navigate({ to: '/profile' })}
+        >
+          {!isLoadingAvatar ? (
+            <Avatar
+              src={avatarUrl || undefined}
+              sx={{
+                width: 20,
+                height: 20,
+                border: '2px solid',
+                borderColor: 'primary.main',
+              }}
+            />
+          ) : (
+            <Skeleton variant="circular" width={20} height={20} />
+          )}
+          <Typography variant="caption" color="textSecondary">
+            {session?.user?.email}
+          </Typography>
+        </Box>
       )}
     </nav>
   );
