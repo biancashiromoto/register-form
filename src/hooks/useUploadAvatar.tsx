@@ -17,7 +17,7 @@ const AVATAR_BUCKET = 'avatars';
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
 const useUploadAvatar = () => {
-  const { sessionRef } = useAuth();
+  const { session } = useAuth();
   const queryClient = useQueryClient();
 
   const uploadAvatar = useCallback(
@@ -29,7 +29,7 @@ const useUploadAvatar = () => {
       if (file.size > MAX_FILE_SIZE) throw new Error('Image larger than 8MB.');
 
       const ext = file.name.split('.').pop();
-      const path = `${sessionRef?.user?.id}/${sessionRef?.user?.id}.${ext}`;
+      const path = `${session?.user?.id}/${session?.user?.id}.${ext}`;
 
       const { error: uploadError } = await supabase.storage
         .from(AVATAR_BUCKET)
@@ -41,7 +41,7 @@ const useUploadAvatar = () => {
 
       queryClient.invalidateQueries({ queryKey: ['avatar'] });
     },
-    [sessionRef, queryClient],
+    [session, queryClient],
   );
 
   return {
