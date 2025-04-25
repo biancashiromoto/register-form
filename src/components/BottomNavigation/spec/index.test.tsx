@@ -30,7 +30,7 @@ describe('CustomBottomNavigation', () => {
     fireEvent.click(homeAction);
 
     expect(mockNavigate).toHaveBeenCalledWith({
-      to: '/authenticated/home',
+      to: '/home',
       viewTransition: true,
     });
   });
@@ -52,7 +52,7 @@ describe('CustomBottomNavigation', () => {
     fireEvent.click(profileAction);
 
     expect(mockNavigate).toHaveBeenCalledWith({
-      to: '/authenticated/profile',
+      to: '/profile',
       viewTransition: true,
     });
   });

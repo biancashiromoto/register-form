@@ -42,18 +42,14 @@ export default memo(function CustomBottomNavigation() {
           <BottomNavigationAction
             label="Home"
             icon={<HomeIcon />}
-            onClick={() =>
-              navigate({ to: '/authenticated/home', viewTransition: true })
-            }
-            value="/authenticated/home"
+            onClick={() => navigate({ to: '/home', viewTransition: true })}
+            value="/home"
           />
           <BottomNavigationAction
             label="Profile"
             icon={<AccountCircleIcon />}
-            onClick={() =>
-              navigate({ to: '/authenticated/profile', viewTransition: true })
-            }
-            value="/authenticated/profile"
+            onClick={() => navigate({ to: '/profile', viewTransition: true })}
+            value="/profile"
           />
         </BottomNavigation>
       </Paper>

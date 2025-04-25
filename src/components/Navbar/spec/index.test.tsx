@@ -1,6 +1,7 @@
 vi.mock('@/hooks/useAuthState', () => ({
   useAuthState: () => ({ session: null, signOut: vi.fn() }),
 }));
+
 vi.mock('@/hooks/useAvatarUrl', () => ({
   default: () => ({ data: null, isLoading: false }),
 }));

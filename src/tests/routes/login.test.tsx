@@ -89,7 +89,7 @@ describe('/login route', () => {
         email: mockUser.email,
         password: mockUser.password,
       } as SignInWithPasswordCredentials);
-      expect(mockNavigate).toHaveBeenCalledWith({ to: '/authenticated/home' });
+      expect(mockNavigate).toHaveBeenCalledWith({ to: '/home' });
     });
   });
 

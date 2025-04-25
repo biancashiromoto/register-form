@@ -21,7 +21,7 @@ export type SignInWithPasswordCredentialsType =
 export const Route = createFileRoute('/login/')({
   component: RouteComponent,
   beforeLoad: ({ context }) => {
-    if (context.session) throw redirect({ to: '/authenticated/home' });
+    if (context.session) throw redirect({ to: '/home' });
   },
 });
 
@@ -60,7 +60,7 @@ export function RouteComponent() {
       return;
     }
 
-    navigate({ to: '/authenticated/home' });
+    navigate({ to: '/home' });
   };
 
   return (

@@ -17,8 +17,8 @@ import { Route as UnauthenticatedIndexImport } from './routes/unauthenticated/in
 import { Route as ResetPasswordIndexImport } from './routes/reset-password/index'
 import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as LoginIndexImport } from './routes/login/index'
-import { Route as AuthenticatedProfileImport } from './routes/authenticated/profile'
-import { Route as AuthenticatedHomeImport } from './routes/authenticated/home'
+import { Route as AuthenticatedProfileImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedHomeImport } from './routes/_authenticated/home'
 import { Route as RegisterSuccessIndexImport } from './routes/register/success/index'
 
 // Create/Update Routes
@@ -59,15 +59,15 @@ const LoginIndexRoute = LoginIndexImport.update({
 } as any)
 
 const AuthenticatedProfileRoute = AuthenticatedProfileImport.update({
-  id: '/authenticated/profile',
-  path: '/authenticated/profile',
-  getParentRoute: () => rootRoute,
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 
 const AuthenticatedHomeRoute = AuthenticatedHomeImport.update({
-  id: '/authenticated/home',
-  path: '/authenticated/home',
-  getParentRoute: () => rootRoute,
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 
 const RegisterSuccessIndexRoute = RegisterSuccessIndexImport.update({
@@ -94,19 +94,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedImport
       parentRoute: typeof rootRoute
     }
-    '/authenticated/home': {
-      id: '/authenticated/home'
-      path: '/authenticated/home'
-      fullPath: '/authenticated/home'
+    '/_authenticated/home': {
+      id: '/_authenticated/home'
+      path: '/home'
+      fullPath: '/home'
       preLoaderRoute: typeof AuthenticatedHomeImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AuthenticatedImport
     }
-    '/authenticated/profile': {
-      id: '/authenticated/profile'
-      path: '/authenticated/profile'
-      fullPath: '/authenticated/profile'
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
       preLoaderRoute: typeof AuthenticatedProfileImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AuthenticatedImport
     }
     '/login/': {
       id: '/login/'
@@ -148,11 +148,25 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '': typeof AuthenticatedRoute
-  '/authenticated/home': typeof AuthenticatedHomeRoute
-  '/authenticated/profile': typeof AuthenticatedProfileRoute
+  '': typeof AuthenticatedRouteWithChildren
+  '/home': typeof AuthenticatedHomeRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/login': typeof LoginIndexRoute
   '/register': typeof RegisterIndexRoute
   '/reset-password': typeof ResetPasswordIndexRoute
@@ -162,9 +176,9 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '': typeof AuthenticatedRoute
-  '/authenticated/home': typeof AuthenticatedHomeRoute
-  '/authenticated/profile': typeof AuthenticatedProfileRoute
+  '': typeof AuthenticatedRouteWithChildren
+  '/home': typeof AuthenticatedHomeRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/login': typeof LoginIndexRoute
   '/register': typeof RegisterIndexRoute
   '/reset-password': typeof ResetPasswordIndexRoute
@@ -175,9 +189,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRoute
-  '/authenticated/home': typeof AuthenticatedHomeRoute
-  '/authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/login/': typeof LoginIndexRoute
   '/register/': typeof RegisterIndexRoute
   '/reset-password/': typeof ResetPasswordIndexRoute
@@ -190,8 +204,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | ''
-    | '/authenticated/home'
-    | '/authenticated/profile'
+    | '/home'
+    | '/profile'
     | '/login'
     | '/register'
     | '/reset-password'
@@ -201,8 +215,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | ''
-    | '/authenticated/home'
-    | '/authenticated/profile'
+    | '/home'
+    | '/profile'
     | '/login'
     | '/register'
     | '/reset-password'
@@ -212,8 +226,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
-    | '/authenticated/home'
-    | '/authenticated/profile'
+    | '/_authenticated/home'
+    | '/_authenticated/profile'
     | '/login/'
     | '/register/'
     | '/reset-password/'
@@ -224,9 +238,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRoute: typeof AuthenticatedRoute
-  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginIndexRoute: typeof LoginIndexRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
   ResetPasswordIndexRoute: typeof ResetPasswordIndexRoute
@@ -236,9 +248,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRoute: AuthenticatedRoute,
-  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
-  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginIndexRoute: LoginIndexRoute,
   RegisterIndexRoute: RegisterIndexRoute,
   ResetPasswordIndexRoute: ResetPasswordIndexRoute,
@@ -258,8 +268,6 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_authenticated",
-        "/authenticated/home",
-        "/authenticated/profile",
         "/login/",
         "/register/",
         "/reset-password/",
@@ -271,13 +279,19 @@ export const routeTree = rootRoute
       "filePath": "index.tsx"
     },
     "/_authenticated": {
-      "filePath": "_authenticated.tsx"
+      "filePath": "_authenticated.tsx",
+      "children": [
+        "/_authenticated/home",
+        "/_authenticated/profile"
+      ]
     },
-    "/authenticated/home": {
-      "filePath": "authenticated/home.tsx"
+    "/_authenticated/home": {
+      "filePath": "_authenticated/home.tsx",
+      "parent": "/_authenticated"
     },
-    "/authenticated/profile": {
-      "filePath": "authenticated/profile.tsx"
+    "/_authenticated/profile": {
+      "filePath": "_authenticated/profile.tsx",
+      "parent": "/_authenticated"
     },
     "/login/": {
       "filePath": "login/index.tsx"

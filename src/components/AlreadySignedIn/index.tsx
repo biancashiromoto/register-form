@@ -18,7 +18,7 @@ const AlreadySignedIn = () => {
     <Container maxWidth="sm">
       <Typography variant="body2">
         You're already signed in! Return to{' '}
-        <Link style={style} to="/authenticated/home">
+        <Link style={style} to="/home">
           home page
         </Link>{' '}
         or{' '}

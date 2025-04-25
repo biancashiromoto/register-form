@@ -11,16 +11,12 @@ import { profileEditSchema } from '@/schemas/profileEditSchema';
 import { SnackbarStateType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, TextField } from '@mui/material';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-export const Route = createFileRoute('/authenticated/profile')({
+export const Route = createFileRoute('/_authenticated/profile')({
   component: RouteComponent,
-  beforeLoad: async ({ context }) => {
-    if (!context.authentication.session)
-      throw redirect({ to: '/unauthenticated' });
-  },
 });
 
 function RouteComponent() {
@@ -55,7 +51,7 @@ function RouteComponent() {
     }));
   }, []);
 
-  if (isUpdatingUser || !session) return <LoadingLayer />;
+  if (isUpdatingUser) return <LoadingLayer />;
 
   return (
     <Container maxWidth="sm">

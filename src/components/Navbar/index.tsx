@@ -11,11 +11,8 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const navigate = useNavigate();
   const { data: avatarUrl, isLoading: isLoadingAvatar } = useAvatarUrl();
   const { session, signOut } = useAuthState();
-  const isAuthenticatedRoute = pathname.includes('/authenticated');
-  const showRegister =
-    !pathname.includes('/register') && !session && !isAuthenticatedRoute;
-  const showLogin =
-    !pathname.includes('/login') && !session && !isAuthenticatedRoute;
+  const showRegister = !pathname.includes('/register') && !session;
+  const showLogin = !pathname.includes('/login') && !session;
   if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
 
   return (
@@ -76,7 +73,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
             transform: 'translateY(1px)',
             cursor: 'pointer',
           }}
-          onClick={() => navigate({ to: '/authenticated/profile' })}
+          onClick={() => navigate({ to: '/profile' })}
         >
           {!isLoadingAvatar ? (
             <Avatar

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 export const routes = {
   home: {
-    route: '/authenticated/home',
+    route: '/home',
     title: 'Home',
   },
   login: {
@@ -15,7 +15,7 @@ export const routes = {
     title: 'Register',
   },
   profile: {
-    route: '/authenticated/profile',
+    route: '/profile',
     title: 'Profile',
   },
   resetPassword: {

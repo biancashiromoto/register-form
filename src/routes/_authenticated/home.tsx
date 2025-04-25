@@ -1,11 +1,8 @@
 import { Container, Typography } from '@mui/material';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/authenticated/home')({
+export const Route = createFileRoute('/_authenticated/home')({
   component: RouteComponent,
-  beforeLoad: async ({ context }) => {
-    if (!context.session) throw redirect({ to: '/unauthenticated' });
-  },
 });
 
 export function RouteComponent() {

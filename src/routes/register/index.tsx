@@ -21,8 +21,7 @@ import { useForm } from 'react-hook-form';
 export const Route = createFileRoute('/register/')({
   component: RouteComponent,
   beforeLoad: ({ context }) => {
-    if (context.authentication.session)
-      throw redirect({ to: '/authenticated/home' });
+    if (context.authentication.session) throw redirect({ to: '/home' });
   },
 });
 

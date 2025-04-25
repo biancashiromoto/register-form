@@ -60,7 +60,7 @@ function RouteComponent() {
         </Typography>
         <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
           <CustomButton
-            href={!session ? '/login' : '/authenticated/home'}
+            href={!session ? '/login' : '/home'}
             openInNewTab={false}
           >
             {!session ? 'Return to Login' : 'Return to Home'}
