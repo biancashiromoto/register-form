@@ -1,8 +1,7 @@
-import BottomNavigation from '@/components/BottomNavigation';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import Provider from '@/context/Provider';
-import { AuthState, useAuthState } from '@/hooks/useAuthState';
+import { AuthState } from '@/hooks/useAuthState';
 import usePageTitle from '@/hooks/usePageTitle';
 import { supabase } from '@/services/supabase';
 import { Container, Typography } from '@mui/material';
@@ -14,8 +13,6 @@ type RouterContext = {
 
 export const RootLayout = () => {
   const { page } = usePageTitle();
-  const { session } = useAuthState();
-  const shouldRenderCustomBottomNavigation = session;
 
   return (
     <>
@@ -27,7 +24,6 @@ export const RootLayout = () => {
         </Typography>
         <Outlet />
       </Container>
-      {shouldRenderCustomBottomNavigation && <BottomNavigation />}
       <Footer />
     </>
   );

@@ -51,7 +51,7 @@ function RouteComponent() {
     }));
   }, []);
 
-  if (isUpdatingUser) return <LoadingLayer />;
+  if (isUpdatingUser || !session) return <LoadingLayer />;
 
   return (
     <Container maxWidth="sm">
