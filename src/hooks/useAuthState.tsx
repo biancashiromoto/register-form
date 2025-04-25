@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 export interface AuthState {
   session: Session | null;
   // getSession: () => Promise<Session | null>;
-  // isValidResetLink: boolean;
+  isValidResetLink: boolean;
   signIn: (data: SignInWithPasswordCredentials) => Promise<void>;
   signOut: () => Promise<void>;
   getSession: () => Promise<Session | null>;
@@ -25,7 +25,7 @@ const validateError = (error: Error) => {
 
 export const useAuthState = (): AuthState => {
   const [session, setSession] = useState<AuthSession | null>(null);
-  // const [isValidResetLink, setIsValidResetLink] = useState(false);
+  const [isValidResetLink, setIsValidResetLink] = useState(false);
 
   const getSession = async () => {
     const { data } = await supabase.auth.getSession();
@@ -56,6 +56,19 @@ export const useAuthState = (): AuthState => {
             localStorage.clear();
             setSession(null);
             window.location.href = '/login';
+            return;
+          }
+
+          if (event === 'PASSWORD_RECOVERY') {
+            setIsValidResetLink(true);
+            return;
+          }
+          if (event === 'USER_UPDATED') {
+            const { user } = session as AuthSession;
+            if (user) {
+              const { data: updatedSession } = await supabase.auth.getSession();
+              setSession(updatedSession.session);
+            }
             return;
           }
 
