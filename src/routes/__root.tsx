@@ -1,25 +1,21 @@
-import CustomBottomNavigation from '@/components/BottomNavigation';
+import BottomNavigation from '@/components/BottomNavigation';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
-import { Context } from '@/context';
-import { AuthProvider, useAuth } from '@/context/authContext';
 import Provider from '@/context/Provider';
-import { AuthState } from '@/hooks/useAuthState';
+import { AuthState, useAuthState } from '@/hooks/useAuthState';
 import usePageTitle from '@/hooks/usePageTitle';
 import { supabase } from '@/services/supabase';
 import { Container, Typography } from '@mui/material';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
-import { useContext } from 'react';
 
-type AuthContext = {
+type RouterContext = {
   authentication: AuthState;
 };
 
 export const RootLayout = () => {
-  const { isPrivateRoute } = useContext(Context);
   const { page } = usePageTitle();
-  const { session } = useAuth();
-  const shouldRenderCustomBottomNavigation = isPrivateRoute && session;
+  const { session } = useAuthState();
+  const shouldRenderCustomBottomNavigation = session;
 
   return (
     <>
@@ -31,21 +27,19 @@ export const RootLayout = () => {
         </Typography>
         <Outlet />
       </Container>
-      {shouldRenderCustomBottomNavigation && <CustomBottomNavigation />}
+      {shouldRenderCustomBottomNavigation && <BottomNavigation />}
       <Footer />
     </>
   );
 };
 
-export const Route = createRootRouteWithContext<AuthContext>()({
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <Provider>
-      <AuthProvider>
-        <RootLayout />
-      </AuthProvider>
+      <RootLayout />
     </Provider>
   ),
-  loader: async () => {
+  beforeLoad: async () => {
     const { data } = await supabase.auth.getSession();
     return { session: data.session };
   },

@@ -1,27 +1,21 @@
-import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
+import { useAuthState } from '@/hooks/useAuthState';
 import useAvatarUrl from '@/hooks/useAvatarUrl';
 import { Avatar, Box, Skeleton, Typography, useTheme } from '@mui/material';
-import { useNavigate } from '@tanstack/react-router';
-import { Link, useLocation } from '@tanstack/react-router';
-import { ComponentProps, FC, useContext } from 'react';
+import { Link, useLocation, useNavigate } from '@tanstack/react-router';
+import { ComponentProps, FC } from 'react';
 
 const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
   const activeProps = { style: { fontWeight: 'bold' } };
-
-  const { session, handleSignOut } = useAuth();
   const theme = useTheme();
   const { pathname } = useLocation();
-  const { isPrivateRoute } = useContext(Context);
-  const isLoggedIn = !!session;
-  const showRegister =
-    !pathname.includes('/register') && !isPrivateRoute && !isLoggedIn;
-  const showLogin =
-    !pathname.includes('/login') && !isPrivateRoute && !isLoggedIn;
-  const showLogout = isLoggedIn;
   const navigate = useNavigate();
   const { data: avatarUrl, isLoading: isLoadingAvatar } = useAvatarUrl();
-
+  const { session, signOut } = useAuthState();
+  const isAuthenticatedRoute = pathname.includes('/authenticated');
+  const showRegister =
+    !pathname.includes('/register') && !session && !isAuthenticatedRoute;
+  const showLogin =
+    !pathname.includes('/login') && !session && !isAuthenticatedRoute;
   if (pathname === '/unauthenticated' || pathname === '/not-found') return null;
 
   return (
@@ -56,11 +50,11 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
         </Typography>
       )}
 
-      {showLogout && (
+      {session && (
         <Typography variant="body2">
           <Link
             to="/login"
-            onClick={handleSignOut}
+            onClick={signOut}
             style={{
               color: theme.palette.text.secondary,
             }}
@@ -70,7 +64,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
         </Typography>
       )}
 
-      {session && !isPrivateRoute && (
+      {session && (
         <Box
           style={{
             display: 'flex',
@@ -82,7 +76,7 @@ const Navbar: FC<ComponentProps<'nav'>> = ({ className, ...rest }) => {
             transform: 'translateY(1px)',
             cursor: 'pointer',
           }}
-          onClick={() => navigate({ to: '/profile' })}
+          onClick={() => navigate({ to: '/authenticated/profile' })}
         >
           {!isLoadingAvatar ? (
             <Avatar

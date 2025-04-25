@@ -1,9 +1,9 @@
 import { supabase } from '@/services/supabase';
-import { useAuth } from '@/context/authContext';
 import { useQuery } from '@tanstack/react-query';
+import { useAuthState } from './useAuthState';
 
 const useAvatarUrl = () => {
-  const { session } = useAuth();
+  const { session } = useAuthState();
   const avatarPath = session?.user?.user_metadata?.avatar_url;
 
   return useQuery({

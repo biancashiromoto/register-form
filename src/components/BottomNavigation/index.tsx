@@ -1,5 +1,5 @@
 import { Context } from '@/context';
-import { privateRoutes } from '@/utils/commons/privateRoutes';
+import { routes as mappedRoutes } from '@/hooks/usePageTitle';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -12,14 +12,16 @@ import { memo, useContext, useEffect, useRef, useState } from 'react';
 
 export default memo(function CustomBottomNavigation() {
   const { normalizedPath } = useContext(Context);
-  const [value, setValue] = useState(privateRoutes.indexOf(normalizedPath));
+  const routes = Object.values(mappedRoutes).map((route) => route.route);
+  const [value, setValue] = useState(routes.indexOf(normalizedPath));
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const index = privateRoutes.indexOf(normalizedPath);
+    if (!normalizedPath) return;
+    const index = routes.indexOf(normalizedPath);
     if (index !== value) {
-      setValue(index);
+      setValue(value);
     }
   }, [normalizedPath]);
 
@@ -32,21 +34,26 @@ export default memo(function CustomBottomNavigation() {
       >
         <BottomNavigation
           showLabels
-          value={value}
+          value={normalizedPath}
           onChange={(event, newValue) => {
             setValue(newValue);
           }}
         >
-          {/* <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} /> */}
           <BottomNavigationAction
             label="Home"
             icon={<HomeIcon />}
-            onClick={() => navigate({ to: '/home', viewTransition: true })}
+            onClick={() =>
+              navigate({ to: '/authenticated/home', viewTransition: true })
+            }
+            value="/authenticated/home"
           />
           <BottomNavigationAction
             label="Profile"
             icon={<AccountCircleIcon />}
-            onClick={() => navigate({ to: '/profile', viewTransition: true })}
+            onClick={() =>
+              navigate({ to: '/authenticated/profile', viewTransition: true })
+            }
+            value="/authenticated/profile"
           />
         </BottomNavigation>
       </Paper>

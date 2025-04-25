@@ -3,7 +3,6 @@ import {
   setLocalStorage,
 } from '@/helpers/localStorageManagement';
 import { UserLocationType, SnackbarStateType, UserType } from '@/types';
-import { privateRoutes } from '@/utils/commons/privateRoutes';
 import {
   createTheme,
   ThemeProvider,
@@ -43,7 +42,6 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     () => location.pathname.replace(/\/$/, ''),
     [location.pathname],
   );
-  const isPrivateRoute = privateRoutes.includes(normalizedPath);
 
   useEffect(
     () =>
@@ -103,7 +101,6 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       setIsDarkModeOn,
       toggleTheme,
       theme,
-      isPrivateRoute,
       normalizedPath,
     }),
     [
@@ -112,7 +109,6 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       userLocation,
       isDarkModeOn,
       theme,
-      isPrivateRoute,
       normalizedPath,
       toggleTheme,
     ],

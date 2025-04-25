@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import InputText, { InputTextProps } from '../index';
 import { labels } from '@/helpers/labels';
-import { useAuth } from '@/context/authContext';
 import { useTheme } from '@mui/material';
 
 vi.mock('@mui/material', () => ({
@@ -52,11 +51,11 @@ describe('InputText', () => {
     errors: {},
     name: 'firstName',
     register: mockRegister,
+    value: '',
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useAuth as any).mockReturnValue({ sessionRef: null });
     (useTheme as any).mockReturnValue({
       palette: {
         background: {
@@ -102,18 +101,7 @@ describe('InputText', () => {
   });
 
   it('uses user metadata as default value when available', () => {
-    const userMetadata = {
-      firstName: 'John',
-    };
-    (useAuth as any).mockReturnValue({
-      sessionRef: {
-        user: {
-          user_metadata: userMetadata,
-        },
-      },
-    });
-
-    renderComponent();
+    renderComponent({ ...mockProps, value: 'John' });
     const input = screen.getByRole('textbox', {
       name: /first name/i,
     });

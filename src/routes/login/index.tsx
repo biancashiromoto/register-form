@@ -1,31 +1,27 @@
-import AlreadySignedIn from '@/components/AlreadySignedIn';
 import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import InputText from '@/components/InputText';
-import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
-import useLoginUser from '@/hooks/useLoginUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import useResetPassword from '@/hooks/useResetPassword';
 import { loginSchema } from '@/schemas/loginSchema';
-import { isAuthenticated } from '@/services/user';
-import { UserType } from '@/types';
-import { INITIAL_LOGIN_STATE } from '@/utils/commons';
+import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { SignInWithPasswordCredentials } from '@supabase/supabase-js';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
+export type SignInWithPasswordCredentialsType =
+  SignInWithPasswordCredentials & {
+    email: string;
+  };
 export const Route = createFileRoute('/login/')({
   component: RouteComponent,
-  beforeLoad: async ({ context }) => {
-    const { currentSession } = context.authentication;
-    if (currentSession) {
-      throw redirect({ to: '/home' });
-    }
+  beforeLoad: ({ context }) => {
+    if (context.session) throw redirect({ to: '/authenticated/home' });
   },
 });
 
@@ -35,29 +31,37 @@ export function RouteComponent() {
     handleSubmit,
     watch,
     resetField,
-    setError,
     formState: { errors },
-  } = useForm({
+  } = useForm<SignInWithPasswordCredentialsType>({
     resolver: zodResolver(loginSchema),
     mode: 'all',
-    defaultValues: INITIAL_LOGIN_STATE,
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   const email = watch('email');
-  const password = watch('password');
   useResetForm(email, resetField, 'password');
-  const { mutate: login, isPending } = useLoginUser(setError);
-  const { sessionRef } = useAuth();
-  const { snackbarState } = useContext(Context);
+  const { snackbarState, setSnackbarState } = useContext(Context);
   const { sendResetPasswordEmail } = useResetPassword();
+  const navigate = useNavigate();
 
-  const onSubmit = (data: Pick<UserType, 'password' | 'email'>) => {
-    login(data);
+  const onSubmit = async (data: SignInWithPasswordCredentialsType) => {
+    const { error } = await supabase.auth.signInWithPassword(data);
+
+    if (error) {
+      setSnackbarState((prev) => ({
+        ...prev,
+        open: true,
+        message: error.message,
+        severity: 'error',
+      }));
+      return;
+    }
+
+    navigate({ to: '/authenticated/home' });
   };
-
-  if (sessionRef) return <AlreadySignedIn />;
-
-  if (isPending) return <LoadingLayer />;
 
   return (
     <Container maxWidth="sm">
@@ -77,7 +81,7 @@ export function RouteComponent() {
           name="email"
           register={register}
           required
-          autoComplete="username email"
+          autoComplete="email"
         />
 
         <InputPassword
@@ -87,12 +91,7 @@ export function RouteComponent() {
           isExistingPassword
         />
 
-        <CustomButton
-          variant="contained"
-          color="primary"
-          type="submit"
-          disabled={!password || !email}
-        >
+        <CustomButton variant="contained" color="primary" type="submit">
           Sign in
         </CustomButton>
         <CustomButton

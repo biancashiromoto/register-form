@@ -1,12 +1,16 @@
-import { useAuth } from '@/context/authContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import { ChangeEvent, FC, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import useUploadAvatar, { fetchAvatarUrl } from '../useUploadAvatar';
+import { mockSession } from '@/tests/mocks';
 
 const mockUpload = vi.fn();
 const mockDownload = vi.fn();
+
+vi.mock('@/hooks/useAuthState', () => ({
+  useAuthState: () => ({ session: mockSession, signOut: vi.fn() }),
+}));
 
 vi.mock('@/services/supabase', () => ({
   supabase: {
@@ -40,9 +44,6 @@ describe('useUploadAvatar', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useAuth as any).mockReturnValue({
-      sessionRef: { user: { id: 'userId' } },
-    });
     file = new File(['dummy'], 'avatar.png', { type: 'image/png' });
     mockUpload.mockResolvedValue({ error: null });
   });
@@ -58,7 +59,7 @@ describe('useUploadAvatar', () => {
       await expect(result.current.uploadAvatar(input)).resolves.toBeUndefined();
 
       const ext = file.name.split('.').pop();
-      const expectedPath = `userId/userId.${ext}`;
+      const expectedPath = `1-a/1-a.${ext}`;
       expect(mockUpload).toHaveBeenCalledWith(expectedPath, file, {
         upsert: true,
       });

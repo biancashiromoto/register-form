@@ -1,7 +1,7 @@
-import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChangeEvent, useCallback } from 'react';
+import { useAuthState } from './useAuthState';
 
 export const fetchAvatarUrl = async (path: string): Promise<string> => {
   const { data, error } = await supabase.storage.from('avatars').download(path);
@@ -17,7 +17,7 @@ const AVATAR_BUCKET = 'avatars';
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
 const useUploadAvatar = () => {
-  const { session } = useAuth();
+  const { session } = useAuthState();
   const queryClient = useQueryClient();
 
   const uploadAvatar = useCallback(

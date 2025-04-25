@@ -1,9 +1,9 @@
 import { useLocation } from '@tanstack/react-router';
 import { useMemo } from 'react';
 
-const locations = {
+export const routes = {
   home: {
-    route: '/home',
+    route: '/authenticated/home',
     title: 'Home',
   },
   login: {
@@ -15,7 +15,7 @@ const locations = {
     title: 'Register',
   },
   profile: {
-    route: '/profile',
+    route: '/authenticated/profile',
     title: 'Profile',
   },
   resetPassword: {
@@ -29,7 +29,7 @@ const usePageTitle = () => {
   const normalizedPath = pathname.replace(/\/+$/, '');
 
   const page = useMemo(() => {
-    return Object.values(locations).find(
+    return Object.values(routes).find(
       (route) => route.route === normalizedPath,
     );
   }, [normalizedPath]);

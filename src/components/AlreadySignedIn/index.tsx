@@ -6,7 +6,7 @@ import LoadingLayer from '../LoadingLayer';
 
 const AlreadySignedIn = () => {
   const theme = useTheme();
-  const { handleSignOut, isLoadingSignOut } = useAuth();
+  const { handleSignOut } = useAuth();
 
   const style = useMemo(() => {
     return { color: theme.palette.text.secondary };
@@ -18,7 +18,7 @@ const AlreadySignedIn = () => {
     <Container maxWidth="sm">
       <Typography variant="body2">
         You're already signed in! Return to{' '}
-        <Link style={style} to="/home">
+        <Link style={style} to="/authenticated/home">
           home page
         </Link>{' '}
         or{' '}

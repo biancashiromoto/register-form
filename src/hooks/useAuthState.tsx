@@ -1,12 +1,18 @@
 import { supabase } from '@/services/supabase';
-import { Session } from '@supabase/supabase-js';
-import { useLocation } from '@tanstack/react-router';
+import {
+  AuthSession,
+  Session,
+  SignInWithPasswordCredentials,
+} from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
 export interface AuthState {
   session: Session | null;
-  handleSignOut: () => void;
-  isValidResetLink: boolean;
+  // getSession: () => Promise<Session | null>;
+  // isValidResetLink: boolean;
+  signIn: (data: SignInWithPasswordCredentials) => Promise<void>;
+  signOut: () => Promise<void>;
+  getSession: () => Promise<Session | null>;
 }
 
 const validateError = (error: Error) => {
@@ -18,23 +24,29 @@ const validateError = (error: Error) => {
 };
 
 export const useAuthState = (): AuthState => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [isValidResetLink, setIsValidResetLink] = useState(false);
+  const [session, setSession] = useState<AuthSession | null>(null);
+  // const [isValidResetLink, setIsValidResetLink] = useState(false);
 
-  const { pathname } = useLocation();
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setSession(null);
+  const getSession = async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session) {
+      setSession(data.session);
+    }
+    return data.session || null;
   };
 
-  useEffect(() => {
-    const fetchSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-    };
-    fetchSession();
-  }, [pathname]);
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    localStorage.clear();
+    setSession(null);
+    window.location.href = '/login';
+  };
+
+  const signIn = async (data: SignInWithPasswordCredentials) => {
+    const { data: session } = await supabase.auth.signInWithPassword(data);
+    if (!session) throw new Error('Error signing in');
+    setSession(session.session);
+  };
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
@@ -44,11 +56,6 @@ export const useAuthState = (): AuthState => {
             localStorage.clear();
             setSession(null);
             window.location.href = '/login';
-            return;
-          }
-
-          if (event === 'PASSWORD_RECOVERY') {
-            setIsValidResetLink(true);
             return;
           }
 
@@ -70,8 +77,12 @@ export const useAuthState = (): AuthState => {
   }, []);
 
   return {
+    signIn,
+    signOut,
+    getSession,
     session,
-    handleSignOut,
-    isValidResetLink,
+    //   getSession,
+    //   handleSignOut,
+    //   isValidResetLink,
   };
 };

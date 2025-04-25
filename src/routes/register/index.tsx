@@ -1,4 +1,3 @@
-import AlreadySignedIn from '@/components/AlreadySignedIn';
 import CustomButton from '@/components/Button';
 import DatePicker from '@/components/DatePicker';
 import InputPassword from '@/components/InputPassword';
@@ -7,28 +6,23 @@ import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import UserLocation from '@/components/UserLocation';
 import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
 import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
-import { isAuthenticated } from '@/services/user';
 import { SnackbarStateType, UserType } from '@/types';
 import { INITIAL_REGISTER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Checkbox, Container, FormControlLabel } from '@mui/material';
-import { redirect } from '@tanstack/react-router';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { City, Country, State } from 'country-state-city';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/register/')({
   component: RouteComponent,
-  beforeLoad: async ({ context }) => {
-    const { currentSession } = context.authentication;
-    if (currentSession) {
-      throw redirect({ to: '/home' });
-    }
+  beforeLoad: ({ context }) => {
+    if (context.authentication.session)
+      throw redirect({ to: '/authenticated/home' });
   },
 });
 
@@ -54,8 +48,6 @@ function RouteComponent() {
   const { snackbarState, setSnackbarState, setRegisteringUser } =
     useContext(Context);
   const { mutate: registerUser, isPending } = useRegisterUser();
-  const { sessionRef } = useAuth();
-
   const firstName = watch('firstName');
   const lastName = watch('lastName');
   const birthDate = watch('birthDate');
@@ -122,8 +114,6 @@ function RouteComponent() {
       open: false,
     }));
   }, []);
-
-  if (sessionRef) return <AlreadySignedIn />;
 
   if (isPending) return <LoadingLayer />;
 

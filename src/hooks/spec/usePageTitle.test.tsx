@@ -20,7 +20,7 @@ describe('usePageTitle', () => {
   });
 
   it('should render correct page title', async () => {
-    (useLocation as any).mockReturnValue({ pathname: '/home' });
+    (useLocation as any).mockReturnValue({ pathname: '/authenticated/home' });
 
     const { result } = renderHook(() => usePageTitle(), {
       wrapper,
