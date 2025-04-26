@@ -32,7 +32,7 @@ export const useAuthState = (): AuthState => {
     if (data.session) {
       setSession(data.session);
     }
-    return data.session || null;
+    return data.session ?? null;
   };
 
   const signOut = async () => {

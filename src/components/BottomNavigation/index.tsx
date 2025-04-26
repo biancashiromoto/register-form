@@ -8,22 +8,13 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import { useNavigate } from '@tanstack/react-router';
-import { memo, useContext, useEffect, useRef, useState } from 'react';
+import { memo, useContext, useRef } from 'react';
 
 export default memo(function CustomBottomNavigation() {
   const { normalizedPath } = useContext(Context);
   const routes = Object.values(mappedRoutes).map((route) => route.route);
-  const [value, setValue] = useState(routes.indexOf(normalizedPath));
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!normalizedPath) return;
-    const index = routes.indexOf(normalizedPath);
-    if (index !== value) {
-      setValue(value);
-    }
-  }, [normalizedPath]);
 
   return (
     <Box sx={{ pb: 7 }} ref={ref}>
@@ -32,13 +23,7 @@ export default memo(function CustomBottomNavigation() {
         sx={{ position: 'fixed', bottom: 36, left: 0, right: 0, marginTop: 6 }}
         elevation={3}
       >
-        <BottomNavigation
-          showLabels
-          value={normalizedPath}
-          onChange={(event, newValue) => {
-            setValue(newValue);
-          }}
-        >
+        <BottomNavigation showLabels value={normalizedPath}>
           <BottomNavigationAction
             label="Home"
             icon={<HomeIcon />}

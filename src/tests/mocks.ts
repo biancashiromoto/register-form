@@ -81,12 +81,7 @@ export const mockCities = [
   },
 ];
 
-// export const mockSession = {
-//   access_token: 'access_token',
-//   user: mockUser,
-// } as unknown as Session;
-
-export const mockSession = {
+export const mockSession: Session = {
   access_token: 'access_token',
   token_type: 'bearer',
   expires_in: 3600,
@@ -141,7 +136,6 @@ export const mockSession = {
         last_sign_in_at: '2025-03-16T23:14:28.448396Z',
         created_at: '2025-03-16T23:14:28.448442Z',
         updated_at: '2025-03-16T23:14:28.448442Z',
-        email: 'johndoe@email.com',
       },
     ],
     created_at: '2025-03-16T23:14:28.440241Z',

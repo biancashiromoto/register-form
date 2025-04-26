@@ -1,5 +1,4 @@
-import { useAuthState } from '@/hooks/useAuthState';
-import { useLocation, useNavigate } from '@tanstack/react-router';
+import { useLocation } from '@tanstack/react-router';
 import { ComponentProps, FC } from 'react';
 import Link from './Link';
 import ProfileLink from './ProfileLink';

@@ -51,7 +51,7 @@ const ProfileLink = () => {
         >
           {!isLoadingAvatar ? (
             <Avatar
-              src={avatarUrl || undefined}
+              src={avatarUrl ?? undefined}
               sx={{
                 width: 20,
                 height: 20,

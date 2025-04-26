@@ -35,7 +35,7 @@ export const AvatarUploader = () => {
       ) : (
         <Box sx={{ position: 'relative' }}>
           <Avatar
-            src={avatarUrl || undefined}
+            src={avatarUrl ?? undefined}
             sx={{
               width: 175,
               height: 175,
