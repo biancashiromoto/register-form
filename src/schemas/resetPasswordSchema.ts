@@ -3,7 +3,6 @@ import { z } from 'zod';
 
 export const resetPasswordSchema = z
   .object({
-    currentPassword: z.string().optional(),
     password: z
       .string({ required_error: 'Password is required' })
       .regex(passwordValidation, {

@@ -3,6 +3,7 @@ import InputPassword from '@/components/InputPassword';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
+import { useAuthState } from '@/hooks/useAuthState';
 import useResetPassword from '@/hooks/useResetPassword';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +19,7 @@ export const Route = createFileRoute('/reset-password/')({
 function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
-  const { session, isValidResetLink } = useAuth();
+  const { session, isValidResetLink } = useAuthState();
   const { snackbarState } = useContext(Context);
 
   const {
@@ -26,7 +27,6 @@ function RouteComponent() {
     handleSubmit,
     formState: { errors },
   } = useForm<{
-    currentPassword?: string | undefined;
     password: string;
     confirmPassword: string;
   }>({

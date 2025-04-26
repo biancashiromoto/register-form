@@ -96,6 +96,6 @@ export const useAuthState = (): AuthState => {
     session,
     //   getSession,
     //   handleSignOut,
-    //   isValidResetLink,
+    isValidResetLink,
   };
 };
