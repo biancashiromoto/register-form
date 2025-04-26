@@ -1,7 +1,7 @@
 import { useLocation } from '@tanstack/react-router';
 import { useMemo } from 'react';
 
-const locations = {
+export const routes = {
   home: {
     route: '/home',
     title: 'Home',
@@ -29,7 +29,7 @@ const usePageTitle = () => {
   const normalizedPath = pathname.replace(/\/+$/, '');
 
   const page = useMemo(() => {
-    return Object.values(locations).find(
+    return Object.values(routes).find(
       (route) => route.route === normalizedPath,
     );
   }, [normalizedPath]);

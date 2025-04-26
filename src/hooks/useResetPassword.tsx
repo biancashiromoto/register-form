@@ -1,5 +1,4 @@
 import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
 import { delay } from '@/helpers';
 import { supabase } from '@/services/supabase';
 import { resetPassword } from '@/services/user';
@@ -7,11 +6,12 @@ import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
+import { useAuthState } from './useAuthState';
 
 const useResetPassword = () => {
   const { setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
-  const { sessionRef } = useAuth();
+  const { session } = useAuthState();
 
   const sendResetPasswordEmail = async (
     email: UserType['email'] | undefined,
@@ -52,7 +52,7 @@ const useResetPassword = () => {
         severity: 'success',
       });
       delay();
-      navigate({ to: `${sessionRef ? '/profile' : '/login'}` });
+      navigate({ to: `${session ? '/profile' : '/login'}` });
     },
     onError: (error) => {
       setSnackbarState({

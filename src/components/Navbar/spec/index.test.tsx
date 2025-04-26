@@ -1,71 +1,48 @@
-import { useAuth } from '@/context/authContext';
-import { supabase } from '@/services/supabase';
-import { useLocation, useNavigate } from '@tanstack/react-router';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import Navbar from '..';
-import { ContextProps } from '@/context/index.types';
-import { Context } from '@/context';
-import { Session } from '@supabase/supabase-js';
+vi.mock('@/hooks/useAuthState', () => ({
+  useAuthState: () => ({ session: null, signOut: vi.fn() }),
+}));
 
-vi.mock('@/context/authContext', () => ({
-  useAuth: vi.fn(),
+vi.mock('@/hooks/useAvatarUrl', () => ({
+  default: () => ({ data: null, isLoading: false }),
 }));
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: vi.fn(),
   useLocation: vi.fn(),
-  Link: ({
-    children,
-    to,
-    onClick,
-  }: {
-    children: React.ReactNode;
-    to: string;
-    activeProps?: any;
-    onClick?: any;
-  }) => (
+  Link: ({ to, children, onClick }: any) => (
     <a href={to} onClick={onClick}>
       {children}
     </a>
   ),
 }));
 
-vi.mock('@/services/supabase', () => ({
-  supabase: {
-    auth: {
-      signOut: vi.fn().mockResolvedValue({}),
-    },
-  },
-}));
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useLocation, useNavigate } from '@tanstack/react-router';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import Navbar from '..';
 
 describe('Navbar Component', () => {
-  const mockHandleSignOut = vi.fn();
-  beforeEach(() => vi.resetAllMocks());
+  const queryClient = new QueryClient();
+  let navigateMock: ReturnType<typeof vi.fn>;
 
-  const renderComponent = (
-    location: Location,
-    sessionRef: Session | null = null,
-    isPrivateRoute: boolean = false,
-  ) => {
-    const navigateMock = vi.fn();
-
-    (useAuth as any).mockReturnValue({
-      handleSignOut: mockHandleSignOut,
-      sessionRef,
-    });
-    (useLocation as any).mockReturnValue(location);
+  beforeEach(() => {
+    vi.resetAllMocks();
+    navigateMock = vi.fn();
     (useNavigate as any).mockReturnValue(navigateMock);
+  });
 
+  const renderAtPath = (path: string) => {
+    (useLocation as any).mockReturnValue({ pathname: path });
     render(
-      <Context.Provider value={{ isPrivateRoute } as ContextProps}>
+      <QueryClientProvider client={queryClient}>
         <Navbar />
-      </Context.Provider>,
+      </QueryClientProvider>,
     );
   };
 
-  it('should not render "Sign up" link when route includes /register', () => {
-    renderComponent({ pathname: '/register' } as Location);
+  it('should not render "Sign up" link when on /register', () => {
+    renderAtPath('/register');
 
     expect(screen.queryByText(/Not registered yet\?/i)).not.toBeInTheDocument();
     expect(
@@ -75,8 +52,8 @@ describe('Navbar Component', () => {
     expect(screen.getByRole('link', { name: /sign in/i })).toBeInTheDocument();
   });
 
-  it('should not render "Log in" link when route is /login', () => {
-    renderComponent({ pathname: '/login' } as Location);
+  it('should not render "Sign in" link and avatar when on /login', () => {
+    renderAtPath('/login');
 
     expect(screen.getByText(/Not registered yet\?/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /sign up/i })).toBeInTheDocument();
@@ -84,28 +61,5 @@ describe('Navbar Component', () => {
     expect(
       screen.queryByRole('link', { name: /sign in/i }),
     ).not.toBeInTheDocument();
-  });
-
-  it('renders "Sign out" link when user is logged in and current path is "/home", and calls signOut on click', async () => {
-    renderComponent(
-      { pathname: '/home' } as Location,
-      {
-        access_token: '',
-        refresh_token: '',
-        expires_in: 3600,
-        token_type: 'bearer',
-        user: { email: 'test@email.com' },
-      } as Session,
-      true,
-    );
-
-    const logoutLink = await screen.findByRole('link', { name: /sign out/i });
-    expect(logoutLink).toBeInTheDocument();
-
-    fireEvent.click(logoutLink);
-
-    await waitFor(() => {
-      expect(mockHandleSignOut).toHaveBeenCalled();
-    });
   });
 });

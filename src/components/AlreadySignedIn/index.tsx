@@ -6,7 +6,7 @@ import LoadingLayer from '../LoadingLayer';
 
 const AlreadySignedIn = () => {
   const theme = useTheme();
-  const { handleSignOut, isLoadingSignOut } = useAuth();
+  const { handleSignOut } = useAuth();
 
   const style = useMemo(() => {
     return { color: theme.palette.text.secondary };

@@ -1,4 +1,3 @@
-import AlreadySignedIn from '@/components/AlreadySignedIn';
 import CustomButton from '@/components/Button';
 import DatePicker from '@/components/DatePicker';
 import InputPassword from '@/components/InputPassword';
@@ -7,21 +6,23 @@ import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import UserLocation from '@/components/UserLocation';
 import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
 import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { firstStepSchema } from '@/schemas/firstStepSchema';
 import { SnackbarStateType, UserType } from '@/types';
-import { INITIAL_USER_STATE } from '@/utils/commons';
+import { INITIAL_REGISTER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Checkbox, Container, FormControlLabel } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { City, Country, State } from 'country-state-city';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/register/')({
   component: RouteComponent,
+  beforeLoad: ({ context }) => {
+    if (context.authentication.session) throw redirect({ to: '/home' });
+  },
 });
 
 function RouteComponent() {
@@ -40,14 +41,12 @@ function RouteComponent() {
   } = useForm({
     resolver: zodResolver(firstStepSchema),
     mode: 'all',
-    defaultValues: INITIAL_USER_STATE,
+    defaultValues: INITIAL_REGISTER_STATE,
   });
 
   const { snackbarState, setSnackbarState, setRegisteringUser } =
     useContext(Context);
   const { mutate: registerUser, isPending } = useRegisterUser();
-  const { sessionRef } = useAuth();
-
   const firstName = watch('firstName');
   const lastName = watch('lastName');
   const birthDate = watch('birthDate');
@@ -64,7 +63,7 @@ function RouteComponent() {
   useResetForm(password, resetField, 'confirmPassword');
 
   const clearForm = () => {
-    reset(INITIAL_USER_STATE);
+    reset(INITIAL_REGISTER_STATE);
     clearErrors();
     setShowLocation(false);
   };
@@ -114,8 +113,6 @@ function RouteComponent() {
       open: false,
     }));
   }, []);
-
-  if (sessionRef) return <AlreadySignedIn />;
 
   if (isPending) return <LoadingLayer />;
 

@@ -1,30 +1,35 @@
-import { AvatarUploader } from '@/components/AvatarUploader';
-import CustomButton from '@/components/Button';
-import DatePicker from '@/components/DatePicker';
-import LoadingLayer from '@/components/LoadingLayer';
-import { CustomSnackbar } from '@/components/Snackbar';
-import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
-import useResetPassword from '@/hooks/useResetPassword';
-import useUpdateUser from '@/hooks/useUpdateUser';
-import { profileEditSchema } from '@/schemas/profileEditSchema';
-import { SnackbarStateType } from '@/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Container, TextField } from '@mui/material';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useContext, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { AvatarUploader } from '@/components/AvatarUploader'
+import CustomButton from '@/components/Button'
+import DatePicker from '@/components/DatePicker'
+import LoadingLayer from '@/components/LoadingLayer'
+import { CustomSnackbar } from '@/components/Snackbar'
+import { Context } from '@/context'
+import { useAuthState } from '@/hooks/useAuthState'
+import useResetPassword from '@/hooks/useResetPassword'
+import useUpdateUser from '@/hooks/useUpdateUser'
+import { profileEditSchema } from '@/schemas/profileEditSchema'
+import { SnackbarStateType } from '@/types'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Box, Container, TextField } from '@mui/material'
+import { createFileRoute } from '@tanstack/react-router'
+import { useContext, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 
-export const Route = createFileRoute('/profile/')({
+export const Route = createFileRoute('/_authenticated/profile')({
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
-  const { sessionRef } = useAuth();
-  const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser();
-  const { snackbarState, setSnackbarState } = useContext(Context);
-  const navigate = useNavigate();
-  const { sendResetPasswordEmail } = useResetPassword();
+  const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser()
+  const { snackbarState, setSnackbarState } = useContext(Context)
+  const { sendResetPasswordEmail } = useResetPassword()
+  const { session } = useAuthState()
+
+  const rawBirth = session?.user?.user_metadata.birth_date
+
+  const formattedBirth = rawBirth
+    ? new Date(rawBirth).toISOString().slice(0, 10)
+    : ''
 
   const {
     register,
@@ -33,22 +38,20 @@ function RouteComponent() {
   } = useForm({
     resolver: zodResolver(profileEditSchema),
     mode: 'all',
-  });
+  })
 
   const onSubmit = async (data: any) => {
-    updateUser(data);
-  };
+    updateUser(data)
+  }
 
   useEffect(() => {
     setSnackbarState((prevState: SnackbarStateType) => ({
       ...prevState,
       open: false,
-    }));
-  }, []);
+    }))
+  }, [])
 
-  if (!sessionRef) navigate({ to: '/unauthenticated' });
-
-  if (isUpdatingUser) return <LoadingLayer />;
+  if (isUpdatingUser || !session?.user) return <LoadingLayer />
 
   return (
     <Container maxWidth="sm">
@@ -70,7 +73,7 @@ function RouteComponent() {
           id="standard-basic"
           label="First name"
           variant="standard"
-          defaultValue={sessionRef?.user?.user_metadata['first_name']}
+          defaultValue={session?.user?.user_metadata['first_name']}
           fullWidth
           {...register('firstName')}
           required
@@ -81,7 +84,7 @@ function RouteComponent() {
           id="standard-basic"
           label="Last name"
           variant="standard"
-          defaultValue={sessionRef?.user?.user_metadata['last_name']}
+          defaultValue={session?.user?.user_metadata['last_name']}
           fullWidth
           {...register('lastName')}
           required
@@ -89,11 +92,7 @@ function RouteComponent() {
         />
 
         <DatePicker
-          defaultValue={
-            new Date(sessionRef?.user?.user_metadata['birth_date'])
-              .toISOString()
-              .split('T')[0]
-          }
+          defaultValue={formattedBirth}
           errors={errors}
           register={register}
           required
@@ -103,7 +102,7 @@ function RouteComponent() {
           id="standard-basic"
           label="Email"
           variant="standard"
-          defaultValue={sessionRef?.user?.user_metadata.email}
+          defaultValue={session?.user?.user_metadata.email}
           fullWidth
           {...register('email')}
           required
@@ -117,12 +116,12 @@ function RouteComponent() {
         <CustomButton
           variant="outlined"
           color="primary"
-          onClick={() => sendResetPasswordEmail(sessionRef?.user.email)}
+          onClick={() => sendResetPasswordEmail(session?.user.email)}
         >
           Reset password
         </CustomButton>
       </Box>
       {snackbarState && <CustomSnackbar />}
     </Container>
-  );
+  )
 }

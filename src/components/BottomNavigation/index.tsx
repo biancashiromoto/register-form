@@ -1,5 +1,5 @@
 import { Context } from '@/context';
-import { privateRoutes } from '@/utils/commons/privateRoutes';
+import { routes as mappedRoutes } from '@/hooks/usePageTitle';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -8,20 +8,13 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import { useNavigate } from '@tanstack/react-router';
-import { memo, useContext, useEffect, useRef, useState } from 'react';
+import { memo, useContext, useRef } from 'react';
 
 export default memo(function CustomBottomNavigation() {
   const { normalizedPath } = useContext(Context);
-  const [value, setValue] = useState(privateRoutes.indexOf(normalizedPath));
+  const routes = Object.values(mappedRoutes).map((route) => route.route);
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const index = privateRoutes.indexOf(normalizedPath);
-    if (index !== value) {
-      setValue(index);
-    }
-  }, [normalizedPath]);
 
   return (
     <Box sx={{ pb: 7 }} ref={ref}>
@@ -30,23 +23,18 @@ export default memo(function CustomBottomNavigation() {
         sx={{ position: 'fixed', bottom: 36, left: 0, right: 0, marginTop: 6 }}
         elevation={3}
       >
-        <BottomNavigation
-          showLabels
-          value={value}
-          onChange={(event, newValue) => {
-            setValue(newValue);
-          }}
-        >
-          {/* <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} /> */}
+        <BottomNavigation showLabels value={normalizedPath}>
           <BottomNavigationAction
             label="Home"
             icon={<HomeIcon />}
             onClick={() => navigate({ to: '/home', viewTransition: true })}
+            value="/home"
           />
           <BottomNavigationAction
             label="Profile"
             icon={<AccountCircleIcon />}
             onClick={() => navigate({ to: '/profile', viewTransition: true })}
+            value="/profile"
           />
         </BottomNavigation>
       </Paper>

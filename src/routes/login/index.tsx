@@ -1,24 +1,28 @@
-import AlreadySignedIn from '@/components/AlreadySignedIn';
 import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import InputText from '@/components/InputText';
-import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
-import useLoginUser from '@/hooks/useLoginUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import useResetPassword from '@/hooks/useResetPassword';
 import { loginSchema } from '@/schemas/loginSchema';
-import { UserType } from '@/types';
+import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { SignInWithPasswordCredentials } from '@supabase/supabase-js';
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
+export type SignInWithPasswordCredentialsType =
+  SignInWithPasswordCredentials & {
+    email: string;
+  };
 export const Route = createFileRoute('/login/')({
   component: RouteComponent,
+  beforeLoad: ({ context }) => {
+    if (context.session) throw redirect({ to: '/home' });
+  },
 });
 
 export function RouteComponent() {
@@ -27,9 +31,8 @@ export function RouteComponent() {
     handleSubmit,
     watch,
     resetField,
-    setError,
     formState: { errors },
-  } = useForm({
+  } = useForm<SignInWithPasswordCredentialsType>({
     resolver: zodResolver(loginSchema),
     mode: 'all',
     defaultValues: {
@@ -40,18 +43,25 @@ export function RouteComponent() {
 
   const email = watch('email');
   useResetForm(email, resetField, 'password');
-  const { mutate: login, isPending } = useLoginUser(setError);
-  const { sessionRef } = useAuth();
-  const { snackbarState } = useContext(Context);
+  const { snackbarState, setSnackbarState } = useContext(Context);
   const { sendResetPasswordEmail } = useResetPassword();
+  const navigate = useNavigate();
 
-  const onSubmit = (data: Pick<UserType, 'password' | 'email'>) => {
-    login(data);
+  const onSubmit = async (data: SignInWithPasswordCredentialsType) => {
+    const { error } = await supabase.auth.signInWithPassword(data);
+
+    if (error) {
+      setSnackbarState((prev) => ({
+        ...prev,
+        open: true,
+        message: error.message,
+        severity: 'error',
+      }));
+      return;
+    }
+
+    navigate({ to: '/home' });
   };
-
-  if (sessionRef) return <AlreadySignedIn />;
-
-  if (isPending) return <LoadingLayer />;
 
   return (
     <Container maxWidth="sm">

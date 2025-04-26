@@ -1,26 +1,18 @@
-import {
-  useEffect,
-  useState,
-  useRef,
-  MutableRefObject,
-  useContext,
-} from 'react';
 import { supabase } from '@/services/supabase';
-import { User, Session } from '@supabase/supabase-js';
-import { useQuery } from '@tanstack/react-query';
-import { Context } from '@/context';
+import {
+  AuthSession,
+  Session,
+  SignInWithPasswordCredentials,
+} from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
 
 export interface AuthState {
-  user: User | null;
-  setUser: (user: User | null) => void;
-  currentSession: Session | null;
-  initializing: boolean;
-  userRef: MutableRefObject<User | null>;
-  sessionRef: Session | null;
-  handleSignOut: () => void;
-  isLoadingSignOut: boolean;
-  isLoadingValidateResetLink: boolean;
+  session: Session | null;
+  // getSession: () => Promise<Session | null>;
   isValidResetLink: boolean;
+  signIn: (data: SignInWithPasswordCredentials) => Promise<void>;
+  signOut: () => Promise<void>;
+  getSession: () => Promise<Session | null>;
 }
 
 const validateError = (error: Error) => {
@@ -32,57 +24,56 @@ const validateError = (error: Error) => {
 };
 
 export const useAuthState = (): AuthState => {
-  const [user, setUser] = useState<User | null>(null);
-  const [initializing, setInitializing] = useState<boolean>(true);
-  const [isLoadingSignOut, setIsLoadingSignOut] = useState<boolean>(false);
-  const userRef = useRef<User | null>(user);
-  const sessionRef = useRef<Session | null>();
+  const [session, setSession] = useState<AuthSession | null>(null);
   const [isValidResetLink, setIsValidResetLink] = useState(false);
-  const [isLoadingValidateResetLink, setIsLoadingValidateResetLink] =
-    useState(false);
 
-  const { data: currentSession } = useQuery({
-    queryKey: ['fetchSession'],
-    queryFn: async () => supabase.auth.getSession(),
-  });
-
-  const handleSignOut = async () => {
-    setIsLoadingSignOut(true);
-    await supabase.auth.signOut();
-    setIsLoadingSignOut(false);
+  const getSession = async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session) {
+      setSession(data.session);
+    }
+    return data.session ?? null;
   };
 
-  useEffect(() => {
-    userRef.current = user;
-  }, [user]);
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    localStorage.clear();
+    setSession(null);
+    window.location.href = '/login';
+  };
 
-  useEffect(() => {
-    sessionRef.current = currentSession?.data.session;
-  }, [currentSession]);
+  const signIn = async (data: SignInWithPasswordCredentials) => {
+    const { data: session } = await supabase.auth.signInWithPassword(data);
+    if (!session) throw new Error('Error signing in');
+    setSession(session.session);
+  };
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         try {
           if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_OUT') {
-            setIsLoadingSignOut(true);
             localStorage.clear();
+            setSession(null);
             window.location.href = '/login';
-            setIsLoadingSignOut(false);
             return;
           }
 
           if (event === 'PASSWORD_RECOVERY') {
             setIsValidResetLink(true);
-            setIsLoadingValidateResetLink(false);
+            return;
+          }
+          if (event === 'USER_UPDATED') {
+            const { user } = session as AuthSession;
+            if (user) {
+              const { data: updatedSession } = await supabase.auth.getSession();
+              setSession(updatedSession.session);
+            }
             return;
           }
 
-          setUser(session?.user ?? null);
-          setInitializing(false);
-          sessionRef.current = session;
-
           console.log('Auth state changed:', event, session);
+          setSession(session);
         } catch (error: any) {
           if (validateError(error)) {
             console.log('Auth state error:', error);
@@ -99,15 +90,12 @@ export const useAuthState = (): AuthState => {
   }, []);
 
   return {
-    user,
-    setUser,
-    currentSession: currentSession?.data.session || null,
-    initializing,
-    userRef,
-    sessionRef: sessionRef.current || null,
-    handleSignOut,
-    isLoadingSignOut,
+    signIn,
+    signOut,
+    getSession,
+    session,
+    //   getSession,
+    //   handleSignOut,
     isValidResetLink,
-    isLoadingValidateResetLink,
   };
 };

@@ -1,14 +1,14 @@
 import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
-import LoadingLayer from '@/components/LoadingLayer';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
 import { useAuth } from '@/context/authContext';
+import { useAuthState } from '@/hooks/useAuthState';
 import useResetPassword from '@/hooks/useResetPassword';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -19,19 +19,14 @@ export const Route = createFileRoute('/reset-password/')({
 function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
-  const { sessionRef, isValidResetLink, isLoadingValidateResetLink } =
-    useAuth();
+  const { session, isValidResetLink } = useAuthState();
   const { snackbarState } = useContext(Context);
-  const navigate = useNavigate();
-
-  if (isLoadingValidateResetLink) return <LoadingLayer />;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<{
-    currentPassword?: string | undefined;
     password: string;
     confirmPassword: string;
   }>({
@@ -53,8 +48,6 @@ function RouteComponent() {
     });
   };
 
-  if (isLoadingValidateResetLink) return <LoadingLayer />;
-
   if (!isValidResetLink) {
     return (
       <Container maxWidth="sm">
@@ -67,10 +60,10 @@ function RouteComponent() {
         </Typography>
         <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
           <CustomButton
-            href={!sessionRef ? '/login' : '/home'}
+            href={!session ? '/login' : '/home'}
             openInNewTab={false}
           >
-            {!sessionRef ? 'Return to Login' : 'Return to Home'}
+            {!session ? 'Return to Login' : 'Return to Home'}
           </CustomButton>
         </Box>
       </Container>

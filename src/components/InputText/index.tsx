@@ -1,5 +1,5 @@
-import { useAuth } from '@/context/authContext';
 import { labels } from '@/helpers/labels';
+import { useAuthState } from '@/hooks/useAuthState';
 import { TextField, useTheme } from '@mui/material';
 import { ComponentProps, memo, useMemo } from 'react';
 import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
@@ -24,7 +24,7 @@ const InputText = memo(
     hidden,
     ...rest
   }: InputTextProps) => {
-    const { sessionRef } = useAuth();
+    const { session } = useAuthState();
     const theme = useTheme();
 
     const backgroundColor = useMemo(
@@ -51,7 +51,7 @@ const InputText = memo(
         helperText={showError?.message?.toString()}
         required={required}
         autoComplete={autoComplete}
-        defaultValue={sessionRef?.user?.user_metadata[name]}
+        defaultValue={session?.user?.user_metadata[name]}
         fullWidth
         {...rest}
       />
