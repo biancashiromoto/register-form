@@ -1,35 +1,35 @@
-import { AvatarUploader } from '@/components/AvatarUploader'
-import CustomButton from '@/components/Button'
-import DatePicker from '@/components/DatePicker'
-import LoadingLayer from '@/components/LoadingLayer'
-import { CustomSnackbar } from '@/components/Snackbar'
-import { Context } from '@/context'
-import { useAuthState } from '@/hooks/useAuthState'
-import useResetPassword from '@/hooks/useResetPassword'
-import useUpdateUser from '@/hooks/useUpdateUser'
-import { profileEditSchema } from '@/schemas/profileEditSchema'
-import { SnackbarStateType } from '@/types'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Box, Container, TextField } from '@mui/material'
-import { createFileRoute } from '@tanstack/react-router'
-import { useContext, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { AvatarUploader } from '@/components/AvatarUploader';
+import CustomButton from '@/components/Button';
+import DatePicker from '@/components/DatePicker';
+import LoadingLayer from '@/components/LoadingLayer';
+import { CustomSnackbar } from '@/components/Snackbar';
+import { Context } from '@/context';
+import { useAuthState } from '@/hooks/useAuthState';
+import useResetPassword from '@/hooks/useResetPassword';
+import useUpdateUser from '@/hooks/useUpdateUser';
+import { profileEditSchema } from '@/schemas/profileEditSchema';
+import { SnackbarStateType } from '@/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Box, Container, TextField } from '@mui/material';
+import { createFileRoute } from '@tanstack/react-router';
+import { useContext, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/_authenticated/profile')({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser()
-  const { snackbarState, setSnackbarState } = useContext(Context)
-  const { sendResetPasswordEmail } = useResetPassword()
-  const { session } = useAuthState()
+  const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser();
+  const { snackbarState, setSnackbarState } = useContext(Context);
+  const { sendResetPasswordEmail } = useResetPassword();
+  const { session } = useAuthState();
 
-  const rawBirth = session?.user?.user_metadata.birth_date
+  const rawBirth = session?.user?.user_metadata.birth_date;
 
   const formattedBirth = rawBirth
     ? new Date(rawBirth).toISOString().slice(0, 10)
-    : ''
+    : '';
 
   const {
     register,
@@ -38,20 +38,20 @@ function RouteComponent() {
   } = useForm({
     resolver: zodResolver(profileEditSchema),
     mode: 'all',
-  })
+  });
 
   const onSubmit = async (data: any) => {
-    updateUser(data)
-  }
+    updateUser(data);
+  };
 
   useEffect(() => {
     setSnackbarState((prevState: SnackbarStateType) => ({
       ...prevState,
       open: false,
-    }))
-  }, [])
+    }));
+  }, []);
 
-  if (isUpdatingUser || !session?.user) return <LoadingLayer />
+  if (isUpdatingUser || !session?.user) return <LoadingLayer />;
 
   return (
     <Container maxWidth="sm">
@@ -123,5 +123,5 @@ function RouteComponent() {
       </Box>
       {snackbarState && <CustomSnackbar />}
     </Container>
-  )
+  );
 }
