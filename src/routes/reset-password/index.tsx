@@ -2,7 +2,6 @@ import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
 import { useAuthState } from '@/hooks/useAuthState';
 import useResetPassword from '@/hooks/useResetPassword';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
