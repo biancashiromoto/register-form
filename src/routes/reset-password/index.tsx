@@ -14,13 +14,35 @@ import { useForm } from 'react-hook-form';
 
 type SearchParams = {
   token: string;
+  email: string;
 };
 
 export const Route = createFileRoute('/reset-password/')({
   validateSearch: (search: Record<string, unknown>): SearchParams => {
     return {
       token: search.token as string,
+      email: search.email as string,
     };
+  },
+  beforeLoad: async ({ search }: { search: Record<string, unknown> }) => {
+    const token = search.token as string;
+    const email = search.email as string;
+    console.log(email, token);
+    if (!token || !email) {
+      return {
+        token: null,
+      };
+    }
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: 'recovery',
+    });
+    if (error) {
+      return {
+        token: null,
+      };
+    }
   },
   component: RouteComponent,
 });
@@ -69,7 +91,6 @@ function RouteComponent() {
     }
 
     console.log('session', session);
-    console.log('getSession', getSession());
 
     supabase.auth
       .verifyOtp({ email: session?.user.email ?? '', token, type: 'recovery' })
