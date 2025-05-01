@@ -8,7 +8,7 @@ import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -18,15 +18,15 @@ type SearchParams = {
 };
 
 export const Route = createFileRoute('/reset-password/')({
-  validateSearch: (search: Record<string, unknown>) => {
-    const token = search.token as string;
-    const rawEmail = search.email as string;
-    if (!token || !rawEmail) throw redirect({ to: '/login' });
-    const email = decodeURIComponent(rawEmail);
-    return { token, email };
+  validateSearch: (search: Record<string, unknown>): SearchParams => {
+    return {
+      token: search.token as string,
+      email: search.email as string,
+    };
   },
   beforeLoad: async ({ search }: { search: Record<string, unknown> }) => {
-    const { token, email } = search as { token: string; email: string };
+    const token = search.token as string;
+    const email = search.email as string;
     console.log(email, token);
     if (!token || !email) {
       return {
@@ -35,7 +35,7 @@ export const Route = createFileRoute('/reset-password/')({
     }
     const { data, error } = await supabase.auth.verifyOtp({
       email,
-      token,
+      token_hash: token,
       type: 'recovery',
     });
     console.log('verifyOtp', data, error);
