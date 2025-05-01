@@ -38,6 +38,7 @@ export const Route = createFileRoute('/reset-password/')({
       token,
       type: 'recovery',
     });
+    console.log('verifyOtp', data, error);
     if (error) {
       return {
         token: null,

@@ -59,10 +59,6 @@ export const useAuthState = (): AuthState => {
             return;
           }
 
-          if (event === 'PASSWORD_RECOVERY') {
-            setIsValidResetLink(true);
-            return;
-          }
           if (event === 'USER_UPDATED') {
             const { user } = session as AuthSession;
             if (user) {
