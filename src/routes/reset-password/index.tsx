@@ -2,25 +2,37 @@ import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
 import { useAuthState } from '@/hooks/useAuthState';
 import useResetPassword from '@/hooks/useResetPassword';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
+import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+type SearchParams = {
+  token: string;
+};
+
 export const Route = createFileRoute('/reset-password/')({
+  validateSearch: (search: Record<string, unknown>): SearchParams => {
+    return {
+      token: search.token as string,
+    };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
-  const { session, isValidResetLink } = useAuthState();
+  const { session } = useAuthState();
   const { snackbarState } = useContext(Context);
+  const [isValidResetLink, setIsValidResetLink] = useState<boolean | null>(
+    null,
+  );
 
   const {
     register,
@@ -47,6 +59,25 @@ function RouteComponent() {
       newPassword: data.password,
     });
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (!token) {
+      setIsValidResetLink(false);
+      return;
+    }
+
+    supabase.auth
+      .verifyOtp({ email: session?.user.email ?? '', token, type: 'recovery' })
+      .then(({ data, error }) => {
+        if (error || !data.session) {
+          setIsValidResetLink(false);
+        } else {
+          setIsValidResetLink(true);
+        }
+      });
+  }, []);
 
   if (!isValidResetLink) {
     return (
