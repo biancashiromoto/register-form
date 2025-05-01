@@ -28,7 +28,7 @@ export const Route = createFileRoute('/reset-password/')({
 function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
-  const { session } = useAuthState();
+  const { session, getSession } = useAuthState();
   const { snackbarState } = useContext(Context);
   const [isValidResetLink, setIsValidResetLink] = useState<boolean | null>(
     null,
@@ -69,6 +69,7 @@ function RouteComponent() {
     }
 
     console.log('session', session);
+    console.log('getSession', getSession());
 
     supabase.auth
       .verifyOtp({ email: session?.user.email ?? '', token, type: 'recovery' })
