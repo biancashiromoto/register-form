@@ -34,7 +34,6 @@ export const Route = createFileRoute('/reset-password/')({
       };
     }
     const { data, error } = await supabase.auth.verifyOtp({
-      email,
       token_hash: token,
       type: 'recovery',
     });
