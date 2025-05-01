@@ -25,18 +25,16 @@ const useResetPassword = () => {
       return;
     }
 
-    const redirectUrl = `${window.location.origin}/reset-password`;
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
-    });
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const message =
+      error?.message ||
+      'A password recovery email has been sent to your inbox.';
+    const severity = error ? 'error' : 'success';
 
     setSnackbarState({
       open: true,
-      message: error
-        ? error.message
-        : 'A password recovery email has been sent successfully. Please check your inbox for instructions.',
-      severity: error ? 'error' : 'success',
+      message,
+      severity,
     });
   };
 
