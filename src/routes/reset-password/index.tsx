@@ -71,6 +71,7 @@ function RouteComponent() {
     supabase.auth
       .verifyOtp({ email: session?.user.email ?? '', token, type: 'recovery' })
       .then(({ data, error }) => {
+        console.log('verifyOtp', data, error);
         if (error || !data.session) {
           setIsValidResetLink(false);
         } else {
