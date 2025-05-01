@@ -68,6 +68,8 @@ function RouteComponent() {
       return;
     }
 
+    console.log('session', session);
+
     supabase.auth
       .verifyOtp({ email: session?.user.email ?? '', token, type: 'recovery' })
       .then(({ data, error }) => {
