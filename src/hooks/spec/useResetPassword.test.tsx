@@ -68,7 +68,7 @@ describe('useResetPassword', () => {
   });
 
   it('should handle error when resetPassword fails', async () => {
-    const errorMessage = 'Error resetting password';
+    const errorMessage = 'Auth session missing!';
     (resetPassword as any).mockRejectedValue(new Error(errorMessage));
     const { result } = renderHook(() => useResetPassword(), { wrapper });
 
