@@ -46,9 +46,9 @@ function RouteComponent() {
     useResetPassword();
   const { session, getSession } = useAuthState();
   const { snackbarState } = useContext(Context);
-  const [isValidResetLink, setIsValidResetLink] = useState<boolean | null>(
-    null,
-  );
+  // const [isValidResetLink, setIsValidResetLink] = useState<boolean | null>(
+  //   null,
+  // );
 
   const {
     register,
