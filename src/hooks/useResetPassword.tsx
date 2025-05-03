@@ -1,12 +1,17 @@
 import { Context } from '@/context';
+import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
 import { resetPassword } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { useContext, useEffect } from 'react';
+import { useAuthState } from './useAuthState';
 
 const useResetPassword = () => {
   const { setSnackbarState } = useContext(Context);
+  const navigate = useNavigate();
+  const { signOut } = useAuthState();
 
   const sendResetPasswordEmail = async (
     email: UserType['email'] | undefined,
@@ -42,6 +47,9 @@ const useResetPassword = () => {
         message: 'Password successfully updated!',
         severity: 'success',
       });
+      setTimeout(() => {
+        signOut();
+      }, 1000);
     },
     onError: (error) => {
       setSnackbarState({
@@ -49,9 +57,6 @@ const useResetPassword = () => {
         message: error.message,
         severity: 'error',
       });
-    },
-    onSettled: () => {
-      console.log('settled');
     },
   });
 
