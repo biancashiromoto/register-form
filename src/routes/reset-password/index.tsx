@@ -83,12 +83,19 @@ function RouteComponent() {
     },
   });
 
-  const onSubmit = async (data: {
-    currentPassword?: string | undefined;
-    password: string;
-    confirmPassword: string;
-  }) => {
-    resetPassword(data.password);
+  const onSubmit = async ({ password }: { password: string }) => {
+    // resetPassword(data.password);
+    const { error, data } = await supabase.auth.updateUser({
+      password,
+    });
+
+    if (error) {
+      console.error('Error resetting password:', error.message);
+      throw new Error(error.message);
+    }
+
+    console.log('data', data);
+    return { data };
   };
 
   useEffect(
