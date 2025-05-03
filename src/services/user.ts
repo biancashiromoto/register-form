@@ -77,9 +77,11 @@ export const resetPassword = async (newPassword: string) => {
     password: newPassword,
   });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error('Error resetting password:', error.message);
+    throw new Error(error.message);
+  }
 
   console.log('data', data);
-  console.log('error', error);
   return { data };
 };

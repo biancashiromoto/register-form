@@ -40,6 +40,7 @@ const useResetPassword = () => {
     mutationFn: async (newPassword: string) => {
       console.log('newPassword', newPassword);
       await resetPassword(newPassword);
+      console.log('passou aqui');
     },
     onSuccess: async () => {
       setSnackbarState({
