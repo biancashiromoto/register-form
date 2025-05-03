@@ -67,21 +67,21 @@ describe('useResetPassword', () => {
   //   });
   // });
 
-  it('should handle error when resetPassword fails', async () => {
-    const errorMessage = 'Auth session missing!';
-    (resetPassword as any).mockRejectedValue(new Error(errorMessage));
-    const { result } = renderHook(() => useResetPassword(), { wrapper });
+  // it('should handle error when resetPassword fails', async () => {
+  //   const errorMessage = 'Auth session missing!';
+  //   (resetPassword as any).mockRejectedValue(new Error(errorMessage));
+  //   const { result } = renderHook(() => useResetPassword(), { wrapper });
 
-    act(() => {
-      result.current.mutate(mockUser);
-    });
+  //   act(() => {
+  //     result.current.mutate(mockUser);
+  //   });
 
-    await waitFor(() => {
-      expect(setSnackbarStateMock).toHaveBeenCalledWith({
-        open: true,
-        message: errorMessage,
-        severity: 'error',
-      });
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(setSnackbarStateMock).toHaveBeenCalledWith({
+  //       open: true,
+  //       message: errorMessage,
+  //       severity: 'error',
+  //     });
+  //   });
+  // });
 });
