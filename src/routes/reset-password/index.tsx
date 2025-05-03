@@ -55,11 +55,6 @@ export const Route = createFileRoute('/reset-password/')({
 
     console.log('loader', token);
 
-    if (!token) {
-      console.log('loader !token');
-      throw new Error('Invalid or expired link');
-    }
-
     const { data, error } = await supabase.auth.verifyOtp({
       token_hash: token,
       type: 'recovery',
