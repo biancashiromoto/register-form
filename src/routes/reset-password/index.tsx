@@ -86,8 +86,9 @@ function RouteComponent() {
 
   const onSubmit = async (formData: { password: string }) => {
     // setIsLoading(true);
+    console.log('passou aqui', formData);
     resetPassword(formData.password);
-    // console.log('passou aqui', formData);
+    console.log('pós resetPassword');
     // try {
     //   const { data } = await supabase.auth.updateUser({
     //     password: formData.password,
