@@ -105,10 +105,7 @@ function RouteComponent() {
   //   () => console.log('isPendingResetPassword', isPendingResetPassword),
   //   [isPendingResetPassword],
   // );
-  useEffect(
-    () => console.log('isPendingResetPassword', isPendingResetPassword),
-    [isPendingResetPassword],
-  );
+  useEffect(() => console.log('isLoading', isLoading), [isLoading]);
 
   return (
     <Container maxWidth="sm">
