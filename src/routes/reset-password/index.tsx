@@ -53,7 +53,7 @@ export const Route = createFileRoute('/reset-password/')({
 
     if (error || !data.session) {
       await supabase.auth.signOut();
-      throw redirect({ to: '/login' });
+      throw new Error('Invalid or expired token');
     }
 
     return { session: data.session };
@@ -63,13 +63,10 @@ export const Route = createFileRoute('/reset-password/')({
 });
 
 function RouteComponent() {
-  // const {
-  //   mutate: resetPassword,
-  //   isPending: isPendingResetPassword,
-  //   status,
-  // } = useResetPassword();
+  const { mutate: resetPassword, isPending: isPendingResetPassword } =
+    useResetPassword();
   const { snackbarState } = useContext(Context);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -88,26 +85,30 @@ function RouteComponent() {
   });
 
   const onSubmit = async (formData: { password: string }) => {
-    setIsLoading(true);
-    console.log('passou aqui', formData);
-    try {
-      const { data } = await supabase.auth.updateUser({
-        password: formData.password,
-      });
-      console.log('data', data);
-    } catch (error: any) {
-      console.log('passou no error', error);
-      throw new Error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
+    // setIsLoading(true);
+    resetPassword(formData.password);
+    // console.log('passou aqui', formData);
+    // try {
+    //   const { data } = await supabase.auth.updateUser({
+    //     password: formData.password,
+    //   });
+    //   console.log('data', data);
+    // } catch (error: any) {
+    //   console.log('passou no error', error);
+    //   throw new Error(error.message);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   // useEffect(
   //   () => console.log('isPendingResetPassword', isPendingResetPassword),
   //   [isPendingResetPassword],
   // );
-  useEffect(() => console.log('isLoading', isLoading), [isLoading]);
+  useEffect(
+    () => console.log('isPendingResetPassword', isPendingResetPassword),
+    [isPendingResetPassword],
+  );
 
   return (
     <Container maxWidth="sm">
@@ -123,7 +124,7 @@ function RouteComponent() {
           isConfirmPassword
           label="Confirm new password"
         />
-        <CustomButton type="submit" disabled={isLoading}>
+        <CustomButton type="submit" disabled={isPendingResetPassword}>
           Update Password
         </CustomButton>
       </Box>
