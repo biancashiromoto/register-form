@@ -57,7 +57,7 @@ const useResetPassword = () => {
     },
   });
 
-  useEffect(() => console.log(isPending), [isPending]);
+  useEffect(() => console.log('isPending', isPending), [isPending]);
 
   return { mutate, isPending, sendResetPasswordEmail };
 };

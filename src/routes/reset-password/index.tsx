@@ -8,7 +8,7 @@ import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const formStyles = {
@@ -90,6 +90,11 @@ function RouteComponent() {
   }) => {
     resetPassword(data.password);
   };
+
+  useEffect(
+    () => console.log('isPendingResetPassword', isPendingResetPassword),
+    [isPendingResetPassword],
+  );
 
   return (
     <Container maxWidth="sm">
