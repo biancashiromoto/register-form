@@ -50,23 +50,45 @@ export const Route = createFileRoute('/reset-password/')({
     }
     return { token };
   },
-  loader: async ({ search }: any) => {
-    console.log('loader', search);
-    const { token } = search as SearchParams;
+  // loader: async ({ search }: any) => {
+  //   console.log('loader', search);
+  //   const { token } = search as SearchParams;
 
-    console.log('loader', token);
+  //   console.log('loader', token);
+
+  //   const { data, error } = await supabase.auth.verifyOtp({
+  //     token_hash: token,
+  //     type: 'recovery',
+  //   });
+
+  //   console.log('verifyOtp', data, error);
+
+  //   if (error || !data.session) {
+  //     console.log('loader error || !data.session', error, data);
+  //     throw new Error('Invalid or expired link');
+  //   }
+  //   return null;
+  // },
+  loader: async ({ location }) => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+    console.log('loader token', token);
+    if (!token) {
+      console.log('loader !token', !token);
+      throw new Error('Invalid or expired token');
+    }
 
     const { data, error } = await supabase.auth.verifyOtp({
       token_hash: token,
       type: 'recovery',
     });
 
-    console.log('verifyOtp', data, error);
-
+    console.log('loader data', data);
     if (error || !data.session) {
-      console.log('loader error || !data.session', error, data);
-      throw new Error('Invalid or expired link');
+      console.log('loader error || !data.session', error, !data.session);
+      throw new Error('Invalid or expired reset link');
     }
+
     return null;
   },
   errorComponent: () => {
