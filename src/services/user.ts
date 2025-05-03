@@ -80,5 +80,6 @@ export const resetPassword = async (newPassword: string) => {
   if (error) throw new Error(error.message);
 
   console.log('data', data);
+  console.log('error', error);
   return { data };
 };
