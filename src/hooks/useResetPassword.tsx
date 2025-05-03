@@ -1,5 +1,4 @@
 import { Context } from '@/context';
-import { delay } from '@/helpers';
 import { supabase } from '@/services/supabase';
 import { resetPassword } from '@/services/user';
 import { UserType } from '@/types';
@@ -45,10 +44,9 @@ const useResetPassword = () => {
         message: 'Password successfully updated!',
         severity: 'success',
       });
-      delay();
       await supabase.auth.signOut();
       localStorage.clear();
-      navigate({ to: '/login' });
+      navigate({ to: '/login', replace: true });
     },
     onError: (error) => {
       setSnackbarState({
