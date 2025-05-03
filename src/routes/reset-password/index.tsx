@@ -7,11 +7,11 @@ import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
-function InvalidResetLink() {
+const InvalidResetLink = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h5" align="center" gutterBottom>
@@ -26,7 +26,7 @@ function InvalidResetLink() {
       </Box>
     </Container>
   );
-}
+};
 
 export const Route = createFileRoute('/reset-password/')({
   validateSearch: (search) => {
@@ -44,14 +44,14 @@ export const Route = createFileRoute('/reset-password/')({
       type: 'recovery',
     });
 
-    if (error || !data.session)
-      throw new Error('Invalid or expired reset link');
+    if (error || !data.session) {
+      await supabase.auth.signOut();
+      throw redirect({ to: '/login' });
+    }
 
-    return null;
+    return { session: data.session };
   },
-  errorComponent: () => {
-    return <InvalidResetLink />;
-  },
+  errorComponent: () => <InvalidResetLink />,
   component: RouteComponent,
 });
 
