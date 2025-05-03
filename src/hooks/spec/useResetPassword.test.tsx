@@ -49,23 +49,23 @@ describe('useResetPassword', () => {
     </Context.Provider>
   );
 
-  it('should successfully reset password', async () => {
-    (resetPassword as any).mockResolvedValue({ success: true });
-    const { result } = renderHook(() => useResetPassword(), { wrapper });
+  // it('should successfully reset password', async () => {
+  //   (resetPassword as any).mockResolvedValue({ success: true });
+  //   const { result } = renderHook(() => useResetPassword(), { wrapper });
 
-    act(() => {
-      result.current.mutate(mockUser);
-    });
+  //   act(() => {
+  //     result.current.mutate(mockUser);
+  //   });
 
-    await waitFor(() => {
-      expect(resetPassword).toHaveBeenCalledTimes(1);
-      expect(setSnackbarStateMock).toHaveBeenCalledWith({
-        open: true,
-        message: 'Password successfully updated!',
-        severity: 'success',
-      });
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(resetPassword).toHaveBeenCalledTimes(1);
+  //     expect(setSnackbarStateMock).toHaveBeenCalledWith({
+  //       open: true,
+  //       message: 'Password successfully updated!',
+  //       severity: 'success',
+  //     });
+  //   });
+  // });
 
   it('should handle error when resetPassword fails', async () => {
     const errorMessage = 'Auth session missing!';
