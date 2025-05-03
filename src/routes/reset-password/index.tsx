@@ -8,7 +8,7 @@ import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const formStyles = {
@@ -66,6 +66,7 @@ function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
   const { snackbarState } = useContext(Context);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -84,18 +85,20 @@ function RouteComponent() {
   });
 
   const onSubmit = async ({ password }: { password: string }) => {
+    setIsLoading(true);
     // resetPassword(data.password);
-    const { error, data } = await supabase.auth.updateUser({
-      password,
-    });
+    try {
+      const { data } = await supabase.auth.updateUser({
+        password,
+      });
 
-    if (error) {
+      return { data };
+    } catch (error: any) {
       console.error('Error resetting password:', error.message);
       throw new Error(error.message);
+    } finally {
+      setIsLoading(false);
     }
-
-    console.log('data', data);
-    return { data };
   };
 
   useEffect(
