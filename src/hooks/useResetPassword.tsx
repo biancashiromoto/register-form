@@ -43,14 +43,14 @@ const useResetPassword = () => {
       console.log('passou aqui');
     },
     onSuccess: async () => {
-      setSnackbarState({
-        open: true,
-        message: 'Password successfully updated!',
-        severity: 'success',
-      });
+      // setSnackbarState({
+      //   open: true,
+      //   message: 'Password successfully updated!',
+      //   severity: 'success',
+      // });
       await supabase.auth.signOut();
       localStorage.clear();
-      navigate({ to: '/login', replace: true });
+      navigate({ to: '/login', replace: true, viewTransition: true });
     },
     onError: (error) => {
       setSnackbarState({
