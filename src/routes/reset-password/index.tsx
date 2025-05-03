@@ -11,6 +11,13 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
+const formStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 2,
+  mt: 4,
+};
+
 const InvalidResetLink = () => {
   return (
     <Container maxWidth="sm">
@@ -88,16 +95,7 @@ function RouteComponent() {
 
   return (
     <Container maxWidth="sm">
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmit)}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          mt: 4,
-        }}
-      >
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={formStyles}>
         <InputPassword
           errors={errors}
           register={register}
