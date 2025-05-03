@@ -33,7 +33,7 @@ const useResetPassword = () => {
     });
   };
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isPaused } = useMutation({
     mutationKey: ['resetPassword'],
     mutationFn: (newPassword: string) => resetPassword(newPassword),
     onSuccess: () => {
@@ -56,6 +56,7 @@ const useResetPassword = () => {
   });
 
   useEffect(() => console.log('isPending', isPending), [isPending]);
+  useEffect(() => console.log('isPaused', isPaused), [isPaused]);
 
   return { mutate, isPending, sendResetPasswordEmail };
 };

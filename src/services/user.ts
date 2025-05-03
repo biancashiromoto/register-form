@@ -73,15 +73,15 @@ export const updateUser = async (user: UserType) => {
 };
 
 export const resetPassword = async (password: string) => {
-  const { error, data } = await supabase.auth.updateUser({
+  if (!password) return;
+
+  const { data, error } = await supabase.auth.updateUser({
     password,
   });
 
   if (error) {
-    console.error('Error resetting password:', error.message);
     throw new Error(error.message);
   }
 
-  console.log('data', data);
   return { data };
 };
