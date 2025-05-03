@@ -8,7 +8,7 @@ import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const formStyles = {
@@ -63,12 +63,13 @@ export const Route = createFileRoute('/reset-password/')({
 });
 
 function RouteComponent() {
-  const {
-    mutate: resetPassword,
-    isPending: isPendingResetPassword,
-    status,
-  } = useResetPassword();
+  // const {
+  //   mutate: resetPassword,
+  //   isPending: isPendingResetPassword,
+  //   status,
+  // } = useResetPassword();
   const { snackbarState } = useContext(Context);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -86,15 +87,23 @@ function RouteComponent() {
     },
   });
 
-  const onSubmit = async (data: { password: string }) => {
-    resetPassword(data.password);
+  const onSubmit = async (formData: { password: string }) => {
+    try {
+      await supabase.auth.updateUser({
+        password: formData.password,
+      });
+    } catch (error: any) {
+      throw new Error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  useEffect(
-    () => console.log('isPendingResetPassword', isPendingResetPassword),
-    [isPendingResetPassword],
-  );
-  useEffect(() => console.log('status', status), [status]);
+  // useEffect(
+  //   () => console.log('isPendingResetPassword', isPendingResetPassword),
+  //   [isPendingResetPassword],
+  // );
+  useEffect(() => console.log('isLoading', isLoading), [isLoading]);
 
   return (
     <Container maxWidth="sm">
@@ -110,7 +119,7 @@ function RouteComponent() {
           isConfirmPassword
           label="Confirm new password"
         />
-        <CustomButton type="submit" disabled={isPendingResetPassword}>
+        <CustomButton type="submit" disabled={isLoading}>
           Update Password
         </CustomButton>
       </Box>
