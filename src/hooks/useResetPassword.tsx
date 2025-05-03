@@ -6,12 +6,10 @@ import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
-import { useAuthState } from './useAuthState';
 
 const useResetPassword = () => {
   const { setSnackbarState } = useContext(Context);
   const navigate = useNavigate();
-  const { session } = useAuthState();
 
   const sendResetPasswordEmail = async (
     email: UserType['email'] | undefined,
@@ -40,9 +38,7 @@ const useResetPassword = () => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ['resetPassword'],
-    mutationFn: async ({ newPassword }: { newPassword: string }) => {
-      await resetPassword(newPassword);
-    },
+    mutationFn: (newPassword: string) => resetPassword(newPassword),
     onSuccess: async () => {
       setSnackbarState({
         open: true,
