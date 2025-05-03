@@ -24,7 +24,7 @@ const validateError = (error: Error) => {
 
 export const useAuthState = (): AuthState => {
   const [session, setSession] = useState<AuthSession | null>(null);
-  const [isValidResetLink, setIsValidResetLink] = useState(false);
+  const [isValidResetLink] = useState(false);
 
   const getSession = async () => {
     const { data } = await supabase.auth.getSession();
