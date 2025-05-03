@@ -38,11 +38,8 @@ const useResetPassword = () => {
   const { mutate, isPending } = useMutation({
     mutationKey: ['resetPassword'],
     mutationFn: async (newPassword: string) => {
-      const { error, data } = await supabase.auth.updateUser({
-        password: newPassword,
-      });
-      if (error) throw new Error(error.message);
-      return data;
+      console.log('newPassword', newPassword);
+      await resetPassword(newPassword);
     },
     onSuccess: async () => {
       setSnackbarState({
