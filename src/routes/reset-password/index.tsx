@@ -88,9 +88,7 @@ function RouteComponent() {
     password: string;
     confirmPassword: string;
   }) => {
-    resetPassword({
-      newPassword: data.password,
-    });
+    resetPassword(data.password);
   };
 
   return (
