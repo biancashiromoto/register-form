@@ -50,7 +50,9 @@ const useResetPassword = () => {
         severity: 'success',
       });
       delay();
-      navigate({ to: `${session ? '/profile' : '/login'}` });
+      await supabase.auth.signOut();
+      localStorage.clear();
+      navigate({ to: '/login' });
     },
     onError: (error) => {
       setSnackbarState({
