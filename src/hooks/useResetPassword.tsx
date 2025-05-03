@@ -35,13 +35,11 @@ const useResetPassword = () => {
     });
   };
 
-  const { mutate, isPending, status } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ['resetPassword'],
-    mutationFn: async (newPassword: string) => {
-      await resetPassword(newPassword);
-      console.log('passou aqui', newPassword);
-    },
+    mutationFn: (newPassword: string) => resetPassword(newPassword),
     onSuccess: async () => {
+      console.log('success');
       setSnackbarState({
         open: true,
         message: 'Password successfully updated!',
@@ -52,6 +50,7 @@ const useResetPassword = () => {
       navigate({ to: '/login', replace: true });
     },
     onError: (error) => {
+      console.log('error');
       setSnackbarState({
         open: true,
         message: error.message,
@@ -62,7 +61,7 @@ const useResetPassword = () => {
 
   useEffect(() => console.log('isPending', isPending), [isPending]);
 
-  return { mutate, isPending, sendResetPasswordEmail, status };
+  return { mutate, isPending, sendResetPasswordEmail };
 };
 
 export default useResetPassword;
