@@ -82,28 +82,6 @@ function RouteComponent() {
     });
   };
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    if (!token) {
-      setIsValidResetLink(false);
-      return;
-    }
-
-    console.log('session', session);
-
-    supabase.auth
-      .verifyOtp({ email: session?.user.email ?? '', token, type: 'recovery' })
-      .then(({ data, error }) => {
-        console.log('verifyOtp', data, error);
-        if (error || !data.session) {
-          setIsValidResetLink(false);
-        } else {
-          setIsValidResetLink(true);
-        }
-      });
-  }, []);
-
   if (!isValidResetLink) {
     return (
       <Container maxWidth="sm">
@@ -157,3 +135,100 @@ function RouteComponent() {
     </Container>
   );
 }
+
+// import CustomButton from '@/components/Button';
+// import InputPassword from '@/components/InputPassword';
+// import { CustomSnackbar } from '@/components/Snackbar';
+// import { Context } from '@/context';
+// import useResetPassword from '@/hooks/useResetPassword';
+// import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
+// import { zodResolver } from '@hookform/resolvers/zod';
+// import { Box, Container, Typography } from '@mui/material';
+// import { createFileRoute, redirect } from '@tanstack/react-router';
+// import { useContext } from 'react';
+// import { useForm } from 'react-hook-form';
+// import { supabase } from '@/services/supabase';
+
+// // Define search params type
+// interface SearchParams {
+//   token: string;
+// }
+
+// // Create route with path, search validation and guard
+// export const Route = createFileRoute('/reset-password/')({
+//   validateSearch: (search: Record<string, unknown>): SearchParams => {
+//     const token = search.token as string;
+//     if (!token) {
+//       throw redirect({ to: '/login' });
+//     }
+//     return { token };
+//   },
+//   beforeLoad: async ({ search }) => {
+//     const { token } = search as SearchParams;
+//     const { data, error } = await supabase.auth.verifyOtp({
+//       token_hash: token,
+//       type: 'recovery',
+//     });
+//     if (error || !data.session) {
+//       // Invalid or expired token → redirect to login
+//       redirect({ to: '/login' });
+//       return false;
+//     }
+//     return true;
+//   },
+//   component: RouteComponent,
+// });
+
+// function RouteComponent() {
+//   const { mutate: resetPassword, isPending: isPendingResetPassword } =
+//     useResetPassword();
+//   const { snackbarState } = useContext(Context);
+
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//   } = useForm<{
+//     password: string;
+//     confirmPassword: string;
+//   }>({
+//     resolver: zodResolver(resetPasswordSchema),
+//     mode: 'onSubmit',
+//     defaultValues: { password: '', confirmPassword: '' },
+//   });
+
+//   const onSubmit = (data: { password: string; confirmPassword: string }) => {
+//     resetPassword({ newPassword: data.password });
+//   };
+
+//   return (
+//     <Container maxWidth="sm">
+//       <Typography variant="h4" align="center" gutterBottom>
+//         Reset Password
+//       </Typography>
+//       <Box
+//         component="form"
+//         onSubmit={handleSubmit(onSubmit)}
+//         sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}
+//       >
+//         <InputPassword
+//           errors={errors}
+//           register={register}
+//           label="New password"
+//         />
+//         <InputPassword
+//           errors={errors}
+//           register={register}
+//           isConfirmPassword
+//           label="Confirm new password"
+//         />
+//         <CustomButton type="submit" disabled={isPendingResetPassword}>
+//           Update Password
+//         </CustomButton>
+//       </Box>
+//       {snackbarState && <CustomSnackbar />}
+//     </Container>
+//   );
+// }
+
+// export default RouteComponent;
