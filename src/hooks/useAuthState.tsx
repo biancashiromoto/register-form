@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 
 export interface AuthState {
   session: Session | null;
-  // getSession: () => Promise<Session | null>;
   isValidResetLink: boolean;
   signIn: (data: SignInWithPasswordCredentials) => Promise<void>;
   signOut: () => Promise<void>;
@@ -90,8 +89,6 @@ export const useAuthState = (): AuthState => {
     signOut,
     getSession,
     session,
-    //   getSession,
-    //   handleSignOut,
     isValidResetLink,
   };
 };

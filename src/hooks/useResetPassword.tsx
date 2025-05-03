@@ -1,16 +1,13 @@
 import { Context } from '@/context';
-import { useAuth } from '@/context/authContext';
 import { supabase } from '@/services/supabase';
 import { resetPassword } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useAuthState } from './useAuthState';
 
 const useResetPassword = () => {
   const { setSnackbarState } = useContext(Context);
-  const navigate = useNavigate();
   const { signOut } = useAuthState();
 
   const sendResetPasswordEmail = async (
@@ -38,7 +35,7 @@ const useResetPassword = () => {
     });
   };
 
-  const { mutate, isPending, isPaused } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ['resetPassword'],
     mutationFn: (password: string) => resetPassword(password),
     onSuccess: () => {
@@ -59,9 +56,6 @@ const useResetPassword = () => {
       });
     },
   });
-
-  useEffect(() => console.log('isPending', isPending), [isPending]);
-  useEffect(() => console.log('isPaused', isPaused), [isPaused]);
 
   return { mutate, isPending, sendResetPasswordEmail };
 };
