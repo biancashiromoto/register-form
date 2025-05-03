@@ -66,7 +66,7 @@ function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
   const { snackbarState } = useContext(Context);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -85,10 +85,9 @@ function RouteComponent() {
   });
 
   const onSubmit = async (formData: { password: string }) => {
-    // setIsLoading(true);
-    console.log('passou aqui', formData);
+    setIsLoading(true);
     resetPassword(formData.password);
-    console.log('pós resetPassword');
+    setIsLoading(false);
     // try {
     //   const { data } = await supabase.auth.updateUser({
     //     password: formData.password,
@@ -125,7 +124,7 @@ function RouteComponent() {
           isConfirmPassword
           label="Confirm new password"
         />
-        <CustomButton type="submit" disabled={isPendingResetPassword}>
+        <CustomButton type="submit" disabled={isLoading}>
           Update Password
         </CustomButton>
       </Box>
