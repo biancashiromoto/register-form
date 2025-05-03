@@ -3,12 +3,10 @@ import { supabase } from '@/services/supabase';
 import { resetPassword } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
 import { useContext, useEffect } from 'react';
 
 const useResetPassword = () => {
   const { setSnackbarState } = useContext(Context);
-  const navigate = useNavigate();
 
   const sendResetPasswordEmail = async (
     email: UserType['email'] | undefined,
@@ -37,23 +35,15 @@ const useResetPassword = () => {
 
   const { mutate, isPending } = useMutation({
     mutationKey: ['resetPassword'],
-    mutationFn: async (newPassword: string) => {
-      await resetPassword(newPassword);
-      console.log('passou aqui!!!!');
-    },
-    onSuccess: async () => {
-      console.log('success');
+    mutationFn: (newPassword: string) => resetPassword(newPassword),
+    onSuccess: () => {
       setSnackbarState({
         open: true,
         message: 'Password successfully updated!',
         severity: 'success',
       });
-      // await supabase.auth.signOut();
-      // localStorage.clear();
-      // navigate({ to: '/login', replace: true });
     },
     onError: (error) => {
-      console.log('error');
       setSnackbarState({
         open: true,
         message: error.message,

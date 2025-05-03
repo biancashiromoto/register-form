@@ -66,7 +66,6 @@ function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
   const { snackbarState } = useContext(Context);
-  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -84,28 +83,9 @@ function RouteComponent() {
     },
   });
 
-  const onSubmit = async (formData: { password: string }) => {
-    setIsLoading(true);
+  const onSubmit = (formData: { password: string }) => {
     resetPassword(formData.password);
-    setIsLoading(false);
-    // try {
-    //   const { data } = await supabase.auth.updateUser({
-    //     password: formData.password,
-    //   });
-    //   console.log('data', data);
-    // } catch (error: any) {
-    //   console.log('passou no error', error);
-    //   throw new Error(error.message);
-    // } finally {
-    //   setIsLoading(false);
-    // }
   };
-
-  // useEffect(
-  //   () => console.log('isPendingResetPassword', isPendingResetPassword),
-  //   [isPendingResetPassword],
-  // );
-  useEffect(() => console.log('isLoading', isLoading), [isLoading]);
 
   return (
     <Container maxWidth="sm">
@@ -121,7 +101,7 @@ function RouteComponent() {
           isConfirmPassword
           label="Confirm new password"
         />
-        <CustomButton type="submit" disabled={isLoading}>
+        <CustomButton type="submit" disabled={isPendingResetPassword}>
           Update Password
         </CustomButton>
       </Box>

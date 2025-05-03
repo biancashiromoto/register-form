@@ -12,7 +12,7 @@ const useRegisterUser = () => {
   const { mutate, isPending } = useMutation({
     mutationKey: ['registerUser'],
     mutationFn: (data: UserType) => signUpUser(data),
-    onSuccess: async () => {
+    onSuccess: () => {
       navigate({
         to: '/register/success',
         replace: true,
