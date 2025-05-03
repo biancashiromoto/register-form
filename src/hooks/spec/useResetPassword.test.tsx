@@ -54,7 +54,7 @@ describe('useResetPassword', () => {
     const { result } = renderHook(() => useResetPassword(), { wrapper });
 
     act(() => {
-      result.current.mutate(mockUser);
+      result.current.mutate(mockUser.password as string);
     });
 
     await waitFor(() => {
@@ -73,13 +73,45 @@ describe('useResetPassword', () => {
     const { result } = renderHook(() => useResetPassword(), { wrapper });
 
     act(() => {
-      result.current.mutate(mockUser);
+      result.current.mutate(mockUser.password as string);
     });
 
     await waitFor(() => {
       expect(setSnackbarStateMock).toHaveBeenCalledWith({
         open: true,
         message: errorMessage,
+        severity: 'error',
+      });
+    });
+  });
+
+  it('should call sendResetPasswordEmail with valid email', async () => {
+    const { result } = renderHook(() => useResetPassword(), { wrapper });
+
+    act(() => {
+      result.current.sendResetPasswordEmail(mockUser.email);
+    });
+
+    await waitFor(() => {
+      expect(setSnackbarStateMock).toHaveBeenCalledWith({
+        open: true,
+        message: 'A password recovery email has been sent to your inbox.',
+        severity: 'success',
+      });
+    });
+  });
+
+  it('should handle invalid email', async () => {
+    const { result } = renderHook(() => useResetPassword(), { wrapper });
+
+    act(() => {
+      result.current.sendResetPasswordEmail(undefined);
+    });
+
+    await waitFor(() => {
+      expect(setSnackbarStateMock).toHaveBeenCalledWith({
+        open: true,
+        message: 'Please enter a valid email',
         severity: 'error',
       });
     });
