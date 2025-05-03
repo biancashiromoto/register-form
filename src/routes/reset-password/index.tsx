@@ -2,7 +2,6 @@ import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
-import useResetPassword from '@/hooks/useResetPassword';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -63,8 +62,6 @@ export const Route = createFileRoute('/reset-password/')({
 });
 
 function RouteComponent() {
-  const { mutate: resetPassword, isPending: isPendingResetPassword } =
-    useResetPassword();
   const { snackbarState } = useContext(Context);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -101,10 +98,7 @@ function RouteComponent() {
     }
   };
 
-  useEffect(
-    () => console.log('isPendingResetPassword', isPendingResetPassword),
-    [isPendingResetPassword],
-  );
+  useEffect(() => console.log('isLoading', isLoading), [isLoading]);
 
   return (
     <Container maxWidth="sm">
@@ -120,7 +114,7 @@ function RouteComponent() {
           isConfirmPassword
           label="Confirm new password"
         />
-        <CustomButton type="submit" disabled={isPendingResetPassword}>
+        <CustomButton type="submit" disabled={isLoading}>
           Update Password
         </CustomButton>
       </Box>
