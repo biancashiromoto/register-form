@@ -37,6 +37,7 @@ export const Route = createFileRoute('/reset-password/')({
     console.log('verifyOtp', data, error);
     if (error) redirect({ to: '/login' });
     isValidResetLink = true;
+    console.log('isValidResetLink', isValidResetLink);
   },
   component: RouteComponent,
 });
