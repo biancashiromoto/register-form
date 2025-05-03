@@ -2,13 +2,12 @@ import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
-import { useAuthState } from '@/hooks/useAuthState';
 import useResetPassword from '@/hooks/useResetPassword';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -29,70 +28,28 @@ function InvalidResetLink() {
   );
 }
 
-type SearchParams = {
-  token: string;
-  email: string;
-};
-
 export const Route = createFileRoute('/reset-password/')({
-  // validateSearch: (search: Record<string, unknown>): SearchParams => {
-  //   return {
-  //     token: search.token as string,
-  //     email: search.email as string,
-  //   };
-  // },
   validateSearch: (search) => {
     const token = search.token as string;
-    console.log('validateSearch');
-    if (!token) {
-      console.log('validateSearch !token');
-      throw redirect({ to: '/login' });
-    }
+    if (!token) throw new Error('Invalid or expired token');
     return { token };
   },
-  // loader: async ({ search }: any) => {
-  //   console.log('loader', search);
-  //   const { token } = search as SearchParams;
-
-  //   console.log('loader', token);
-
-  //   const { data, error } = await supabase.auth.verifyOtp({
-  //     token_hash: token,
-  //     type: 'recovery',
-  //   });
-
-  //   console.log('verifyOtp', data, error);
-
-  //   if (error || !data.session) {
-  //     console.log('loader error || !data.session', error, data);
-  //     throw new Error('Invalid or expired link');
-  //   }
-  //   return null;
-  // },
   loader: async ({ location }) => {
     const params = new URLSearchParams(location.search);
     const token = params.get('token');
-    console.log('loader token', token);
-    if (!token) {
-      console.log('loader !token', !token);
-      throw new Error('Invalid or expired token');
-    }
+    if (!token) throw new Error('Invalid or expired token');
 
     const { data, error } = await supabase.auth.verifyOtp({
       token_hash: token,
       type: 'recovery',
     });
 
-    console.log('loader data', data);
-    if (error || !data.session) {
-      console.log('loader error || !data.session', error, !data.session);
+    if (error || !data.session)
       throw new Error('Invalid or expired reset link');
-    }
 
     return null;
   },
   errorComponent: () => {
-    console.log('errorComponent');
     return <InvalidResetLink />;
   },
   component: RouteComponent,
@@ -101,7 +58,6 @@ export const Route = createFileRoute('/reset-password/')({
 function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
-  const { session, getSession } = useAuthState();
   const { snackbarState } = useContext(Context);
 
   const {
