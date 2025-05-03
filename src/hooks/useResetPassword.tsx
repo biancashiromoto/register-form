@@ -35,22 +35,21 @@ const useResetPassword = () => {
     });
   };
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, status } = useMutation({
     mutationKey: ['resetPassword'],
     mutationFn: async (newPassword: string) => {
-      console.log('newPassword', newPassword);
       await resetPassword(newPassword);
-      console.log('passou aqui');
+      console.log('passou aqui', newPassword);
     },
     onSuccess: async () => {
-      // setSnackbarState({
-      //   open: true,
-      //   message: 'Password successfully updated!',
-      //   severity: 'success',
-      // });
+      setSnackbarState({
+        open: true,
+        message: 'Password successfully updated!',
+        severity: 'success',
+      });
       await supabase.auth.signOut();
       localStorage.clear();
-      navigate({ to: '/login', replace: true, viewTransition: true });
+      navigate({ to: '/login', replace: true });
     },
     onError: (error) => {
       setSnackbarState({
@@ -63,7 +62,7 @@ const useResetPassword = () => {
 
   useEffect(() => console.log('isPending', isPending), [isPending]);
 
-  return { mutate, isPending, sendResetPasswordEmail };
+  return { mutate, isPending, sendResetPasswordEmail, status };
 };
 
 export default useResetPassword;

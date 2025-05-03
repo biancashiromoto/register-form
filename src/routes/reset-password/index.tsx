@@ -2,12 +2,13 @@ import CustomButton from '@/components/Button';
 import InputPassword from '@/components/InputPassword';
 import { CustomSnackbar } from '@/components/Snackbar';
 import { Context } from '@/context';
+import useResetPassword from '@/hooks/useResetPassword';
 import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const formStyles = {
@@ -62,8 +63,12 @@ export const Route = createFileRoute('/reset-password/')({
 });
 
 function RouteComponent() {
+  const {
+    mutate: resetPassword,
+    isPending: isPendingResetPassword,
+    status,
+  } = useResetPassword();
   const { snackbarState } = useContext(Context);
-  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -81,24 +86,15 @@ function RouteComponent() {
     },
   });
 
-  const onSubmit = async ({ password }: { password: string }) => {
-    setIsLoading(true);
-    // resetPassword(data.password);
-    try {
-      const { data } = await supabase.auth.updateUser({
-        password,
-      });
-
-      return { data };
-    } catch (error: any) {
-      console.error('Error resetting password:', error.message);
-      throw new Error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
+  const onSubmit = async (data: { password: string }) => {
+    resetPassword(data.password);
   };
 
-  useEffect(() => console.log('isLoading', isLoading), [isLoading]);
+  useEffect(
+    () => console.log('isPendingResetPassword', isPendingResetPassword),
+    [isPendingResetPassword],
+  );
+  useEffect(() => console.log('status', status), [status]);
 
   return (
     <Container maxWidth="sm">
@@ -114,7 +110,7 @@ function RouteComponent() {
           isConfirmPassword
           label="Confirm new password"
         />
-        <CustomButton type="submit" disabled={isLoading}>
+        <CustomButton type="submit" disabled={isPendingResetPassword}>
           Update Password
         </CustomButton>
       </Box>
