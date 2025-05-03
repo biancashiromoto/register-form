@@ -51,6 +51,7 @@ export const Route = createFileRoute('/reset-password/')({
     return { token };
   },
   loader: async ({ search }: any) => {
+    console.log('loader', search);
     const { token } = search as SearchParams;
 
     console.log('loader', token);
@@ -72,25 +73,6 @@ export const Route = createFileRoute('/reset-password/')({
     console.log('errorComponent');
     return <InvalidResetLink />;
   },
-  // beforeLoad: async ({ search }: { search: Record<string, unknown> }) => {
-  //   const token = search.token as string;
-  //   const email = search.email as string;
-  //   if (!token || !email) {
-  //     return {
-  //       token: null,
-  //     };
-  //   }
-  //   const { data, error } = await supabase.auth.verifyOtp({
-  //     token_hash: token,
-  //     type: 'recovery',
-  //   });
-  //   console.log('verifyOtp', data, error);
-  //   if (error) {
-  //     return {
-  //       token: null,
-  //     };
-  //   }
-  // },
   component: RouteComponent,
 });
 
