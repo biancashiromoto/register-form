@@ -4,7 +4,7 @@ import { resetPassword } from '@/services/user';
 import { UserType } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 const useResetPassword = () => {
   const { setSnackbarState } = useContext(Context);
@@ -56,6 +56,8 @@ const useResetPassword = () => {
       });
     },
   });
+
+  useEffect(() => console.log(isPending), [isPending]);
 
   return { mutate, isPending, sendResetPasswordEmail };
 };
