@@ -8,9 +8,11 @@ import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+
+let isValidResetLink = false;
 
 type SearchParams = {
   token: string;
@@ -27,22 +29,14 @@ export const Route = createFileRoute('/reset-password/')({
   beforeLoad: async ({ search }: { search: Record<string, unknown> }) => {
     const token = search.token as string;
     const email = search.email as string;
-    console.log(email, token);
-    if (!token || !email) {
-      return {
-        token: null,
-      };
-    }
+    if (!token || !email) redirect({ to: '/login' });
     const { data, error } = await supabase.auth.verifyOtp({
       token_hash: token,
       type: 'recovery',
     });
     console.log('verifyOtp', data, error);
-    if (error) {
-      return {
-        token: null,
-      };
-    }
+    if (error) redirect({ to: '/login' });
+    isValidResetLink = true;
   },
   component: RouteComponent,
 });
