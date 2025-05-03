@@ -9,10 +9,25 @@ import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
-let isValidResetLink = false;
+function InvalidResetLink() {
+  return (
+    <Container maxWidth="sm">
+      <Typography variant="h5" align="center" gutterBottom>
+        Invalid Reset Link
+      </Typography>
+      <Typography variant="body1" align="center" gutterBottom>
+        This password reset link is invalid or has expired. Please request a new
+        password reset.
+      </Typography>
+      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+        <CustomButton href="/login">Return to Login</CustomButton>
+      </Box>
+    </Container>
+  );
+}
 
 type SearchParams = {
   token: string;
@@ -20,25 +35,60 @@ type SearchParams = {
 };
 
 export const Route = createFileRoute('/reset-password/')({
-  validateSearch: (search: Record<string, unknown>): SearchParams => {
-    return {
-      token: search.token as string,
-      email: search.email as string,
-    };
+  // validateSearch: (search: Record<string, unknown>): SearchParams => {
+  //   return {
+  //     token: search.token as string,
+  //     email: search.email as string,
+  //   };
+  // },
+  validateSearch: (search) => {
+    const token = search.token as string;
+    if (!token) {
+      console.log('validateSearch');
+      throw redirect({ to: '/login' });
+    }
+    return { token };
   },
-  beforeLoad: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ search }: any) => {
     const token = search.token as string;
     const email = search.email as string;
-    if (!token || !email) redirect({ to: '/login' });
+
+    console.log('loader', token, email);
+
+    if (!token || !email) {
+      return {
+        token: null,
+      };
+    }
+
     const { data, error } = await supabase.auth.verifyOtp({
       token_hash: token,
       type: 'recovery',
     });
     console.log('verifyOtp', data, error);
-    if (error) redirect({ to: '/login' });
-    isValidResetLink = true;
-    console.log('isValidResetLink', isValidResetLink);
+    if (error || !data.session) throw new Error('Invalid or expired link');
+    return null;
   },
+  errorComponent: () => <InvalidResetLink />,
+  // beforeLoad: async ({ search }: { search: Record<string, unknown> }) => {
+  //   const token = search.token as string;
+  //   const email = search.email as string;
+  //   if (!token || !email) {
+  //     return {
+  //       token: null,
+  //     };
+  //   }
+  //   const { data, error } = await supabase.auth.verifyOtp({
+  //     token_hash: token,
+  //     type: 'recovery',
+  //   });
+  //   console.log('verifyOtp', data, error);
+  //   if (error) {
+  //     return {
+  //       token: null,
+  //     };
+  //   }
+  // },
   component: RouteComponent,
 });
 
@@ -47,9 +97,6 @@ function RouteComponent() {
     useResetPassword();
   const { session, getSession } = useAuthState();
   const { snackbarState } = useContext(Context);
-  // const [isValidResetLink, setIsValidResetLink] = useState<boolean | null>(
-  //   null,
-  // );
 
   const {
     register,
@@ -76,28 +123,6 @@ function RouteComponent() {
       newPassword: data.password,
     });
   };
-
-  if (!isValidResetLink) {
-    return (
-      <Container maxWidth="sm">
-        <Typography variant="h5" align="center" gutterBottom>
-          Invalid Reset Link
-        </Typography>
-        <Typography variant="body1" align="center" gutterBottom>
-          This password reset link is invalid or has expired. Please request a
-          new password reset.
-        </Typography>
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-          <CustomButton
-            href={!session ? '/login' : '/home'}
-            openInNewTab={false}
-          >
-            {!session ? 'Return to Login' : 'Return to Home'}
-          </CustomButton>
-        </Box>
-      </Container>
-    );
-  }
 
   return (
     <Container maxWidth="sm">
