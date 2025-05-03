@@ -43,6 +43,7 @@ export const Route = createFileRoute('/reset-password/')({
   // },
   validateSearch: (search) => {
     const token = search.token as string;
+    console.log('validateSearch');
     if (!token) {
       console.log('validateSearch !token');
       throw redirect({ to: '/login' });
@@ -50,12 +51,11 @@ export const Route = createFileRoute('/reset-password/')({
     return { token };
   },
   loader: async ({ search }: any) => {
-    const token = search.token as string;
-    const email = search.email as string;
+    const { token } = search as SearchParams;
 
-    console.log('loader', token, email);
+    console.log('loader', token);
 
-    if (!token || !email) {
+    if (!token) {
       console.log('loader !token');
       throw new Error('Invalid or expired link');
     }
@@ -73,7 +73,10 @@ export const Route = createFileRoute('/reset-password/')({
     }
     return null;
   },
-  errorComponent: () => <InvalidResetLink />,
+  errorComponent: () => {
+    console.log('errorComponent');
+    return <InvalidResetLink />;
+  },
   // beforeLoad: async ({ search }: { search: Record<string, unknown> }) => {
   //   const token = search.token as string;
   //   const email = search.email as string;
