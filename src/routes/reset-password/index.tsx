@@ -105,7 +105,7 @@ function RouteComponent() {
           Update Password
         </CustomButton>
       </Box>
-      {snackbarState && <CustomSnackbar />}
+      {snackbarState.open && <CustomSnackbar />}
     </Container>
   );
 }

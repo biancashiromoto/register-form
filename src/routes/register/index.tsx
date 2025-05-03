@@ -68,7 +68,7 @@ function RouteComponent() {
     setShowLocation(false);
   };
 
-  const onSubmit = async (data: UserType) => {
+  const onSubmit = (data: UserType) => {
     setRegisteringUser({ ...data, address: getValues('address') });
     registerUser({ ...data, address: getValues('address') });
   };
@@ -203,7 +203,7 @@ function RouteComponent() {
           Clear form
         </CustomButton>
       </Box>
-      {snackbarState && <CustomSnackbar />}
+      {snackbarState.open && <CustomSnackbar />}
     </Container>
   );
 }

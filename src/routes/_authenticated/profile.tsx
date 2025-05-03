@@ -40,9 +40,7 @@ function RouteComponent() {
     mode: 'all',
   });
 
-  const onSubmit = async (data: any) => {
-    updateUser(data);
-  };
+  const onSubmit = (data: any) => updateUser(data);
 
   useEffect(() => {
     setSnackbarState((prevState: SnackbarStateType) => ({
@@ -121,7 +119,7 @@ function RouteComponent() {
           Reset password
         </CustomButton>
       </Box>
-      {snackbarState && <CustomSnackbar />}
+      {snackbarState.open && <CustomSnackbar />}
     </Container>
   );
 }

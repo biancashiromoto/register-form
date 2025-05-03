@@ -102,7 +102,7 @@ export function RouteComponent() {
           Forgot your password?
         </CustomButton>
       </Box>
-      {snackbarState && <CustomSnackbar />}
+      {snackbarState.open && <CustomSnackbar />}
     </Container>
   );
 }
