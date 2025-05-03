@@ -88,11 +88,14 @@ function RouteComponent() {
   });
 
   const onSubmit = async (formData: { password: string }) => {
+    console.log('passou aqui', formData);
     try {
+      console.log('passou no try');
       await supabase.auth.updateUser({
         password: formData.password,
       });
     } catch (error: any) {
+      console.log('passou no error', error);
       throw new Error(error.message);
     } finally {
       setIsLoading(false);
