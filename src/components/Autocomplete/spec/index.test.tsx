@@ -1,4 +1,3 @@
-// CustomAutocomplete.test.tsx
 import { UserType } from '@/types';
 import { fireEvent, render, screen } from '@testing-library/react';
 import {
