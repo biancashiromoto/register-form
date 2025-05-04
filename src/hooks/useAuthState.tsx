@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 
 export interface AuthState {
   session: Session | null;
-  isValidResetLink: boolean;
   signIn: (data: SignInWithPasswordCredentials) => Promise<void>;
   signOut: () => Promise<void>;
   getSession: () => Promise<Session | null>;
@@ -24,7 +23,6 @@ const validateError = (error: Error) => {
 
 export const useAuthState = (): AuthState => {
   const [session, setSession] = useState<AuthSession | null>(null);
-  const [isValidResetLink, setIsValidResetLink] = useState(false);
 
   const getSession = async () => {
     const { data } = await supabase.auth.getSession();
@@ -89,6 +87,5 @@ export const useAuthState = (): AuthState => {
     signOut,
     getSession,
     session,
-    isValidResetLink,
   };
 };

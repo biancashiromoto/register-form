@@ -16,10 +16,6 @@ vi.mock('@/services/user', () => ({
   resetPassword: vi.fn(),
 }));
 
-vi.mock('@/helpers', () => ({
-  delay: vi.fn().mockResolvedValue(undefined),
-}));
-
 describe('useResetPassword', () => {
   let setSnackbarStateMock: any;
   let navigateMock: any;
@@ -54,7 +50,7 @@ describe('useResetPassword', () => {
     const { result } = renderHook(() => useResetPassword(), { wrapper });
 
     act(() => {
-      result.current.mutate(mockUser);
+      result.current.mutate(mockUser.password as string);
     });
 
     await waitFor(() => {
@@ -73,13 +69,29 @@ describe('useResetPassword', () => {
     const { result } = renderHook(() => useResetPassword(), { wrapper });
 
     act(() => {
-      result.current.mutate(mockUser);
+      result.current.mutate(mockUser.password as string);
     });
 
     await waitFor(() => {
       expect(setSnackbarStateMock).toHaveBeenCalledWith({
         open: true,
         message: errorMessage,
+        severity: 'error',
+      });
+    });
+  });
+
+  it('should handle invalid email', async () => {
+    const { result } = renderHook(() => useResetPassword(), { wrapper });
+
+    act(() => {
+      result.current.sendResetPasswordEmail(undefined);
+    });
+
+    await waitFor(() => {
+      expect(setSnackbarStateMock).toHaveBeenCalledWith({
+        open: true,
+        message: 'Please enter a valid email',
         severity: 'error',
       });
     });
