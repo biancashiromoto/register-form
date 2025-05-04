@@ -7,8 +7,8 @@ import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useContext, useEffect, useState } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
 const formStyles = {
@@ -18,7 +18,7 @@ const formStyles = {
   mt: 4,
 };
 
-const InvalidResetLink = () => {
+export const InvalidResetLink = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h5" align="center" gutterBottom>
@@ -53,7 +53,7 @@ export const Route = createFileRoute('/reset-password/')({
 
     if (error || !data.session) {
       await supabase.auth.signOut();
-      throw new Error('Invalid or expired token');
+      throw new Error(error?.message || 'Invalid or expired token');
     }
 
     return { session: data.session };
@@ -62,7 +62,7 @@ export const Route = createFileRoute('/reset-password/')({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
   const { snackbarState } = useContext(Context);

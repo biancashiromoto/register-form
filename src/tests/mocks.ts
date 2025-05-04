@@ -2,7 +2,7 @@ import { UserType } from '@/types';
 import { Session } from '@supabase/supabase-js';
 
 export const mockUser: UserType = {
-  birthDate: '1990-11-11',
+  birthDate: '1990-09-09',
   email: 'johndoe@email.com',
   firstName: 'John',
   lastName: 'Doe',

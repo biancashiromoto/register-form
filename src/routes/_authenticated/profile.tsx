@@ -19,7 +19,7 @@ export const Route = createFileRoute('/_authenticated/profile')({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
   const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser();
   const { snackbarState, setSnackbarState } = useContext(Context);
   const { sendResetPasswordEmail } = useResetPassword();
@@ -68,7 +68,7 @@ function RouteComponent() {
         <AvatarUploader />
 
         <TextField
-          id="standard-basic"
+          id="first-name"
           label="First name"
           variant="standard"
           defaultValue={session?.user?.user_metadata['first_name']}
@@ -79,7 +79,7 @@ function RouteComponent() {
         />
 
         <TextField
-          id="standard-basic"
+          id="last-name"
           label="Last name"
           variant="standard"
           defaultValue={session?.user?.user_metadata['last_name']}
@@ -97,7 +97,7 @@ function RouteComponent() {
         />
 
         <TextField
-          id="standard-basic"
+          id="email"
           label="Email"
           variant="standard"
           defaultValue={session?.user?.user_metadata.email}

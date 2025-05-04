@@ -32,6 +32,7 @@ export default defineConfig({
         'src/tests/setup.ts',
         'src/tests/**.ts',
         'src/hooks/spec/*',
+        'src/tests/routes/*',
       ],
     },
   },
