@@ -7,8 +7,8 @@ import { resetPasswordSchema } from '@/schemas/resetPasswordSchema';
 import { supabase } from '@/services/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, Typography } from '@mui/material';
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { useContext, useEffect, useState } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
 const formStyles = {
@@ -62,7 +62,7 @@ export const Route = createFileRoute('/reset-password/')({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
   const { mutate: resetPassword, isPending: isPendingResetPassword } =
     useResetPassword();
   const { snackbarState } = useContext(Context);
