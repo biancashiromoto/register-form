@@ -1,6 +1,6 @@
 import { Context } from '@/context';
 import { ContextProps } from '@/context/index.types';
-import { RouteComponent } from '@/routes/reset-password';
+import { InvalidResetLink, RouteComponent } from '@/routes/reset-password';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   fireEvent,
@@ -86,5 +86,18 @@ describe('/reset-password route', () => {
     await waitFor(() => {
       expect(mockResetPassword).toHaveBeenCalledWith(mockUser.password);
     });
+  });
+});
+
+describe('InvalidResetLink component', () => {
+  it('should render invalid reset link message', () => {
+    render(<InvalidResetLink />);
+    expect(screen.getByText(/invalid reset link/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/This password reset link is invalid or has expired./i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /return to login/i }),
+    ).toBeInTheDocument();
   });
 });
