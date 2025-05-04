@@ -68,10 +68,8 @@ export function RouteComponent() {
     setShowLocation(false);
   };
 
-  const onSubmit = (data: UserType) => {
-    setRegisteringUser({ ...data, address: getValues('address') });
+  const onSubmit = (data: UserType) =>
     registerUser({ ...data, address: getValues('address') });
-  };
 
   const shouldShowPasswordFields = () => {
     if (!email || errors.email) return false;
