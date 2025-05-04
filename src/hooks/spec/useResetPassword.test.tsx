@@ -81,22 +81,6 @@ describe('useResetPassword', () => {
     });
   });
 
-  // it('should call sendResetPasswordEmail with valid email', async () => {
-  //   const { result } = renderHook(() => useResetPassword(), { wrapper });
-
-  //   act(() => {
-  //     result.current.sendResetPasswordEmail(mockUser.email);
-  //   });
-
-  //   await waitFor(() => {
-  //     expect(setSnackbarStateMock).toHaveBeenCalledWith({
-  //       open: true,
-  //       message: 'A password recovery email has been sent to your inbox.',
-  //       severity: 'success',
-  //     });
-  //   });
-  // });
-
   it('should handle invalid email', async () => {
     const { result } = renderHook(() => useResetPassword(), { wrapper });
 
