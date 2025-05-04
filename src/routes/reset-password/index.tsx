@@ -18,7 +18,7 @@ const formStyles = {
   mt: 4,
 };
 
-const InvalidResetLink = () => {
+export const InvalidResetLink = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h5" align="center" gutterBottom>
@@ -53,7 +53,7 @@ export const Route = createFileRoute('/reset-password/')({
 
     if (error || !data.session) {
       await supabase.auth.signOut();
-      throw new Error('Invalid or expired token');
+      throw new Error(error?.message || 'Invalid or expired token');
     }
 
     return { session: data.session };
