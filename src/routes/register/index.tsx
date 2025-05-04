@@ -25,7 +25,7 @@ export const Route = createFileRoute('/register/')({
   },
 });
 
-function RouteComponent() {
+export function RouteComponent() {
   const [showLocation, setShowLocation] = useState(false);
 
   const {
