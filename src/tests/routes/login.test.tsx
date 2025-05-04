@@ -102,8 +102,6 @@ describe('/login route', () => {
     fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
-    screen.debug(emailInput);
-
     await waitFor(() => {
       expect(signInSpy).not.toHaveBeenCalled();
     });
