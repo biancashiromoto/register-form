@@ -4,7 +4,7 @@ import { Box, Avatar, Skeleton, Typography } from '@mui/material';
 import { useNavigate } from '@tanstack/react-router';
 import Link from '../Link';
 
-const SkeletonProfileLink = () => (
+export const SkeletonProfileLink = () => (
   <Box
     style={{
       display: 'flex',
@@ -16,8 +16,18 @@ const SkeletonProfileLink = () => (
       transform: 'translateY(1px)',
     }}
   >
-    <Skeleton variant="circular" width={20} height={20} />
-    <Skeleton variant="text" width={100} height={20} />
+    <Skeleton
+      data-testid="skeleton-avatar"
+      variant="circular"
+      width={20}
+      height={20}
+    />
+    <Skeleton
+      data-testid="skeleton-email"
+      variant="text"
+      width={100}
+      height={20}
+    />
   </Box>
 );
 
@@ -49,20 +59,17 @@ const ProfileLink = () => {
             transform: 'translateY(1px)',
           }}
         >
-          {!isLoadingAvatar ? (
-            <Avatar
-              src={avatarUrl ?? undefined}
-              sx={{
-                width: 20,
-                height: 20,
-                border: '2px solid',
-                borderColor: 'primary.main',
-                transform: 'translateY(-2px)',
-              }}
-            />
-          ) : (
-            <Skeleton variant="circular" width={20} height={20} />
-          )}
+          <Avatar
+            src={avatarUrl ?? undefined}
+            sx={{
+              width: 20,
+              height: 20,
+              border: '2px solid',
+              borderColor: 'primary.main',
+              transform: 'translateY(-2px)',
+            }}
+            alt={`${session.user.user_metadata.first_name}'s avatar`}
+          />
           <Typography variant="caption" color="textSecondary">
             {session?.user?.email}
           </Typography>

@@ -13,6 +13,7 @@ export const mockUser: UserType = {
     state: 'SP',
     city: 'São Paulo',
   },
+  avatar: 'avatar.jpg',
 };
 
 export const mockCountries = [
