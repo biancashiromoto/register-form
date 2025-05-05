@@ -70,7 +70,13 @@ const UserLocation = ({ errors, getValues, setValue }: UserLocationProps) => {
   };
 
   return (
-    <Box width="100%" display="flex" flexDirection="column" gap={2}>
+    <Box
+      width="100%"
+      display="flex"
+      flexDirection="column"
+      gap={2}
+      data-testid="user-location"
+    >
       <CustomAutocomplete
         errors={errors}
         field="address.country"
