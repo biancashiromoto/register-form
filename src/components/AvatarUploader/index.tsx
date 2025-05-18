@@ -1,24 +1,84 @@
 import { Context } from '@/context';
-import useAvatarUrl from '@/hooks/useAvatarUrl';
-import useUploadAvatar from '@/hooks/useUploadAvatar';
+import { useAuthState } from '@/hooks/useAuthState';
+import { supabase } from '@/services/supabase';
+import {
+  fetchSignedAvatarUrl,
+  formatAvatarPath,
+  uploadUserAvatar,
+} from '@/services/user';
 import { Avatar, Box, IconButton, Skeleton, Typography } from '@mui/material';
-import { useContext, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  ChangeEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { IoMdCamera } from 'react-icons/io';
 
-export const AvatarUploader = () => {
-  const { data: avatarUrl, isLoading: isLoadingAvatar, error } = useAvatarUrl();
-  const { uploadAvatar } = useUploadAvatar();
-  const { setSnackbarState } = useContext(Context);
+const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
-  useEffect(() => {
-    if (error) {
+export const AvatarUploader = () => {
+  const { setSnackbarState } = useContext(Context);
+  const { session } = useAuthState();
+  const queryClient = useQueryClient();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  const { isLoading } = useQuery({
+    queryKey: ['avatar'],
+    queryFn: async () =>
+      await fetchSignedAvatarUrl(session?.user?.user_metadata?.avatar_url),
+  });
+
+  const uploadAvatar = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      if (!session) return null;
+
+      const file = event.target.files?.[0];
+      if (!file) throw new Error('Select an image.');
+      if (file.size > MAX_FILE_SIZE) throw new Error('Image larger than 8MB.');
+
+      const path = formatAvatarPath(file, session);
+      await uploadUserAvatar(path, file);
+
+      const signedUrl = await fetchSignedAvatarUrl(path);
+
+      if (!signedUrl) throw new Error('error');
+
+      setAvatarUrl(signedUrl);
+
+      const { error } = await supabase.auth.updateUser({
+        data: { avatar_url: path },
+      });
+      if (error) throw new Error(error.message);
+
+      queryClient.invalidateQueries({ queryKey: ['avatar', path] });
+
       setSnackbarState({
         open: true,
-        message: error.message,
-        severity: 'error',
+        message: 'Avatar updated successfully!',
+        severity: 'success',
       });
-    }
-  }, [error]);
+    },
+    [session, queryClient],
+  );
+
+  useEffect(() => {
+    if (!session?.user?.user_metadata?.avatar_url) return;
+
+    const fetchAvatar = async () => {
+      const publicUrl = await fetchSignedAvatarUrl(
+        session.user.user_metadata.avatar_url,
+      );
+
+      if (!publicUrl) return;
+
+      setAvatarUrl(publicUrl);
+    };
+
+    fetchAvatar();
+  }, [session]);
 
   return (
     <Box
@@ -30,7 +90,7 @@ export const AvatarUploader = () => {
         mb: 3,
       }}
     >
-      {isLoadingAvatar ? (
+      {isLoading ? (
         <Skeleton variant="circular" width={175} height={175} />
       ) : (
         <Box sx={{ position: 'relative' }}>
@@ -56,20 +116,20 @@ export const AvatarUploader = () => {
               width: 60,
               height: 60,
             }}
-            disabled={isLoadingAvatar}
+            disabled={isLoading}
           >
             <input
               type="file"
               hidden
               accept="image/*"
               onChange={uploadAvatar}
-              disabled={isLoadingAvatar}
+              disabled={isLoading}
             />
             <IoMdCamera color="white" />
           </IconButton>
         </Box>
       )}
-      {isLoadingAvatar && (
+      {isLoading && (
         <Typography variant="caption" color="textSecondary">
           Loading...
         </Typography>

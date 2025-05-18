@@ -7,7 +7,7 @@ const useAvatarUrl = () => {
   const avatarPath = session?.user?.user_metadata?.avatar_url;
 
   return useQuery({
-    queryKey: ['avatar-url', avatarPath],
+    queryKey: ['avatar', avatarPath],
     queryFn: async () => {
       if (!avatarPath) throw new Error('No avatar path');
       const { data } = supabase.storage
