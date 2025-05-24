@@ -105,7 +105,6 @@ export const fetchSignedAvatarUrl = async (path: string | null) => {
   const { data } = await supabase.storage
     .from('avatars')
     .createSignedUrl(path, 60);
-  console.log('fetchSignedAvatarUrl', data?.signedUrl);
   return data?.signedUrl;
 };
 
