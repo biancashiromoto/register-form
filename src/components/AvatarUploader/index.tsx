@@ -25,8 +25,8 @@ export const AvatarUploader = () => {
   const queryClient = useQueryClient();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
-  const { isLoading } = useQuery({
-    queryKey: ['avatar'],
+  const { isLoading, isPending } = useQuery({
+    queryKey: ['avatar', 'fetchSignedAvatarUrl'],
     queryFn: async () =>
       await fetchSignedAvatarUrl(session?.user?.user_metadata?.avatar_url),
   });
@@ -90,7 +90,7 @@ export const AvatarUploader = () => {
         mb: 3,
       }}
     >
-      {isLoading ? (
+      {isLoading || isPending ? (
         <Skeleton variant="circular" width={175} height={175} />
       ) : (
         <Box sx={{ position: 'relative' }}>
@@ -116,24 +116,25 @@ export const AvatarUploader = () => {
               width: 60,
               height: 60,
             }}
-            disabled={isLoading}
+            disabled={isLoading || isPending}
           >
             <input
               type="file"
               hidden
               accept="image/*"
               onChange={uploadAvatar}
-              disabled={isLoading}
+              disabled={isLoading || isPending}
             />
             <IoMdCamera color="white" />
           </IconButton>
         </Box>
       )}
-      {isLoading && (
-        <Typography variant="caption" color="textSecondary">
-          Loading...
-        </Typography>
-      )}
+      {isLoading ||
+        (isPending && (
+          <Typography variant="caption" color="textSecondary">
+            Loading...
+          </Typography>
+        ))}
     </Box>
   );
 };
