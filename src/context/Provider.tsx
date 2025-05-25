@@ -56,10 +56,6 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const [avatarPath, setAvatarPath] = useState<string | null>(null);
 
-  useEffect(() => {
-    setAvatarPath(session?.user?.user_metadata?.avatar_url);
-  }, [session]);
-
   const { data: avatarUrl, isLoading: isLoadingAvatar } = useQuery({
     queryKey: ['avatar'],
     queryFn: async () => await fetchSignedAvatarUrl(avatarPath),
@@ -104,15 +100,9 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     setAvatarPath(avatarUrl);
   }, [avatarUrl]);
 
-  useEffect(
-    () =>
-      setSnackbarState({
-        open: false,
-        message: '',
-        severity: undefined,
-      }),
-    [normalizedPath],
-  );
+  useEffect(() => {
+    setAvatarPath(session?.user?.user_metadata?.avatar_url);
+  }, [session]);
 
   const theme = useMemo(
     () =>
