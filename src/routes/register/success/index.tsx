@@ -11,7 +11,7 @@ export const Route = createFileRoute('/register/success/')({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function RouteComponent() {
   const { registeringUser, setSnackbarState, snackbarState } =
     useContext(Context);
   const navigate = useNavigate();
