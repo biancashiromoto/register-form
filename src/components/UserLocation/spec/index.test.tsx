@@ -1,10 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import UserLocation from '..';
 import { Context } from '@/context';
 import { ContextProps } from '@/context/index.types';
 import { mockCities, mockCountries, mockStates } from '@/tests/mocks';
-import { City, Country, State } from 'country-state-city';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { City, State } from 'country-state-city';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import UserLocation from '..';
 
 vi.mock('country-state-city', () => ({
   Country: {

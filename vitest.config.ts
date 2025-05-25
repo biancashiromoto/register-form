@@ -33,6 +33,7 @@ export default defineConfig({
         'src/tests/**.ts',
         'src/hooks/spec/*',
         'src/tests/routes/*',
+        'src/routeTree.gen.ts',
       ],
     },
   },
