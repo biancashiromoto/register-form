@@ -19,7 +19,7 @@ const useUpdateUser = () => {
     onError: (error) => {
       setSnackbarState({
         open: true,
-        message: error.message || 'Erro desconhecido',
+        message: error.message ?? 'Erro desconhecido',
         severity: 'error',
       });
     },

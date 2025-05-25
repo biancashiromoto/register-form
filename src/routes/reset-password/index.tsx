@@ -53,7 +53,7 @@ export const Route = createFileRoute('/reset-password/')({
 
     if (error || !data.session) {
       await supabase.auth.signOut();
-      throw new Error(error?.message || 'Invalid or expired token');
+      throw new Error(error?.message ?? 'Invalid or expired token');
     }
 
     return { session: data.session };

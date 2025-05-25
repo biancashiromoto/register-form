@@ -12,7 +12,6 @@ import { memo, useContext, useRef } from 'react';
 
 export default memo(function CustomBottomNavigation() {
   const { normalizedPath } = useContext(Context);
-  const routes = Object.values(mappedRoutes).map((route) => route.route);
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
