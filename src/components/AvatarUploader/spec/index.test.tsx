@@ -1,78 +1,52 @@
-import { render, screen } from '@testing-library/react';
+import { Context } from '@/context';
+import { ContextProps } from '@/context/index.types';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import { AvatarUploader } from '..';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import useAvatarUrl from '@/hooks/useAvatarUrl';
-
-vi.mock('@/hooks/useUploadAvatar', () => ({
-  default: vi.fn(),
-}));
-
-vi.mock('@/hooks/useAvatarUrl', () => ({
-  default: vi.fn(),
-}));
 
 describe('AvatarUploader', () => {
   const queryClient = new QueryClient();
   const mockUploadAvatar = vi.fn();
 
+  const renderWithContext = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Context.Provider
+          value={{ uploadAvatar: mockUploadAvatar } as unknown as ContextProps}
+        >
+          <AvatarUploader />
+        </Context.Provider>
+      </QueryClientProvider>,
+    );
+
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  test('renders Skeleton if isLoading is true', () => {
-    (useAvatarUrl as any).mockReturnValue({
-      data: null,
-      isLoading: true,
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <AvatarUploader />
-      </QueryClientProvider>,
-    );
-
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-  });
-
-  test.skip('renders Avatar if isLoading is false', () => {
-    (useAvatarUrl as any).mockReturnValue({
-      data: 'blob:fake-url',
-      isLoading: false,
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <AvatarUploader />
-      </QueryClientProvider>,
-    );
-    const avatar = screen.getByRole('img');
-    expect(avatar).toHaveAttribute('src', 'blob:fake-url');
-  });
-
-  test.skip('calls uploadAvatar if a file is selected', async () => {
-    const mockUploadAvatar = vi.fn();
-    (useAvatarUrl as any).mockReturnValue({
-      data: 'blob:fake-url',
-      isLoading: false,
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <AvatarUploader />
-      </QueryClientProvider>,
-    );
+  test('renders the file input', () => {
+    renderWithContext();
     const fileInput = document.querySelector(
       'input[type="file"]',
     ) as HTMLInputElement;
     expect(fileInput).toBeInTheDocument();
+  });
 
+  test('calls uploadAvatar when a file is selected', async () => {
+    renderWithContext();
+
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
     const file = new File(['dummy content'], 'avatar.png', {
       type: 'image/png',
     });
+
     await userEvent.upload(fileInput, file);
 
-    expect(mockUploadAvatar).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockUploadAvatar).toHaveBeenCalledWith(file);
+    });
   });
 });

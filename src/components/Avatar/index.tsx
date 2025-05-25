@@ -21,7 +21,14 @@ const Avatar = ({ size = 20 }: AvatarProps) => {
   );
 
   if (shouldShowLoader) {
-    return <Skeleton variant="circular" width={size} height={size} />;
+    return (
+      <Skeleton
+        data-testid="skeleton"
+        variant="circular"
+        width={size}
+        height={size}
+      />
+    );
   }
 
   if (!avatarPath) {
