@@ -2,13 +2,20 @@ import {
   getLocalStorage,
   setLocalStorage,
 } from '@/helpers/localStorageManagement';
-import { UserLocationType, SnackbarStateType, UserType } from '@/types';
+import { useAuthState } from '@/hooks/useAuthState';
+import {
+  fetchSignedAvatarUrl,
+  formatAvatarPath,
+  uploadUserAvatar,
+} from '@/services/user';
+import { SnackbarStateType, UserLocationType, UserType } from '@/types';
 import {
   createTheme,
+  CssBaseline,
   ThemeProvider,
   useMediaQuery,
-  CssBaseline,
 } from '@mui/material';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from '@tanstack/react-router';
 import {
   FC,
@@ -21,7 +28,11 @@ import {
 import { Context } from '.';
 import { ContextProps } from './index.types';
 
+const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
+
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
+  const queryClient = useQueryClient();
+  const { session } = useAuthState();
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [isDarkModeOn, setIsDarkModeOn] = useState<boolean>(() => {
     const storedTheme = getLocalStorage('theme');
@@ -42,6 +53,56 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     () => location.pathname.replace(/\/$/, ''),
     [location.pathname],
   );
+
+  const [avatarPath, setAvatarPath] = useState<string | null>(null);
+
+  useEffect(() => {
+    setAvatarPath(session?.user?.user_metadata?.avatar_url);
+  }, [session]);
+
+  const { data: avatarUrl, isLoading: isLoadingAvatar } = useQuery({
+    queryKey: ['avatar'],
+    queryFn: async () => await fetchSignedAvatarUrl(avatarPath),
+    enabled: !!avatarPath,
+    initialData: session?.user?.user_metadata?.avatar_url,
+  });
+
+  const { mutate: uploadAvatar, isPending: isPendingAvatar } = useMutation({
+    mutationKey: ['avatar'],
+    mutationFn: async (file: File) => {
+      if (!session) return null;
+
+      if (file.size > MAX_FILE_SIZE) throw new Error('Image larger than 8MB.');
+
+      const path = formatAvatarPath(file, session);
+      await uploadUserAvatar(path, file);
+
+      const signedUrl = await fetchSignedAvatarUrl(path);
+      if (!signedUrl) throw new Error('Failed to fetch signed URL.');
+
+      setAvatarPath(signedUrl);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['avatar'] });
+      setSnackbarState({
+        open: true,
+        message: 'Avatar updated successfully!',
+        severity: 'success',
+      });
+    },
+    onError: (error: any) => {
+      setSnackbarState({
+        open: true,
+        message: error.message || 'Failed to upload avatar.',
+        severity: 'error',
+      });
+    },
+  });
+
+  useEffect(() => {
+    if (!avatarUrl) return;
+    setAvatarPath(avatarUrl);
+  }, [avatarUrl]);
 
   useEffect(
     () =>
@@ -102,6 +163,10 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       toggleTheme,
       theme,
       normalizedPath,
+      avatarPath,
+      isLoadingAvatar,
+      isPendingAvatar,
+      uploadAvatar,
     }),
     [
       snackbarState,
@@ -111,6 +176,10 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       theme,
       normalizedPath,
       toggleTheme,
+      avatarPath,
+      isLoadingAvatar,
+      isPendingAvatar,
+      uploadAvatar,
     ],
   );
 

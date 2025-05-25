@@ -14,4 +14,8 @@ export interface ContextProps {
   toggleTheme: () => void;
   theme: Theme;
   normalizedPath: string;
+  avatarPath: string | null;
+  uploadAvatar: (file: File) => void;
+  isPendingAvatar: boolean;
+  isLoadingAvatar: boolean;
 }
