@@ -20,6 +20,7 @@ export const AvatarUploader = () => {
       <Box sx={{ position: 'relative' }}>
         <Avatar size={175} />
         <IconButton
+          aria-label="Upload avatar"
           component="label"
           sx={{
             position: 'absolute',

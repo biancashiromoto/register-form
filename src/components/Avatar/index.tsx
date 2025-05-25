@@ -1,4 +1,5 @@
 import { Context } from '@/context';
+import { useAuthState } from '@/hooks/useAuthState';
 import { Avatar as MUIAvatar, Skeleton } from '@mui/material';
 import { useContext, useMemo } from 'react';
 
@@ -7,10 +8,16 @@ interface AvatarProps {
 }
 
 const Avatar = ({ size = 20 }: AvatarProps) => {
+  const { session } = useAuthState();
   const { avatarPath, isLoadingAvatar, isPendingAvatar } = useContext(Context);
   const shouldShowLoader = useMemo(
     () => isLoadingAvatar || isPendingAvatar,
     [isLoadingAvatar, isPendingAvatar],
+  );
+  const username = useMemo(
+    () =>
+      `${session?.user?.user_metadata?.first_name} ${session?.user?.user_metadata?.last_name}`,
+    [session],
   );
 
   if (shouldShowLoader) {
@@ -20,6 +27,7 @@ const Avatar = ({ size = 20 }: AvatarProps) => {
   if (!avatarPath) {
     return (
       <MUIAvatar
+        alt={username}
         sx={{
           width: size,
           height: size,
