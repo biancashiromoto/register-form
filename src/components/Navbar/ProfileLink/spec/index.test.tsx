@@ -37,21 +37,11 @@ describe('ProfileLink Component', () => {
   it('should be correctly rendered', async () => {
     renderProfileLink();
 
-    expect(screen.getByRole('img')).toHaveAttribute('src', mockUser.avatar);
-    expect(screen.getByRole('img')).toHaveAttribute(
-      'alt',
-      `${mockUser.firstName}'s avatar`,
-    );
+    expect(screen.getByTestId('PersonIcon')).toBeInTheDocument();
     expect(screen.getByText(mockUser.email)).toBeInTheDocument();
     expect(screen.getByText(/sign out/i)).toBeInTheDocument();
 
     fireEvent.click(screen.getByText(/sign out/i));
     expect(navigateMock).toHaveBeenCalledWith({ to: '/profile' });
-  });
-
-  it('should render skeleton if isLoadingAvatar is true', async () => {
-    renderProfileLink();
-    expect(screen.getByTestId('skeleton-avatar')).toBeInTheDocument();
-    expect(screen.getByTestId('skeleton-email')).toBeInTheDocument();
   });
 });
