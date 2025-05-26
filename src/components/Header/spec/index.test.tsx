@@ -60,10 +60,6 @@ vi.mock('@tanstack/react-router', async () => {
 });
 
 import { ContextProps } from '@/context/index.types';
-import useAvatarUrl from '@/hooks/useAvatarUrl';
-vi.mock('@/hooks/useAvatarUrl', () => ({
-  default: vi.fn(),
-}));
 
 describe('Header Component', () => {
   beforeEach(() => {
@@ -71,10 +67,6 @@ describe('Header Component', () => {
   });
 
   it('should render the toggle theme switch with the correct aria-label when dark mode is off', () => {
-    (useAvatarUrl as any).mockReturnValue({
-      data: 'http://example.com/avatar.png',
-      isLoading: false,
-    });
     renderWithProviders(<Header />, { isDarkModeOn: false });
     expect(screen.getByTestId('toggle-theme-switch')).toHaveAttribute(
       'aria-label',
@@ -83,10 +75,6 @@ describe('Header Component', () => {
   });
 
   it('should render the toggle theme switch with the correct aria-label when dark mode is on', () => {
-    (useAvatarUrl as any).mockReturnValue({
-      data: 'http://example.com/avatar.png',
-      isLoading: false,
-    });
     renderWithProviders(<Header />, { isDarkModeOn: true });
     expect(screen.getByTestId('toggle-theme-switch')).toHaveAttribute(
       'aria-label',

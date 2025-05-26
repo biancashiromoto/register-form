@@ -6,6 +6,8 @@ import {
 } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
+export const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
+
 export interface AuthState {
   session: Session | null;
   signIn: (data: SignInWithPasswordCredentials) => Promise<void>;

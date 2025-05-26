@@ -2,10 +2,6 @@ vi.mock('@/hooks/useAuthState', () => ({
   useAuthState: () => ({ session: null, signOut: vi.fn() }),
 }));
 
-vi.mock('@/hooks/useAvatarUrl', () => ({
-  default: () => ({ data: null, isLoading: false }),
-}));
-
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: vi.fn(),
   useLocation: vi.fn(),

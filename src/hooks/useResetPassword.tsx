@@ -24,7 +24,7 @@ const useResetPassword = () => {
 
     const { error } = await supabase.auth.resetPasswordForEmail(email);
     const message =
-      error?.message ||
+      error?.message ??
       'A password recovery email has been sent to your inbox.';
     const severity = error ? 'error' : 'success';
 
