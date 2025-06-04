@@ -1,5 +1,6 @@
 import { UserLocationType, SnackbarStateType, UserType } from '@/types';
 import { Theme } from '@mui/material';
+import { Session } from '@supabase/supabase-js';
 import { Dispatch, SetStateAction } from 'react';
 
 export interface ContextProps {
@@ -15,7 +16,8 @@ export interface ContextProps {
   theme: Theme;
   normalizedPath: string;
   avatarPath: string | null;
-  uploadAvatar: (file: File) => void;
-  isPendingAvatar: boolean;
+  uploadAvatar: (file: File, session: Session) => void;
   isLoadingAvatar: boolean;
+  setAvatarPath: Dispatch<SetStateAction<string | null>>;
+  setIsLoadingAvatar: Dispatch<SetStateAction<boolean>>;
 }
