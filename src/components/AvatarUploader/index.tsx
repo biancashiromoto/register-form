@@ -3,9 +3,14 @@ import { Box, IconButton } from '@mui/material';
 import { ChangeEvent, useContext } from 'react';
 import { IoMdCamera } from 'react-icons/io';
 import Avatar from '../Avatar';
+import { useAuthState } from '@/hooks/useAuthState';
 
 export const AvatarUploader = () => {
-  const { uploadAvatar } = useContext(Context);
+  const { uploadAvatar, setAvatarPath, setIsLoadingAvatar } =
+    useContext(Context);
+  const { session } = useAuthState();
+
+  if (!session) return null;
 
   return (
     <Box
@@ -38,9 +43,15 @@ export const AvatarUploader = () => {
             type="file"
             hidden
             accept="image/*"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            onChange={async (e: ChangeEvent<HTMLInputElement>) => {
+              setIsLoadingAvatar(true);
               if (!e.target.files?.[0]) return;
-              uploadAvatar(e.target.files?.[0]);
+              const newAvatar = await uploadAvatar(
+                e.target.files?.[0],
+                session,
+              );
+              setAvatarPath(newAvatar ?? null);
+              setIsLoadingAvatar(false);
             }}
           />
           <IoMdCamera color="white" />

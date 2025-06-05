@@ -3,11 +3,6 @@ import {
   setLocalStorage,
 } from '@/helpers/localStorageManagement';
 import { useAuthState } from '@/hooks/useAuthState';
-import {
-  fetchSignedAvatarUrl,
-  formatAvatarPath,
-  uploadUserAvatar,
-} from '@/services/user';
 import { SnackbarStateType, UserLocationType, UserType } from '@/types';
 import {
   createTheme,
@@ -15,7 +10,6 @@ import {
   ThemeProvider,
   useMediaQuery,
 } from '@mui/material';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from '@tanstack/react-router';
 import {
   FC,
@@ -27,11 +21,79 @@ import {
 } from 'react';
 import { Context } from '.';
 import { ContextProps } from './index.types';
+import { supabase } from '@/services/supabase';
+import { Session } from '@supabase/supabase-js';
 
-const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
+// const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
+
+const fetchAvatar = async (session: Session) => {
+  const { data, error } = await supabase.storage
+    .from('avatars')
+    .createSignedUrl(`${session?.user.id}/avatar.webp`, 1000);
+
+  if (error) throw new Error(error.message);
+
+  return data;
+};
+
+const convertToWebp = (file: File) => {
+  return new Promise<File>((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        URL.revokeObjectURL(url);
+        return reject(new Error('Failed to get canvas context'));
+      }
+      ctx.drawImage(img, 0, 0);
+
+      canvas.toBlob(
+        (blob) => {
+          URL.revokeObjectURL(url);
+          if (!blob) return reject(new Error('Conversion to webp failed'));
+          const webpFile = new File(
+            [blob],
+            file.name.replace(/\.\w+$/, '.webp'),
+            {
+              type: 'image/webp',
+            },
+          );
+          resolve(webpFile);
+        },
+        'image/webp',
+        0.92,
+      );
+    };
+
+    img.onerror = (e) => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Failed to load image'));
+    };
+
+    img.src = url;
+  });
+};
+
+const uploadAvatar = async (file: File, session: Session) => {
+  const convertedFile = await convertToWebp(file);
+
+  const { error } = await supabase.storage
+    .from('avatars')
+    .update(`${session?.user.id}/avatar.webp`, convertedFile);
+
+  if (error) throw new Error(error.message);
+
+  const { signedUrl } = await fetchAvatar(session);
+
+  return signedUrl ?? null;
+};
 
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
-  const queryClient = useQueryClient();
   const { session } = useAuthState();
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [isDarkModeOn, setIsDarkModeOn] = useState<boolean>(() => {
@@ -53,52 +115,20 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     () => location.pathname.replace(/\/$/, ''),
     [location.pathname],
   );
-
   const [avatarPath, setAvatarPath] = useState<string | null>(null);
-
-  const { data: avatarUrl, isLoading: isLoadingAvatar } = useQuery({
-    queryKey: ['avatar'],
-    queryFn: async () => await fetchSignedAvatarUrl(avatarPath),
-    enabled: !!avatarPath,
-    initialData: session?.user?.user_metadata?.avatar_url,
-  });
-
-  const { mutate: uploadAvatar, isPending: isPendingAvatar } = useMutation({
-    mutationKey: ['avatar'],
-    mutationFn: async (file: File) => {
-      if (!session) return null;
-
-      if (file.size > MAX_FILE_SIZE) throw new Error('Image larger than 8MB.');
-
-      const path = formatAvatarPath(file, session);
-      await uploadUserAvatar(path, file);
-
-      const signedUrl = await fetchSignedAvatarUrl(path);
-      if (!signedUrl) throw new Error('Failed to fetch signed URL.');
-
-      setAvatarPath(signedUrl);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['avatar'] });
-      setSnackbarState({
-        open: true,
-        message: 'Avatar updated successfully!',
-        severity: 'success',
-      });
-    },
-    onError: (error: any) => {
-      setSnackbarState({
-        open: true,
-        message: error.message || 'Failed to upload avatar.',
-        severity: 'error',
-      });
-    },
-  });
+  const [isLoadingAvatar, setIsLoadingAvatar] = useState(true);
 
   useEffect(() => {
-    if (!avatarUrl) return;
-    setAvatarPath(avatarUrl);
-  }, [avatarUrl]);
+    if (session) {
+      setIsLoadingAvatar(true);
+      const getAvatar = async () => {
+        const { signedUrl } = await fetchAvatar(session);
+        setAvatarPath(signedUrl ?? null);
+      };
+      getAvatar();
+      setIsLoadingAvatar(false);
+    }
+  }, [session]);
 
   useEffect(() => {
     setAvatarPath(session?.user?.user_metadata?.avatar_url);
@@ -155,8 +185,9 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       normalizedPath,
       avatarPath,
       isLoadingAvatar,
-      isPendingAvatar,
       uploadAvatar,
+      setAvatarPath,
+      setIsLoadingAvatar,
     }),
     [
       snackbarState,
@@ -168,8 +199,9 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       toggleTheme,
       avatarPath,
       isLoadingAvatar,
-      isPendingAvatar,
       uploadAvatar,
+      setAvatarPath,
+      setIsLoadingAvatar,
     ],
   );
 
