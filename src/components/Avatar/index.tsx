@@ -9,18 +9,15 @@ interface AvatarProps {
 
 const Avatar = ({ size = 20 }: AvatarProps) => {
   const { session } = useAuthState();
-  const { avatarPath, isLoadingAvatar, isPendingAvatar } = useContext(Context);
-  const shouldShowLoader = useMemo(
-    () => isLoadingAvatar || isPendingAvatar,
-    [isLoadingAvatar, isPendingAvatar],
-  );
+  const { avatarPath, isLoadingAvatar } = useContext(Context);
+
   const username = useMemo(
     () =>
       `${session?.user?.user_metadata?.first_name} ${session?.user?.user_metadata?.last_name}`,
     [session],
   );
 
-  if (shouldShowLoader) {
+  if (isLoadingAvatar) {
     return (
       <Skeleton
         data-testid="skeleton"
