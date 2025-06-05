@@ -24,7 +24,7 @@ import { ContextProps } from './index.types';
 import { supabase } from '@/services/supabase';
 import { Session } from '@supabase/supabase-js';
 
-const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
+// const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
 const fetchAvatar = async (session: Session) => {
   const { data, error } = await supabase.storage
@@ -90,7 +90,7 @@ const uploadAvatar = async (file: File, session: Session) => {
 
   const { signedUrl } = await fetchAvatar(session);
 
-  return signedUrl || null;
+  return signedUrl ?? null;
 };
 
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
@@ -123,7 +123,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       setIsLoadingAvatar(true);
       const getAvatar = async () => {
         const { signedUrl } = await fetchAvatar(session);
-        setAvatarPath(signedUrl || null);
+        setAvatarPath(signedUrl ?? null);
       };
       getAvatar();
       setIsLoadingAvatar(false);
