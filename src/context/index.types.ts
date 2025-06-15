@@ -11,7 +11,6 @@ export interface ContextProps {
   setUserLocation: Dispatch<SetStateAction<UserLocationType>>;
   normalizedPath: string;
   avatarPath: string | null;
-  uploadAvatar: (file: File, session: Session) => void;
   isLoadingAvatar: boolean;
   setAvatarPath: Dispatch<SetStateAction<string | null>>;
   setIsLoadingAvatar: Dispatch<SetStateAction<boolean>>;

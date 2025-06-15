@@ -4,10 +4,10 @@ import { ChangeEvent, useContext } from 'react';
 import { IoMdCamera } from 'react-icons/io';
 import Avatar from '../Avatar';
 import { useAuthState } from '@/hooks/useAuthState';
+import { uploadAvatar } from '@/services/user';
 
 export const AvatarUploader = () => {
-  const { uploadAvatar, setAvatarPath, setIsLoadingAvatar } =
-    useContext(Context);
+  const { setAvatarPath, setIsLoadingAvatar } = useContext(Context);
   const { session } = useAuthState();
 
   if (!session) return null;
@@ -46,10 +46,7 @@ export const AvatarUploader = () => {
             onChange={async (e: ChangeEvent<HTMLInputElement>) => {
               setIsLoadingAvatar(true);
               if (!e.target.files?.[0]) return;
-              const newAvatar = await uploadAvatar(
-                e.target.files?.[0],
-                session,
-              );
+              const newAvatar = await uploadAvatar(e.target.files?.[0]);
               setAvatarPath(newAvatar ?? null);
               setIsLoadingAvatar(false);
             }}
