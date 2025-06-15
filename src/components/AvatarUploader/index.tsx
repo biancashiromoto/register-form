@@ -1,18 +1,10 @@
-import { Context } from '@/context';
 import { Box, IconButton } from '@mui/material';
-import { ChangeEvent, useContext } from 'react';
 import { IoMdCamera } from 'react-icons/io';
 import Avatar from '../Avatar';
-import { uploadAvatar } from '@/services/user';
+import useAvatarUploader from './hooks/useAvatarUploader';
 
 export const AvatarUploader = () => {
-  const { refetchAvatar } = useContext(Context);
-
-  const handleAvatarUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.[0]) return;
-    await uploadAvatar(e.target.files?.[0]);
-    refetchAvatar();
-  };
+  const { handleAvatarUpload } = useAvatarUploader();
 
   return (
     <Box
