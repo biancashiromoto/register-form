@@ -1,15 +1,17 @@
+import { useAuthState } from '@/hooks/useAuthState';
 import { fetchAvatar } from '@/services/user';
 import { SnackbarStateType, UserLocationType, UserType } from '@/types';
+import { useQuery } from '@tanstack/react-query';
 import { useLocation } from '@tanstack/react-router';
 import { FC, ReactNode, useMemo, useState } from 'react';
 import { Context } from '.';
 import { ContextProps } from './index.types';
 import ThemeProvider from './ThemeProvider';
-import { useQuery } from '@tanstack/react-query';
 
 // const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
+  const { session } = useAuthState();
   const [snackbarState, setSnackbarState] = useState<SnackbarStateType>({
     open: false,
     message: '',
@@ -31,6 +33,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   } = useQuery({
     queryKey: ['avatar'],
     queryFn: fetchAvatar,
+    enabled: !!session,
   });
 
   const value = useMemo<ContextProps>(
