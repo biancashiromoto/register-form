@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled, Switch, SwitchProps } from '@mui/material';
+import { ThemeContext } from '@/context/ThemeProvider';
 
 const StyledSwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -64,7 +65,16 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
 interface ToggleThemeSwitchProps extends SwitchProps {}
 
 const ToggleThemeSwitch: React.FC<ToggleThemeSwitchProps> = (props) => {
-  return <StyledSwitch {...props} />;
+  const { isDarkModeOn, toggleTheme } = useContext(ThemeContext);
+
+  return (
+    <StyledSwitch
+      aria-label={`${isDarkModeOn ? 'Deactivate' : 'Activate'} dark mode`}
+      onChange={toggleTheme}
+      checked={isDarkModeOn}
+      {...props}
+    />
+  );
 };
 
 export default ToggleThemeSwitch;
