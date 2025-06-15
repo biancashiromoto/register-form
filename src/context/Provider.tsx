@@ -52,6 +52,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       userLocation,
       normalizedPath,
       isLoading,
+      isPending,
       avatar,
     ],
   );
