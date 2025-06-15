@@ -1,6 +1,7 @@
 import { supabase } from '@/services/supabase';
 import { UserType } from '@/types';
 import { Session } from '@supabase/supabase-js';
+import imageCompression from 'browser-image-compression';
 
 export const AVATAR_BUCKET = 'avatars';
 
@@ -140,46 +141,15 @@ export const fetchAvatar = async () => {
   return `${data.publicUrl}?t=${Date.now()}`;
 };
 
-const convertToWebp = (file: File) => {
-  return new Promise<File>((resolve, reject) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        URL.revokeObjectURL(url);
-        return reject(new Error('Failed to get canvas context'));
-      }
-      ctx.drawImage(img, 0, 0);
-
-      canvas.toBlob(
-        (blob) => {
-          URL.revokeObjectURL(url);
-          if (!blob) return reject(new Error('Conversion to webp failed'));
-          const webpFile = new File(
-            [blob],
-            file.name.replace(/\.\w+$/, '.webp'),
-            {
-              type: 'image/webp',
-            },
-          );
-          resolve(webpFile);
-        },
-        'image/webp',
-        0.92,
-      );
-    };
-
-    img.onerror = (e) => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Failed to load image'));
-    };
-
-    img.src = url;
+const convertToWebp = async (file: File): Promise<File> => {
+  const options = {
+    fileType: 'image/webp',
+    maxSizeMB: 1,
+    useWebWorker: true,
+  };
+  const compressedBlob = await imageCompression(file, options);
+  return new File([compressedBlob], file.name.replace(/\.\w+$/, '.webp'), {
+    type: 'image/webp',
   });
 };
 
@@ -198,5 +168,6 @@ export const uploadAvatar = async (file: File) => {
   if (error) throw new Error(error.message);
 
   const publicUrl = fetchAvatar();
+
   return publicUrl;
 };

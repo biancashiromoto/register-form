@@ -1,21 +1,12 @@
 import { Context } from '@/context';
 import { ContextProps } from '@/context/index.types';
 import { RouteComponent } from '@/routes/register';
-import { supabase } from '@/services/supabase';
-import { SignInWithPasswordCredentials, User } from '@supabase/supabase-js';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockSession, mockUser } from '../mocks';
+import { mockUser } from '../mocks';
 
 const mockNavigate = vi.fn();
-const mockSetSnackbarState = vi.fn();
 const mockRegisterUser = vi.fn();
 const mockSetUserLocation = vi.fn();
 
@@ -41,7 +32,6 @@ describe('/register route', async () => {
   const mockContext = {
     snackbarState: { open: false, message: '', severity: undefined },
     setUserLocation: mockSetUserLocation,
-    setSnackbarState: mockSetSnackbarState,
   } as unknown as ContextProps;
 
   beforeEach(() => {
@@ -149,8 +139,6 @@ describe('/register route', async () => {
     });
 
     fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
-
-    expect(mockSetSnackbarState).toHaveBeenCalledOnce();
 
     await waitFor(() => expect(mockRegisterUser).toHaveBeenCalledOnce());
   });

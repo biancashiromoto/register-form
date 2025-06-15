@@ -1,53 +1,25 @@
 import { Context } from '@/context';
-import { useAuthState } from '@/hooks/useAuthState';
-import { Avatar as MUIAvatar, Skeleton } from '@mui/material';
-import { useContext, useMemo } from 'react';
+import { Avatar as MUIAvatar } from '@mui/material';
+import { useContext } from 'react';
+import useAvatar from './hooks/useAvatar';
 
-interface AvatarProps {
+export interface AvatarProps {
   size?: number;
 }
 
-const Avatar = ({ size = 20 }: AvatarProps) => {
-  const { session } = useAuthState();
-  const { avatarPath, isLoadingAvatar } = useContext(Context);
+const Avatar = (props: AvatarProps) => {
+  const { isLoadingAvatar } = useContext(Context);
+  const { memoizedAvatarSrc, memoizedSkeleton, username } = useAvatar(props);
 
-  const username = useMemo(
-    () =>
-      `${session?.user?.user_metadata?.first_name} ${session?.user?.user_metadata?.last_name}`,
-    [session],
-  );
-
-  if (isLoadingAvatar) {
-    return (
-      <Skeleton
-        data-testid="skeleton"
-        variant="circular"
-        width={size}
-        height={size}
-      />
-    );
-  }
-
-  if (!avatarPath) {
-    return (
-      <MUIAvatar
-        alt={username}
-        sx={{
-          width: size,
-          height: size,
-          border: '2px solid',
-          borderColor: 'primary.main',
-        }}
-      />
-    );
-  }
+  if (isLoadingAvatar) return memoizedSkeleton;
 
   return (
     <MUIAvatar
-      src={avatarPath}
+      src={memoizedAvatarSrc}
+      alt={username}
       sx={{
-        width: size,
-        height: size,
+        width: props.size ?? 25,
+        height: props.size ?? 25,
         border: '2px solid',
         borderColor: 'primary.main',
       }}
