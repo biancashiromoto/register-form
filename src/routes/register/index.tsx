@@ -9,13 +9,13 @@ import { Context } from '@/context';
 import useRegisterUser from '@/hooks/useRegisterUser';
 import { useResetForm } from '@/hooks/useResetForm';
 import { registerSchema } from '@/schemas/registerSchema';
-import { SnackbarStateType, UserType } from '@/types';
+import { UserType } from '@/types';
 import { INITIAL_REGISTER_STATE } from '@/utils/commons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Checkbox, Container, FormControlLabel } from '@mui/material';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { City, Country, State } from 'country-state-city';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/register/')({
@@ -44,8 +44,7 @@ export function RouteComponent() {
     defaultValues: INITIAL_REGISTER_STATE,
   });
 
-  const { snackbarState, setSnackbarState, setRegisteringUser } =
-    useContext(Context);
+  const { snackbarState } = useContext(Context);
   const { mutate: registerUser, isPending } = useRegisterUser();
   const firstName = watch('firstName');
   const lastName = watch('lastName');
@@ -104,13 +103,6 @@ export function RouteComponent() {
     if (!showLocation) return true;
     return shouldShowPasswordFields();
   }, [isValid, showLocation, country, state, city, errors]);
-
-  useEffect(() => {
-    setSnackbarState((prevState: SnackbarStateType) => ({
-      ...prevState,
-      open: false,
-    }));
-  }, []);
 
   if (isPending) return <LoadingLayer />;
 

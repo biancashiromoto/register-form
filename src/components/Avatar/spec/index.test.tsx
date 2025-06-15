@@ -12,7 +12,7 @@ vi.mock('@/hooks/useAuthState', () => ({
 
 describe('Avatar Component', () => {
   const mockContextValue = {
-    avatarPath: 'mock-avatar-path',
+    avatar: 'mock-avatar-path',
     isLoadingAvatar: false,
     isPendingAvatar: false,
   };
@@ -36,12 +36,12 @@ describe('Avatar Component', () => {
   });
 
   test('renders a fallback avatar when no avatarPath is provided', () => {
-    renderWithContext({ ...mockContextValue, avatarPath: null });
+    renderWithContext({ ...mockContextValue, avatar: undefined });
 
     expect(screen.getByTestId('PersonIcon')).toBeInTheDocument();
   });
 
-  test('renders the avatar with the correct src when avatarPath is provided', () => {
+  test('renders the avatar with the correct src when avatar is provided', () => {
     renderWithContext();
 
     const avatar = screen.getByRole('img');
