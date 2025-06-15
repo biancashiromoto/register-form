@@ -6,13 +6,17 @@ import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import { AvatarUploader } from '..';
+import { uploadAvatar } from '@/services/user';
 
 vi.mock('@/hooks/useAuthState', () => ({
   useAuthState: () => ({ session: mockSession }),
 }));
 
+vi.mock('@/services/user', () => ({
+  uploadAvatar: vi.fn(),
+}));
+
 const queryClient = new QueryClient();
-const mockUploadAvatar = vi.fn();
 
 describe('AvatarUploader', () => {
   const renderWithContext = () =>
@@ -21,7 +25,6 @@ describe('AvatarUploader', () => {
         <Context.Provider
           value={
             {
-              uploadAvatar: mockUploadAvatar,
               isLoadingAvatar: false,
               setAvatarPath: vi.fn(),
               setIsLoadingAvatar: vi.fn(),
@@ -58,7 +61,7 @@ describe('AvatarUploader', () => {
     await userEvent.upload(fileInput, file);
 
     await waitFor(() => {
-      expect(mockUploadAvatar).toHaveBeenCalledWith(file, mockSession);
+      expect(uploadAvatar).toHaveBeenCalledWith(file);
     });
   });
 });
