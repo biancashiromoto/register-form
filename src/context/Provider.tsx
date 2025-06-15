@@ -1,28 +1,12 @@
-import {
-  getLocalStorage,
-  setLocalStorage,
-} from '@/helpers/localStorageManagement';
 import { useAuthState } from '@/hooks/useAuthState';
 import { SnackbarStateType, UserLocationType, UserType } from '@/types';
-import {
-  createTheme,
-  CssBaseline,
-  ThemeProvider,
-  useMediaQuery,
-} from '@mui/material';
 import { useLocation } from '@tanstack/react-router';
-import {
-  FC,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
 import { Context } from '.';
 import { ContextProps } from './index.types';
 import { supabase } from '@/services/supabase';
 import { Session } from '@supabase/supabase-js';
+import ThemeProvider from './ThemeProvider';
 
 // const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
@@ -95,14 +79,6 @@ const uploadAvatar = async (file: File, session: Session) => {
 
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const { session } = useAuthState();
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [isDarkModeOn, setIsDarkModeOn] = useState<boolean>(() => {
-    const storedTheme = getLocalStorage('theme');
-    if (storedTheme) {
-      return storedTheme === 'dark';
-    }
-    return prefersDarkMode;
-  });
   const [snackbarState, setSnackbarState] = useState<SnackbarStateType>({
     open: false,
     message: '',
@@ -134,42 +110,6 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
     setAvatarPath(session?.user?.user_metadata?.avatar_url);
   }, [session]);
 
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: isDarkModeOn ? 'dark' : 'light',
-          background: {
-            default: isDarkModeOn ? '#1D2125' : '#DEE4EA',
-            paper: isDarkModeOn ? '#2D3748' : '#FFFFFF',
-          },
-          text: {
-            primary: isDarkModeOn ? '#DEE4EA' : '#1D2125',
-            secondary: isDarkModeOn ? '#A0AEC0' : '#4A5568',
-          },
-        },
-        components: {
-          MuiCssBaseline: {
-            styleOverrides: {
-              body: {
-                backgroundColor: isDarkModeOn ? '#1D2125' : '#DEE4EA',
-                color: isDarkModeOn ? '#DEE4EA' : '#1D2125',
-              },
-            },
-          },
-        },
-      }),
-    [isDarkModeOn],
-  );
-
-  const toggleTheme = useCallback(() => {
-    setIsDarkModeOn((prevMode) => {
-      const newMode = !prevMode;
-      setLocalStorage('theme', newMode ? 'dark' : 'light');
-      return newMode;
-    });
-  }, []);
-
   const value = useMemo<ContextProps>(
     () => ({
       snackbarState,
@@ -178,10 +118,6 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       setRegisteringUser,
       userLocation,
       setUserLocation,
-      isDarkModeOn,
-      setIsDarkModeOn,
-      toggleTheme,
-      theme,
       normalizedPath,
       avatarPath,
       isLoadingAvatar,
@@ -193,10 +129,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
       snackbarState,
       registeringUser,
       userLocation,
-      isDarkModeOn,
-      theme,
       normalizedPath,
-      toggleTheme,
       avatarPath,
       isLoadingAvatar,
       uploadAvatar,
@@ -206,8 +139,7 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   );
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <ThemeProvider>
       <Context.Provider value={value}>{children}</Context.Provider>
     </ThemeProvider>
   );
