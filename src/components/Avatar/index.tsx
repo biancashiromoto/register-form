@@ -9,7 +9,7 @@ interface AvatarProps {
 
 const Avatar = ({ size = 20 }: AvatarProps) => {
   const { session } = useAuthState();
-  const { avatarPath, isLoadingAvatar } = useContext(Context);
+  const { avatar, isLoadingAvatar } = useContext(Context);
 
   const username = useMemo(
     () =>
@@ -28,7 +28,7 @@ const Avatar = ({ size = 20 }: AvatarProps) => {
     );
   }
 
-  if (!avatarPath) {
+  if (!avatar) {
     return (
       <MUIAvatar
         alt={username}
@@ -44,7 +44,7 @@ const Avatar = ({ size = 20 }: AvatarProps) => {
 
   return (
     <MUIAvatar
-      src={avatarPath}
+      src={avatar}
       sx={{
         width: size,
         height: size,

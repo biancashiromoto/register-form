@@ -1,5 +1,4 @@
 import { SnackbarStateType, UserLocationType, UserType } from '@/types';
-import { Session } from '@supabase/supabase-js';
 import { Dispatch, SetStateAction } from 'react';
 
 export interface ContextProps {
@@ -10,8 +9,7 @@ export interface ContextProps {
   userLocation: UserLocationType;
   setUserLocation: Dispatch<SetStateAction<UserLocationType>>;
   normalizedPath: string;
-  avatarPath: string | null;
   isLoadingAvatar: boolean;
-  setAvatarPath: Dispatch<SetStateAction<string | null>>;
-  setIsLoadingAvatar: Dispatch<SetStateAction<boolean>>;
+  refetchAvatar: () => {};
+  avatar: string | undefined;
 }
