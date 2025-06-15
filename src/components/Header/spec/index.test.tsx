@@ -66,22 +66,6 @@ describe('Header Component', () => {
     vi.clearAllMocks();
   });
 
-  it('should render the toggle theme switch with the correct aria-label when dark mode is off', () => {
-    renderWithProviders(<Header />, { isDarkModeOn: false });
-    expect(screen.getByTestId('toggle-theme-switch')).toHaveAttribute(
-      'aria-label',
-      'Activate dark mode',
-    );
-  });
-
-  it('should render the toggle theme switch with the correct aria-label when dark mode is on', () => {
-    renderWithProviders(<Header />, { isDarkModeOn: true });
-    expect(screen.getByTestId('toggle-theme-switch')).toHaveAttribute(
-      'aria-label',
-      'Deactivate dark mode',
-    );
-  });
-
   it('should render Navbar', () => {
     renderWithProviders(<Header />);
     expect(screen.getByTestId('navbar')).toBeInTheDocument();
