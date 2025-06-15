@@ -8,6 +8,12 @@ import { uploadAvatar } from '@/services/user';
 export const AvatarUploader = () => {
   const { refetchAvatar } = useContext(Context);
 
+  const handleAvatarUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    await uploadAvatar(e.target.files?.[0]);
+    refetchAvatar();
+  };
+
   return (
     <Box
       sx={{
@@ -39,11 +45,7 @@ export const AvatarUploader = () => {
             type="file"
             hidden
             accept="image/*"
-            onChange={async (e: ChangeEvent<HTMLInputElement>) => {
-              if (!e.target.files?.[0]) return;
-              await uploadAvatar(e.target.files?.[0]);
-              refetchAvatar();
-            }}
+            onChange={handleAvatarUpload}
           />
           <IoMdCamera color="white" />
         </IconButton>

@@ -198,5 +198,6 @@ export const uploadAvatar = async (file: File) => {
   if (error) throw new Error(error.message);
 
   const publicUrl = fetchAvatar();
+
   return publicUrl;
 };
