@@ -6,7 +6,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 
 const useRegisterUser = () => {
-  const { setSnackbarState } = useContext(Context);
+  const { handleOpenSnackbar } = useContext(Context);
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
@@ -19,13 +19,7 @@ const useRegisterUser = () => {
         viewTransition: true,
       });
     },
-    onError: (error) => {
-      setSnackbarState({
-        open: true,
-        message: error.message,
-        severity: 'error',
-      });
-    },
+    onError: (error) => handleOpenSnackbar({ ...error, severity: 'error' }),
   });
 
   return { mutate, isPending };

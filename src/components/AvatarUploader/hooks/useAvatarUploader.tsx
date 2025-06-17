@@ -1,28 +1,23 @@
 import { Context } from '@/context';
 import { uploadAvatar } from '@/services/user';
 import { useMutation } from '@tanstack/react-query';
-import React, { ChangeEvent, useContext } from 'react';
+import { ChangeEvent, useCallback, useContext } from 'react';
 
 const useAvatarUploader = () => {
-  const { refetchAvatar, setSnackbarState } = useContext(Context);
+  const { refetchAvatar, handleOpenSnackbar } = useContext(Context);
 
-  const { mutate: handleUpload } = useMutation({
+  const handleSuccessfulAvatarUpload = useCallback(async () => {
+    await Promise.resolve(refetchAvatar());
+    handleOpenSnackbar({
+      message: 'Avatar successfully uploaded!',
+      severity: 'success',
+    });
+  }, [handleOpenSnackbar, refetchAvatar]);
+
+  const { mutate: handleUpload, isPending } = useMutation({
     mutationFn: uploadAvatar,
-    onSuccess: async () => {
-      refetchAvatar();
-      setSnackbarState({
-        open: true,
-        message: 'Avatar successfully uploaded!',
-        severity: 'success',
-      });
-    },
-    onError: () => {
-      setSnackbarState({
-        open: true,
-        message: 'Error uploading avatar',
-        severity: 'error',
-      });
-    },
+    onSuccess: handleSuccessfulAvatarUpload,
+    onError: (error) => handleOpenSnackbar({ ...error, severity: 'error' }),
   });
 
   const handleAvatarUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +27,7 @@ const useAvatarUploader = () => {
 
   return {
     handleAvatarUpload,
+    isPending,
   };
 };
 

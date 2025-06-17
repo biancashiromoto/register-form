@@ -43,7 +43,7 @@ export function RouteComponent() {
 
   const email = watch('email');
   useResetForm(email, resetField, 'password');
-  const { snackbarState, setSnackbarState } = useContext(Context);
+  const { snackbarState, handleOpenSnackbar } = useContext(Context);
   const { sendResetPasswordEmail } = useResetPassword();
   const navigate = useNavigate();
 
@@ -51,12 +51,7 @@ export function RouteComponent() {
     const { error } = await supabase.auth.signInWithPassword(data);
 
     if (error) {
-      setSnackbarState((prev) => ({
-        ...prev,
-        open: true,
-        message: error.message,
-        severity: 'error',
-      }));
+      handleOpenSnackbar({ ...error, severity: 'error' });
       return;
     }
 

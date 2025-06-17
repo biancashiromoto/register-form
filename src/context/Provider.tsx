@@ -3,26 +3,44 @@ import { fetchAvatar } from '@/services/user';
 import { SnackbarStateType, UserLocationType, UserType } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from '@tanstack/react-router';
-import { FC, ReactNode, useMemo, useState } from 'react';
+import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
 import { Context } from '.';
-import { ContextProps } from './index.types';
+import { ContextProps, SnackbarEventType } from './index.types';
 import ThemeProvider from './ThemeProvider';
 
-// const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
+const INITIAL_SNACKBAR_STATE: SnackbarStateType = {
+  open: false,
+  message: '',
+  severity: undefined,
+};
 
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const { session } = useAuthState();
-  const [snackbarState, setSnackbarState] = useState<SnackbarStateType>({
-    open: false,
-    message: '',
-    severity: undefined,
-  });
+  const [snackbarState, setSnackbarState] = useState<SnackbarStateType>(
+    INITIAL_SNACKBAR_STATE,
+  );
   const [registeringUser, setRegisteringUser] = useState<UserType | null>(null);
   const [userLocation, setUserLocation] = useState({} as UserLocationType);
   const location = useLocation();
   const normalizedPath = useMemo(
     () => location.pathname.replace(/\/$/, ''),
     [location.pathname],
+  );
+
+  const handleOpenSnackbar = useCallback(
+    (event: SnackbarEventType) => {
+      setSnackbarState({
+        open: true,
+        message: event.message,
+        severity: event.severity,
+      });
+    },
+    [setSnackbarState],
+  );
+
+  const handleCloseSnackbar = useCallback(
+    () => setSnackbarState(INITIAL_SNACKBAR_STATE),
+    [setSnackbarState],
   );
 
   const {
@@ -39,7 +57,8 @@ const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const value = useMemo<ContextProps>(
     () => ({
       snackbarState,
-      setSnackbarState,
+      handleOpenSnackbar,
+      handleCloseSnackbar,
       registeringUser,
       setRegisteringUser,
       userLocation,

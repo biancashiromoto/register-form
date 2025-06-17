@@ -11,22 +11,17 @@ type CustomSnackbarProps = {
 export const CustomSnackbar = ({
   onCloseCallback = undefined,
 }: CustomSnackbarProps) => {
-  const { setSnackbarState, snackbarState } = useContext(Context);
+  const { handleCloseSnackbar, snackbarState } = useContext(Context);
 
   const handleClose = () => {
-    setSnackbarState((prevState) => {
-      return {
-        ...prevState,
-        open: false,
-      };
-    });
+    handleCloseSnackbar();
     onCloseCallback && onCloseCallback();
   };
 
   return (
     <MuiSnackbar
       data-testid="snackbar"
-      open={snackbarState.open || false}
+      open={snackbarState.open ?? false}
       autoHideDuration={SNACKBAR_DURATION}
       onClose={handleClose}
       anchorOrigin={{

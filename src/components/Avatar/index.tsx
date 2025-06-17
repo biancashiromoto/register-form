@@ -5,13 +5,14 @@ import useAvatar from './hooks/useAvatar';
 
 export interface AvatarProps {
   size?: number;
+  isLoading: boolean;
 }
 
 const Avatar = (props: AvatarProps) => {
   const { isLoadingAvatar } = useContext(Context);
   const { memoizedAvatarSrc, memoizedSkeleton, username } = useAvatar(props);
 
-  if (isLoadingAvatar) return memoizedSkeleton;
+  if (isLoadingAvatar || props.isLoading) return memoizedSkeleton;
 
   return (
     <MUIAvatar

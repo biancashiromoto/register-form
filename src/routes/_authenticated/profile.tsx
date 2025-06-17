@@ -8,11 +8,10 @@ import { useAuthState } from '@/hooks/useAuthState';
 import useResetPassword from '@/hooks/useResetPassword';
 import useUpdateUser from '@/hooks/useUpdateUser';
 import { profileEditSchema } from '@/schemas/profileEditSchema';
-import { SnackbarStateType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, TextField } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/_authenticated/profile')({
@@ -21,7 +20,7 @@ export const Route = createFileRoute('/_authenticated/profile')({
 
 export function RouteComponent() {
   const { mutate: updateUser, isPending: isUpdatingUser } = useUpdateUser();
-  const { snackbarState, setSnackbarState } = useContext(Context);
+  const { snackbarState } = useContext(Context);
   const { sendResetPasswordEmail } = useResetPassword();
   const { session } = useAuthState();
 
@@ -41,13 +40,6 @@ export function RouteComponent() {
   });
 
   const onSubmit = (data: any) => updateUser(data);
-
-  useEffect(() => {
-    setSnackbarState((prevState: SnackbarStateType) => ({
-      ...prevState,
-      open: false,
-    }));
-  }, []);
 
   if (isUpdatingUser || !session?.user) return <LoadingLayer />;
 
