@@ -10,7 +10,7 @@ import { mockSession, mockUser } from '../mocks';
 
 const mockNavigate = vi.fn();
 const mockSendResetPasswordEmail = vi.fn();
-const mockSetSnackbarState = vi.fn();
+const mockHandleOpenSnackbar = vi.fn();
 
 vi.mock('@tanstack/react-router', async () => {
   const actual = await vi.importActual('@tanstack/react-router');
@@ -30,9 +30,10 @@ describe('/login route', () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
+
   const mockContext = {
     snackbarState: { open: false, message: '', severity: undefined },
-    setSnackbarState: mockSetSnackbarState,
+    handleOpenSnackbar: mockHandleOpenSnackbar,
   } as unknown as ContextProps;
 
   beforeEach(() => {
@@ -71,13 +72,13 @@ describe('/login route', () => {
         error: null,
       });
 
-    const emailInput = screen.getByLabelText(/e-mail/i);
-    const passwordInput = screen
-      .getByTestId('password')
-      .querySelector('input')!;
+    fireEvent.change(screen.getByLabelText(/e-mail/i), {
+      target: { value: mockUser.email },
+    });
+    fireEvent.change(screen.getByTestId('password').querySelector('input')!, {
+      target: { value: mockUser.password },
+    });
 
-    fireEvent.change(emailInput, { target: { value: mockUser.email } });
-    fireEvent.change(passwordInput, { target: { value: mockUser.password } });
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
@@ -85,6 +86,7 @@ describe('/login route', () => {
         email: mockUser.email,
         password: mockUser.password,
       } as SignInWithPasswordCredentials);
+
       expect(mockNavigate).toHaveBeenCalledWith({ to: '/home' });
     });
   });
@@ -93,9 +95,10 @@ describe('/login route', () => {
     renderLoginRoute();
 
     const signInSpy = vi.spyOn(supabase.auth, 'signInWithPassword');
-    const emailInput = screen.getByLabelText(/e-mail/i);
 
-    fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+    fireEvent.change(screen.getByLabelText(/e-mail/i), {
+      target: { value: 'invalid-email' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
@@ -106,8 +109,9 @@ describe('/login route', () => {
   it('should call sendResetPasswordEmail when forgot password button is clicked', async () => {
     renderLoginRoute();
 
-    const emailInput = screen.getByLabelText(/e-mail/i);
-    fireEvent.change(emailInput, { target: { value: mockUser.email } });
+    fireEvent.change(screen.getByLabelText(/e-mail/i), {
+      target: { value: mockUser.email },
+    });
     fireEvent.click(
       screen.getByRole('button', { name: /forgot your password\?/i }),
     );
@@ -118,31 +122,24 @@ describe('/login route', () => {
   });
 
   it('should handle error when signIn fails', async () => {
-    renderLoginRoute();
-
     const error = { message: 'Error signing in' };
     vi.spyOn(supabase.auth, 'signInWithPassword').mockResolvedValueOnce({
       error,
     } as any);
 
-    const emailInput = screen.getByLabelText(/e-mail/i);
-    const passwordInput = screen
-      .getByTestId('password')
-      .querySelector('input')!;
+    renderLoginRoute();
 
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
+    fireEvent.change(screen.getByLabelText(/e-mail/i), {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(screen.getByTestId('password').querySelector('input')!, {
+      target: { value: 'wrongpassword' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
-      expect(mockSetSnackbarState).toHaveBeenCalledTimes(1);
-      const updater = mockSetSnackbarState.mock.calls[0][0];
-
-      const result = updater({ open: false, message: '', severity: undefined });
-
-      expect(result).toEqual({
-        open: true,
-        message: error.message,
+      expect(mockHandleOpenSnackbar).toHaveBeenCalledWith({
+        ...error,
         severity: 'error',
       });
     });

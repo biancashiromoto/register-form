@@ -7,15 +7,14 @@ import { useContext } from 'react';
 import { useAuthState } from './useAuthState';
 
 const useResetPassword = () => {
-  const { setSnackbarState } = useContext(Context);
+  const { handleOpenSnackbar } = useContext(Context);
   const { signOut } = useAuthState();
 
   const sendResetPasswordEmail = async (
     email: UserType['email'] | undefined,
   ) => {
     if (!email) {
-      setSnackbarState({
-        open: true,
+      handleOpenSnackbar({
         message: 'Please enter a valid email',
         severity: 'error',
       });
@@ -28,8 +27,7 @@ const useResetPassword = () => {
       'A password recovery email has been sent to your inbox.';
     const severity = error ? 'error' : 'success';
 
-    setSnackbarState({
-      open: true,
+    handleOpenSnackbar({
       message,
       severity,
     });
@@ -39,8 +37,7 @@ const useResetPassword = () => {
     mutationKey: ['resetPassword'],
     mutationFn: (password: string) => resetPassword(password),
     onSuccess: () => {
-      setSnackbarState({
-        open: true,
+      handleOpenSnackbar({
         message: 'Password successfully updated!',
         severity: 'success',
       });
@@ -48,13 +45,7 @@ const useResetPassword = () => {
         signOut();
       }, 1000);
     },
-    onError: (error) => {
-      setSnackbarState({
-        open: true,
-        message: error.message,
-        severity: 'error',
-      });
-    },
+    onError: (error) => handleOpenSnackbar({ ...error, severity: 'error' }),
   });
 
   return { mutate, isPending, sendResetPasswordEmail };

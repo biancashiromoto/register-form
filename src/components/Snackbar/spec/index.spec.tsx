@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CustomSnackbar } from '..';
 
 describe('CustomSnackbar', () => {
-  const mockSetSnackbarState = vi.fn();
+  const mockHandleCloseSnackbar = vi.fn();
   const mockOnCloseCallback = vi.fn();
 
   const mockSnackbarState: SnackbarStateType = {
@@ -23,7 +23,7 @@ describe('CustomSnackbar', () => {
       <Context.Provider
         value={
           {
-            setSnackbarState: mockSetSnackbarState,
+            handleCloseSnackbar: mockHandleCloseSnackbar,
             snackbarState,
           } as unknown as ContextProps
         }
@@ -37,38 +37,38 @@ describe('CustomSnackbar', () => {
     vi.clearAllMocks();
   });
 
-  it('should call setSnackbarState and onCloseCallback when close button is clicked (with callback)', async () => {
+  it('should call handleCloseSnackbar and onCloseCallback when close button is clicked (with callback)', async () => {
     renderComponent(mockOnCloseCallback);
 
     await waitFor(() => {
       expect(screen.getByText(mockSnackbarState.message)).toBeInTheDocument();
     });
 
-    const closeButton = screen.getByRole('button', { name: /close/i });
-    fireEvent.click(closeButton);
+    fireEvent.click(screen.getByRole('button', { name: /close/i }));
 
-    expect(mockSetSnackbarState).toHaveBeenCalledTimes(1);
+    expect(mockHandleCloseSnackbar).toHaveBeenCalledTimes(1);
     expect(mockOnCloseCallback).toHaveBeenCalledTimes(1);
   });
 
-  it('should call setSnackbarState without onCloseCallback when onCloseCallback is not provided', async () => {
+  it('should call handleCloseSnackbar without onCloseCallback when onCloseCallback is not provided', async () => {
     renderComponent(undefined);
 
     await waitFor(() => {
       expect(screen.getByText(mockSnackbarState.message)).toBeInTheDocument();
     });
 
-    const closeButton = screen.getByRole('button', { name: /close/i });
-    fireEvent.click(closeButton);
+    fireEvent.click(screen.getByRole('button', { name: /close/i }));
 
-    expect(mockSetSnackbarState).toHaveBeenCalledTimes(1);
+    expect(mockHandleCloseSnackbar).toHaveBeenCalledTimes(1);
   });
 
-  it('should not render snackbar without onCloseCallback when open is not provided', async () => {
-    renderComponent(mockOnCloseCallback, {} as SnackbarStateType);
+  it('should not render snackbar if open is not true', () => {
+    renderComponent(mockOnCloseCallback, {
+      open: false,
+      message: '',
+      severity: 'success',
+    });
 
-    expect(
-      screen.queryByText(mockSnackbarState.message),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('snackbar')).not.toBeInTheDocument();
   });
 });

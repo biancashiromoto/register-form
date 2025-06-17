@@ -13,18 +13,18 @@ vi.mock('@/services/user', () => ({
 }));
 
 describe('useUpdateUser', () => {
-  let setSnackbarStateMock: any;
+  let handleOpenSnackbarMock: any;
   let queryClient: QueryClient;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    setSnackbarStateMock = vi.fn();
+    handleOpenSnackbarMock = vi.fn();
     queryClient = new QueryClient();
   });
 
   const wrapper: FC<{ children: ReactNode }> = ({ children }) => (
     <Context.Provider
-      value={{ setSnackbarState: setSnackbarStateMock } as ContextProps}
+      value={{ handleOpenSnackbar: handleOpenSnackbarMock } as ContextProps}
     >
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </Context.Provider>
@@ -42,8 +42,7 @@ describe('useUpdateUser', () => {
     await waitFor(() => {
       expect(updateUser).toHaveBeenCalledWith(mockUser);
 
-      expect(setSnackbarStateMock).toHaveBeenCalledWith({
-        open: true,
+      expect(handleOpenSnackbarMock).toHaveBeenCalledWith({
         message: 'User successfully updated!',
         severity: 'success',
       });
@@ -52,7 +51,8 @@ describe('useUpdateUser', () => {
 
   it('should handle error updating user', async () => {
     const errorMessage = 'Erro ao atualizar usuário';
-    (updateUser as any).mockRejectedValue(new Error(errorMessage));
+    const error = new Error(errorMessage);
+    (updateUser as any).mockRejectedValue(error);
 
     const { result } = renderHook(() => useUpdateUser(), { wrapper });
 
@@ -63,9 +63,8 @@ describe('useUpdateUser', () => {
     await waitFor(() => {
       expect(updateUser).toHaveBeenCalledWith(mockUser);
 
-      expect(setSnackbarStateMock).toHaveBeenCalledWith({
-        open: true,
-        message: errorMessage,
+      expect(handleOpenSnackbarMock).toHaveBeenCalledWith({
+        ...error,
         severity: 'error',
       });
     });

@@ -14,13 +14,13 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 
 describe('useRegisterUser', () => {
-  let setSnackbarStateMock: any;
+  let handleOpenSnackbarMock: any;
   let navigateMock: any;
   let queryClient: QueryClient;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    setSnackbarStateMock = vi.fn();
+    handleOpenSnackbarMock = vi.fn();
     navigateMock = vi.fn();
     (useNavigate as any).mockReturnValue(navigateMock);
     queryClient = new QueryClient();
@@ -30,7 +30,7 @@ describe('useRegisterUser', () => {
     <Context.Provider
       value={
         {
-          setSnackbarState: setSnackbarStateMock,
+          handleOpenSnackbar: handleOpenSnackbarMock,
         } as unknown as ContextProps
       }
     >
@@ -47,7 +47,7 @@ describe('useRegisterUser', () => {
     });
 
     await waitFor(() => {
-      expect(signUpUser).toHaveBeenCalledTimes(1);
+      expect(signUpUser).toHaveBeenCalledWith(mockUser);
       expect(navigateMock).toHaveBeenCalledWith({
         to: '/register/success',
         replace: true,
@@ -58,7 +58,8 @@ describe('useRegisterUser', () => {
 
   it('should handle error', async () => {
     const errorMessage = 'Error registering';
-    (signUpUser as any).mockRejectedValue(new Error(errorMessage));
+    const error = new Error(errorMessage);
+    (signUpUser as any).mockRejectedValue(error);
     const { result } = renderHook(() => useRegisterUser(), { wrapper });
 
     act(() => {
@@ -66,9 +67,8 @@ describe('useRegisterUser', () => {
     });
 
     await waitFor(() => {
-      expect(setSnackbarStateMock).toHaveBeenCalledWith({
-        open: true,
-        message: errorMessage,
+      expect(handleOpenSnackbarMock).toHaveBeenCalledWith({
+        ...error,
         severity: 'error',
       });
     });

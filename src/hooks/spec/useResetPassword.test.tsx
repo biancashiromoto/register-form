@@ -17,15 +17,15 @@ vi.mock('@/services/user', () => ({
 }));
 
 describe('useResetPassword', () => {
-  let setSnackbarStateMock: any;
-  let navigateMock: any;
+  let handleOpenSnackbarMock: any;
+  let signOutMock: any;
   let queryClient: QueryClient;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    setSnackbarStateMock = vi.fn();
-    navigateMock = vi.fn();
-    (useNavigate as any).mockReturnValue(navigateMock);
+    handleOpenSnackbarMock = vi.fn();
+    signOutMock = vi.fn();
+
     queryClient = new QueryClient({
       defaultOptions: {
         mutations: { retry: false },
@@ -37,7 +37,8 @@ describe('useResetPassword', () => {
     <Context.Provider
       value={
         {
-          setSnackbarState: setSnackbarStateMock,
+          handleOpenSnackbar: handleOpenSnackbarMock,
+          signOut: signOutMock,
         } as unknown as ContextProps
       }
     >
@@ -55,8 +56,7 @@ describe('useResetPassword', () => {
 
     await waitFor(() => {
       expect(resetPassword).toHaveBeenCalledTimes(1);
-      expect(setSnackbarStateMock).toHaveBeenCalledWith({
-        open: true,
+      expect(handleOpenSnackbarMock).toHaveBeenCalledWith({
         message: 'Password successfully updated!',
         severity: 'success',
       });
@@ -65,7 +65,9 @@ describe('useResetPassword', () => {
 
   it('should handle error when resetPassword fails', async () => {
     const errorMessage = 'Auth session missing!';
-    (resetPassword as any).mockRejectedValue(new Error(errorMessage));
+    const error = new Error(errorMessage);
+    (resetPassword as any).mockRejectedValue(error);
+
     const { result } = renderHook(() => useResetPassword(), { wrapper });
 
     act(() => {
@@ -73,9 +75,8 @@ describe('useResetPassword', () => {
     });
 
     await waitFor(() => {
-      expect(setSnackbarStateMock).toHaveBeenCalledWith({
-        open: true,
-        message: errorMessage,
+      expect(handleOpenSnackbarMock).toHaveBeenCalledWith({
+        ...error,
         severity: 'error',
       });
     });
@@ -89,8 +90,7 @@ describe('useResetPassword', () => {
     });
 
     await waitFor(() => {
-      expect(setSnackbarStateMock).toHaveBeenCalledWith({
-        open: true,
+      expect(handleOpenSnackbarMock).toHaveBeenCalledWith({
         message: 'Please enter a valid email',
         severity: 'error',
       });
