@@ -75,9 +75,11 @@ describe('/login route', () => {
     fireEvent.change(screen.getByLabelText(/e-mail/i), {
       target: { value: mockUser.email },
     });
-    fireEvent.change(screen.getByTestId('password').querySelector('input')!, {
-      target: { value: mockUser.password },
-    });
+    const passwordInput = screen.getByTestId('password').querySelector('input');
+    passwordInput &&
+      fireEvent.change(passwordInput, {
+        target: { value: mockUser.password },
+      });
 
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
@@ -132,9 +134,12 @@ describe('/login route', () => {
     fireEvent.change(screen.getByLabelText(/e-mail/i), {
       target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByTestId('password').querySelector('input')!, {
-      target: { value: 'wrongpassword' },
-    });
+
+    const passwordInput = screen.getByTestId('password').querySelector('input');
+    passwordInput &&
+      fireEvent.change(passwordInput, {
+        target: { value: 'wrongpassword' },
+      });
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {

@@ -3,7 +3,6 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Context } from '@/context';
 import { resetPassword } from '@/services/user';
-import { useNavigate } from '@tanstack/react-router';
 import { ContextProps } from '@/context/index.types';
 import { mockUser } from '@/tests/mocks';
 import useResetPassword from '../useResetPassword';
