@@ -55,8 +55,8 @@ describe('/login route', () => {
     expect(screen.getByLabelText(/e-mail/i)).toBeInTheDocument();
     expect(screen.getByTestId('password')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: /sign in/i }),
-    ).toBeInTheDocument();
+      screen.queryByRole('button', { name: /sign in/i }),
+    ).not.toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /forgot your password\?/i }),
     ).toBeInTheDocument();
@@ -75,20 +75,20 @@ describe('/login route', () => {
     fireEvent.change(screen.getByLabelText(/e-mail/i), {
       target: { value: mockUser.email },
     });
-    const passwordInput = screen.getByTestId('password').querySelector('input');
-    passwordInput &&
-      fireEvent.change(passwordInput, {
-        target: { value: mockUser.password },
-      });
 
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    const passwordInput = screen.getByTestId('password').querySelector('input');
+    fireEvent.change(passwordInput!, { target: { value: mockUser.password } });
+
+    const submitButton = await screen.findByRole('button', {
+      name: /sign in/i,
+    });
+    fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(signInSpy).toHaveBeenCalledWith({
         email: mockUser.email,
         password: mockUser.password,
-      } as SignInWithPasswordCredentials);
-
+      });
       expect(mockNavigate).toHaveBeenCalledWith({ to: '/home' });
     });
   });
@@ -101,7 +101,9 @@ describe('/login route', () => {
     fireEvent.change(screen.getByLabelText(/e-mail/i), {
       target: { value: 'invalid-email' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    const signInButton = screen.queryByRole('button', { name: /sign in/i });
+    expect(signInButton).not.toBeInTheDocument();
 
     await waitFor(() => {
       expect(signInSpy).not.toHaveBeenCalled();

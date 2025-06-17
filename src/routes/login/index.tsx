@@ -42,6 +42,7 @@ export function RouteComponent() {
   });
 
   const email = watch('email');
+  const password = watch('password');
   useResetForm(email, resetField, 'password');
   const { snackbarState, handleOpenSnackbar } = useContext(Context);
   const { sendResetPasswordEmail } = useResetPassword();
@@ -86,9 +87,12 @@ export function RouteComponent() {
           isExistingPassword
         />
 
-        <CustomButton variant="contained" color="primary" type="submit">
-          Sign in
-        </CustomButton>
+        {!!errors && password && (
+          <CustomButton variant="contained" color="primary" type="submit">
+            Sign in
+          </CustomButton>
+        )}
+
         <CustomButton
           variant="outlined"
           color="primary"
