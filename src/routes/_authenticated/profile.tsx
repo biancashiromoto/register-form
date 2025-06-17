@@ -8,11 +8,10 @@ import { useAuthState } from '@/hooks/useAuthState';
 import useResetPassword from '@/hooks/useResetPassword';
 import useUpdateUser from '@/hooks/useUpdateUser';
 import { profileEditSchema } from '@/schemas/profileEditSchema';
-import { SnackbarStateType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Container, TextField } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/_authenticated/profile')({
