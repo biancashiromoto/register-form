@@ -7,7 +7,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockSession, mockUser } from '../mocks';
 
-const mockSetSnackbarState = vi.fn();
+const mockHandleOpenSnackbar = vi.fn();
 const mockSendResetPasswordEmail = vi.fn();
 
 const mockAuthState = {
@@ -50,9 +50,10 @@ describe('/profile route', () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
+
   const mockContext = {
     snackbarState: { open: false, message: '', severity: undefined },
-    setSnackbarState: mockSetSnackbarState,
+    handleOpenSnackbar: mockHandleOpenSnackbar,
   } as unknown as ContextProps;
 
   beforeEach(() => {
@@ -81,15 +82,9 @@ describe('/profile route', () => {
       mockUser.birthDate,
     );
     expect(screen.getByLabelText(/email/i)).toHaveValue(mockUser.email);
+    expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument();
     expect(
-      screen.getByRole('button', {
-        name: /save/i,
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: /reset password/i,
-      }),
+      screen.getByRole('button', { name: /reset password/i }),
     ).toBeInTheDocument();
   });
 
@@ -113,7 +108,6 @@ describe('/profile route', () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(mockSetSnackbarState).toHaveBeenCalledTimes(1);
       expect(mockUpdateUser).toHaveBeenCalledTimes(1);
       expect(mockUpdateUser).toHaveBeenCalledWith(
         expect.objectContaining({

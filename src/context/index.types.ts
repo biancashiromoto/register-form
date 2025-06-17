@@ -1,9 +1,16 @@
 import { SnackbarStateType, UserLocationType, UserType } from '@/types';
 import { Dispatch, SetStateAction } from 'react';
 
+export type SnackbarSeverityType = 'error' | 'info' | 'warning' | 'success';
+
+export type SnackbarEventType = {
+  message: string;
+  severity: SnackbarSeverityType;
+};
 export interface ContextProps {
   snackbarState: SnackbarStateType;
-  setSnackbarState: Dispatch<SetStateAction<SnackbarStateType>>;
+  handleOpenSnackbar: (event: SnackbarEventType) => void;
+  handleCloseSnackbar: () => void;
   registeringUser: UserType | null;
   setRegisteringUser: Dispatch<SetStateAction<UserType | null>>;
   userLocation: UserLocationType;

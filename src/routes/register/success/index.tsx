@@ -12,7 +12,7 @@ export const Route = createFileRoute('/register/success/')({
 });
 
 export function RouteComponent() {
-  const { registeringUser, setSnackbarState, snackbarState } =
+  const { registeringUser, handleOpenSnackbar, snackbarState } =
     useContext(Context);
   const navigate = useNavigate();
 
@@ -22,11 +22,8 @@ export function RouteComponent() {
       type: 'signup',
     });
 
-    setSnackbarState({
-      message: error
-        ? 'Error resending confirmation email'
-        : 'Confirmation email resent!',
-      open: true,
+    handleOpenSnackbar({
+      message: error ? error.message : 'Confirmation email resent!',
       severity: error ? 'error' : 'success',
     });
   };

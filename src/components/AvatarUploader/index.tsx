@@ -4,7 +4,7 @@ import Avatar from '../Avatar';
 import useAvatarUploader from './hooks/useAvatarUploader';
 
 export const AvatarUploader = () => {
-  const { handleAvatarUpload } = useAvatarUploader();
+  const { handleAvatarUpload, isPending } = useAvatarUploader();
 
   return (
     <Box
@@ -17,7 +17,7 @@ export const AvatarUploader = () => {
       }}
     >
       <Box sx={{ position: 'relative' }}>
-        <Avatar size={175} />
+        <Avatar size={175} isLoading={isPending} />
         <IconButton
           aria-label="Upload avatar"
           component="label"

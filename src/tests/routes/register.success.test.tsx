@@ -7,8 +7,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockNavigate = vi.fn();
-const mockSetSnackbarState = vi.fn();
-const mockSetUserLocation = vi.fn();
+const mockHandleOpenSnackbar = vi.fn();
 
 vi.mock('@tanstack/react-router', async () => {
   const actual = await vi.importActual('@tanstack/react-router');
@@ -32,21 +31,22 @@ vi.mock('@/services/supabase', async () => {
   };
 });
 
-describe('/register route', async () => {
+describe('/register/success route', () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
+
   const mockContext = {
-    snackbarState: { open: false, message: '', severity: undefined },
-    setUserLocation: mockSetUserLocation,
-    setSnackbarState: mockSetSnackbarState,
+    registeringUser: { email: 'test@example.com' },
+    snackbarState: { open: true, message: '', severity: undefined },
+    handleOpenSnackbar: mockHandleOpenSnackbar,
   } as unknown as ContextProps;
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  const renderRegisterSuccessRoute = () => {
+  const renderSuccessPage = () => {
     return render(
       <QueryClientProvider client={queryClient}>
         <Context.Provider value={mockContext}>
@@ -56,34 +56,35 @@ describe('/register route', async () => {
     );
   };
 
-  it('should be correctly rendered', async () => {
+  it('should render success page and resend confirmation email', async () => {
     const resendMock = supabase.auth.resend as unknown as vi.Mock;
     resendMock.mockResolvedValueOnce({ error: null });
 
-    renderRegisterSuccessRoute();
+    renderSuccessPage();
 
     fireEvent.click(
       screen.getByRole('button', { name: /resend confirmation email/i }),
     );
+
     await waitFor(() => {
-      expect(resendMock).toHaveBeenCalledOnce();
-      expect(mockSetSnackbarState).toHaveBeenCalledWith({
+      expect(resendMock).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        type: 'signup',
+      });
+
+      expect(mockHandleOpenSnackbar).toHaveBeenCalledWith({
         message: 'Confirmation email resent!',
-        open: true,
         severity: 'success',
       });
     });
 
-    expect(screen.getByText(/Thank you for signing up!/i)).toBeInTheDocument();
+    expect(screen.getByText(/thank you for signing up/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/We've just sent you a confirmation email./i),
+      screen.getByText(/we've just sent you a confirmation email/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /Please check your inbox and spam folder for the confirmation email to activate your account./i,
-      ),
+      screen.getByText(/please check your inbox and spam folder/i),
     ).toBeInTheDocument();
-
     expect(screen.getByRole('link', { name: /sign in/i })).toHaveAttribute(
       'href',
       '/login',
