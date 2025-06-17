@@ -8,8 +8,6 @@ import { Context } from '.';
 import { ContextProps } from './index.types';
 import ThemeProvider from './ThemeProvider';
 
-// const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
-
 const Provider: FC<{ children: ReactNode }> = ({ children }) => {
   const { session } = useAuthState();
   const [snackbarState, setSnackbarState] = useState<SnackbarStateType>({
